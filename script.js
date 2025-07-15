@@ -1,124 +1,93 @@
 const cloudName = 'dulazvlh6';
 const carpeta = 'FOTOS%20PRUEBA';
-const precioUnitario = 1500;
+const precio = 1500;
 
 const eventos = {
-  "FOTOS PRUEBA": [
-    "img001.jpg",
-    "img002.jpg",
-    "img003.jpg"
-    // Agregá más si es necesario
-  ]
+  "FOTOS PRUEBA": ["img001.jpg", "img002.jpg", "img003.jpg"]
 };
 
 let seleccionadas = [];
 let eventoActual = "";
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById('modal').classList.add("oculto");
-
+window.onload = () => {
   const titulo = document.getElementById('titulo-principal');
-
   setTimeout(() => {
-    titulo.classList.add('titulo-arriba');
-  }, 2000);
+    titulo.classList.add('mover-arriba');
+    document.getElementById('selector-eventos').classList.remove('oculto');
+    cargarEventos();
+  }, 2500);
 
-  setTimeout(() => {
-    document.getElementById('eventos').classList.remove('oculto');
-    document.getElementById('eventos').classList.add('visible');
-  }, 3700);
+  document.getElementById('finalizar-compra').onclick = mostrarResumen;
+  document.getElementById('confirmar-compra').onclick = enviarWhatsApp;
+};
 
-  mostrarEventos();
-
-  document.getElementById('btnFinalizar').addEventListener('click', mostrarResumen);
-  document.getElementById('btnConfirmar').addEventListener('click', confirmarCompra);
-});
-
-function mostrarEventos() {
-  const contenedor = document.getElementById('listaEventos');
-  contenedor.innerHTML = "";
-
-  for (const nombre in eventos) {
+function cargarEventos() {
+  const contenedor = document.getElementById('botones-eventos');
+  contenedor.innerHTML = '';
+  Object.keys(eventos).forEach(nombre => {
     const btn = document.createElement('button');
-    btn.innerText = nombre;
-    btn.addEventListener('click', () => cargarGaleria(nombre));
+    btn.textContent = nombre;
+    btn.onclick = () => mostrarFotos(nombre);
     contenedor.appendChild(btn);
-  }
+  });
 }
 
-function cargarGaleria(nombreEvento) {
-  eventoActual = nombreEvento;
+function mostrarFotos(evento) {
+  eventoActual = evento;
   seleccionadas = [];
+  actualizarResumen();
 
-  document.getElementById('eventos').classList.add('oculto');
-  document.getElementById('galeriaFotos').classList.remove('oculto');
-  document.getElementById('tituloEvento').innerText = `Evento: ${nombreEvento}`;
+  document.getElementById('galeria').classList.remove('oculto');
+  const contenedor = document.getElementById('contenedor-fotos');
+  contenedor.innerHTML = '';
 
-  const galeria = document.getElementById('galeria');
-  galeria.innerHTML = "";
-
-  eventos[nombreEvento].forEach(nombre => {
+  eventos[evento].forEach(nombre => {
     const url = `https://res.cloudinary.com/${cloudName}/image/upload/${carpeta}/${nombre}`;
-
     const div = document.createElement('div');
     div.classList.add('foto');
-    div.addEventListener('click', () => toggleSeleccion(div, nombre));
+    div.onclick = () => toggleFoto(nombre, div);
 
     const img = document.createElement('img');
     img.src = url;
-    img.alt = nombre;
-
-    const nombreDiv = document.createElement('div');
-    nombreDiv.className = 'nombre-foto';
-    nombreDiv.innerText = nombre;
+    img.alt = '';
 
     div.appendChild(img);
-    div.appendChild(nombreDiv);
-    galeria.appendChild(div);
+    contenedor.appendChild(div);
   });
-
-  actualizarContador();
 }
 
-function toggleSeleccion(div, nombre) {
-  const index = seleccionadas.indexOf(nombre);
-  if (index === -1) {
+function toggleFoto(nombre, div) {
+  if (seleccionadas.includes(nombre)) {
+    seleccionadas = seleccionadas.filter(f => f !== nombre);
+    div.classList.remove('seleccionada');
+  } else {
     seleccionadas.push(nombre);
     div.classList.add('seleccionada');
-  } else {
-    seleccionadas.splice(index, 1);
-    div.classList.remove('seleccionada');
   }
-  actualizarContador();
+  actualizarResumen();
 }
 
-function actualizarContador() {
-  const total = seleccionadas.length * precioUnitario;
-  document.getElementById('contador').innerText = `🛒 ${seleccionadas.length} fotos seleccionadas – $${total}`;
+function actualizarResumen() {
+  const resumen = document.getElementById('resumen-carrito');
+  resumen.textContent = `🛒 ${seleccionadas.length} fotos seleccionadas – $${seleccionadas.length * precio}`;
 }
 
 function mostrarResumen() {
-  if (seleccionadas.length === 0) {
-    alert("Debes seleccionar al menos una foto para finalizar la compra.");
-    return;
-  }
-
-  const lista = document.getElementById('listaResumen');
-  lista.innerHTML = "";
-
+  if (seleccionadas.length === 0) return alert("Selecciona al menos una foto");
+  const lista = document.getElementById('lista-fotos');
+  lista.innerHTML = '';
   seleccionadas.forEach(nombre => {
     const li = document.createElement('li');
     li.textContent = nombre;
     lista.appendChild(li);
   });
-
-  document.getElementById('total').innerText = seleccionadas.length * precioUnitario;
+  document.getElementById('total').textContent = seleccionadas.length * precio;
   document.getElementById('modal').classList.remove('oculto');
 }
 
-function confirmarCompra() {
-  const total = seleccionadas.length * precioUnitario;
-  const mensaje = `Hola! Quiero encargar estas fotos del evento *${eventoActual}*:\n\n${seleccionadas.join("\n")}\n\nTotal a abonar: $${total}`;
+function enviarWhatsApp() {
+  const total = seleccionadas.length * precio;
+  const mensaje = `Hola! Quiero encargar estas fotos del evento *${eventoActual}*:\n\n${seleccionadas.join('\n')}\n\nTotal: $${total}`;
   const url = `https://wa.me/543584328924?text=${encodeURIComponent(mensaje)}`;
   window.open(url, '_blank');
 }
