@@ -1,5 +1,5 @@
 const cloudName = 'dulazvlh6';
-const carpeta = 'FOTOS%20PRUEBA'; // Con espacio codificado
+const carpeta = 'FOTOS%20PRUEBA';
 const precioUnitario = 1500;
 
 const eventos = {
@@ -7,7 +7,7 @@ const eventos = {
     "img001.jpg",
     "img002.jpg",
     "img003.jpg"
-    // 👉 Agregá aquí más nombres si tenés más fotos
+    // Agregá más si es necesario
   ]
 };
 
