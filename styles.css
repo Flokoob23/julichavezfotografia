@@ -9,15 +9,16 @@
 }
 
 body, html {
-  margin: 0; padding: 0;
+  margin: 0;
+  padding: 0;
   height: 100%;
   font-family: 'Poppins', sans-serif;
   background: linear-gradient(135deg, var(--rosa-claro), var(--rosa-oscuro));
   color: var(--blanco);
-  text-align: center;
   overflow-x: hidden;
 }
 
+/* Pantalla de bienvenida */
 .pantalla-inicio {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -29,6 +30,7 @@ body, html {
   transition: all 1.5s ease;
 }
 
+/* Título central inicial */
 .centrado {
   text-align: center;
   transition: all 1.6s ease;
@@ -59,7 +61,7 @@ body, html {
   transition: font-size 1.6s ease;
 }
 
-/* Clase que mueve y achica el título */
+/* Cuando se mueve arriba */
 .centrado.titulo-arriba {
   position: fixed;
   top: 15px;
@@ -68,20 +70,20 @@ body, html {
   font-size: 30px !important;
   transform: scale(0.45);
   text-align: right;
-  z-index: 1000;           /* Dejo este z-index */
-  pointer-events: none;    /* Clave: NO bloquea clicks */
+  z-index: 1000;
+  pointer-events: none; /* Clave para permitir clicks detrás */
   width: auto;
   padding: 0;
   margin: 0;
   line-height: 1;
 }
 
+/* Eventos */
 .pantalla-eventos {
   margin-top: 140px;
-  color: var(--blanco);
   opacity: 0;
   transition: opacity 1s ease;
-  z-index: 1100;            /* MÁS ARRIBA para que botones reciban clicks */
+  z-index: 1100;
   position: relative;
   pointer-events: auto;
 }
@@ -98,7 +100,7 @@ body, html {
   text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
 }
 
-/* Botones eventos */
+/* Botones de eventos */
 .botones-eventos {
   display: flex;
   flex-wrap: wrap;
@@ -125,7 +127,7 @@ body, html {
   background-color: var(--rosa-oscuro);
 }
 
-/* GALERIA */
+/* Galería */
 .pantalla-galeria {
   margin: 40px 20px 80px;
   color: var(--blanco);
@@ -138,7 +140,7 @@ body, html {
   text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
 }
 
-/* Fotos - grid */
+/* Fotos en grilla */
 .galeria {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -180,7 +182,7 @@ body, html {
   display: none;
 }
 
-/* CARRITO */
+/* Carrito */
 .carrito {
   margin-top: 25px;
   background: var(--rosa);
@@ -215,7 +217,7 @@ body, html {
   color: white;
 }
 
-/* MODAL */
+/* Modal */
 .modal {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -240,4 +242,54 @@ body, html {
 .modal-contenido h3 {
   margin-top: 0;
   font-family: 'Playfair Display', serif;
-  font-
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.modal-contenido ul {
+  list-style: disc inside;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  font-size: 16px;
+  padding-left: 15px;
+}
+
+/* Oculto */
+.oculto {
+  display: none !important;
+}
+
+/* Responsive */
+@media screen and (max-width: 600px) {
+  .centrado h1 {
+    font-size: 40px !important;
+  }
+  .centrado h2 {
+    font-size: 16px !important;
+  }
+  .pantalla-eventos h2 {
+    font-size: 22px;
+  }
+  .botones-eventos button {
+    font-size: 14px;
+    padding: 10px 18px;
+  }
+  .galeria {
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 12px;
+  }
+  .foto {
+    width: 110px;
+    height: 110px;
+  }
+  .carrito {
+    font-size: 16px;
+    padding: 10px 15px;
+  }
+  .carrito button {
+    font-size: 14px;
+    padding: 8px 18px;
+  }
+}
+
