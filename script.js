@@ -20,9 +20,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   eventos["FOTOS PRUEBA"] = await fetchFotos(tag);
 
   setTimeout(() => {
-    const titulo = document.getElementById('titulo');
-    titulo.classList.remove("titulo-centrado");
-    titulo.classList.add("titulo-arriba");
+    const encabezado = document.getElementById('encabezado');
+    encabezado.classList.remove("titulo-centrado");
+    encabezado.classList.add("titulo-arriba");
     document.getElementById('eventos').classList.remove("oculto");
   }, 2000);
 
@@ -51,7 +51,7 @@ function cargarGaleria(nombreEvento) {
   galeria.innerHTML = "";
 
   eventos[nombreEvento].forEach(nombre => {
-    const url = `https://res.cloudinary.com/${cloudName}/image/upload/FOTOS PRUEBA/${nombre}`;
+    const url = `https://res.cloudinary.com/${cloudName}/image/upload/FOTOS%20PRUEBA/${nombre}`;
     const div = document.createElement('div');
     div.classList.add('foto');
     div.onclick = () => toggleSeleccion(div, nombre);
@@ -104,4 +104,3 @@ function confirmarCompra() {
   const url = `https://wa.me/543584328924?text=${encodeURIComponent(mensaje)}`;
   window.open(url, '_blank');
 }
-
