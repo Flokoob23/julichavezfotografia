@@ -13,31 +13,28 @@ async function fetchFotos(tag) {
   const url = `https://res.cloudinary.com/${cloudName}/image/list/${tag}.json`;
   try {
     const res = await fetch(url);
-    if (!res.ok) throw new Error('No se pudo cargar la lista');
     const data = await res.json();
     return data.resources.map(r => r.public_id.split('/').pop());
   } catch (error) {
-    alert('Error cargando fotos: ' + error.message);
+    alert('Error al cargar fotos: ' + error.message);
     return [];
   }
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  document.getElementById('modal').classList.add("oculto");
+
   eventos["FOTOS PRUEBA"] = await fetchFotos(tag);
 
   const titulo = document.getElementById('titulo-principal');
-  const modal = document.getElementById('modal');
-  modal.classList.add("oculto"); // aseguramos que esté oculto al inicio
 
   setTimeout(() => {
     titulo.classList.add('titulo-arriba');
-    titulo.style.pointerEvents = "none";
   }, 2000);
 
   setTimeout(() => {
-    const eventosSection = document.getElementById('eventos');
-    eventosSection.classList.remove('oculto');
-    eventosSection.classList.add('visible');
+    document.getElementById('eventos').classList.remove('oculto');
+    document.getElementById('eventos').classList.add('visible');
   }, 3700);
 
   mostrarEventos();
@@ -135,4 +132,3 @@ function confirmarCompra() {
   const url = `https://wa.me/543584328924?text=${encodeURIComponent(mensaje)}`;
   window.open(url, '_blank');
 }
-
