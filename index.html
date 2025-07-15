@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>JULI CHÁVEZ - Fotografía</title>
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;500&display=swap" rel="stylesheet" />
@@ -11,7 +11,7 @@
   <header id="encabezado">
     <div id="titulo-principal">
       <h1>JULI CHÁVEZ</h1>
-      <h2>fotografía📷 </h2>
+      <h2>fotografía</h2>
     </div>
   </header>
 
@@ -30,15 +30,31 @@
     </section>
   </main>
 
-  <div id="modal" class="modal oculto">
+  <!-- Modal resumen compra -->
+  <div id="modal-compra" class="modal oculto">
     <div class="modal-contenido">
       <h3>Resumen de compra</h3>
       <ul id="lista-fotos"></ul>
       <p>Total: $<span id="total"></span></p>
       <button id="confirmar-compra">Confirmar compra</button>
+      <button id="cerrar-compra">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Modal visor grande -->
+  <div id="modal-visor" class="modal oculto">
+    <div class="modal-visor-contenido">
+      <button id="cerrar-visor" class="close-btn">&times;</button>
+      <img id="img-visor" src="" alt="" />
+      <div class="visor-controls">
+        <button id="prev-foto">&lt;</button>
+        <button id="toggle-carrito"></button>
+        <button id="next-foto">&gt;</button>
+      </div>
     </div>
   </div>
 
   <script src="script.js"></script>
 </body>
 </html>
+
