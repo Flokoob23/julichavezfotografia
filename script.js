@@ -24,17 +24,15 @@ async function fetchFotos(tag) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // Traemos las fotos y las guardamos en el objeto eventos
   eventos["FOTOS PRUEBA"] = await fetchFotos(tag);
 
   const titulo = document.getElementById('titulo-principal');
 
-  // Animación suave título que se mueve y achica
   setTimeout(() => {
     titulo.classList.add('titulo-arriba');
+    titulo.style.pointerEvents = "none"; // <--- Clave para que no bloquee clicks
   }, 2000);
 
-  // Mostrar eventos justo después de animar título
   setTimeout(() => {
     const eventosSection = document.getElementById('eventos');
     eventosSection.classList.remove('oculto');
@@ -43,30 +41,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   mostrarEventos();
 
-  // Agregamos listener al botón finalizar compra
   document.getElementById('btnFinalizar').addEventListener('click', mostrarResumen);
-
-  // Agregamos listener al botón confirmar compra
   document.getElementById('btnConfirmar').addEventListener('click', confirmarCompra);
 });
 
-// Mostrar botones de eventos
 function mostrarEventos() {
   const contenedor = document.getElementById('listaEventos');
-  contenedor.innerHTML = ""; // limpiar por si acaso
+  contenedor.innerHTML = "";
 
   for (const nombre in eventos) {
     const btn = document.createElement('button');
     btn.innerText = nombre;
-
-    // Aquí asignamos el evento click correctamente
     btn.addEventListener('click', () => cargarGaleria(nombre));
-
     contenedor.appendChild(btn);
   }
 }
 
-// Cargar galería con fotos seleccionadas
 function cargarGaleria(nombreEvento) {
   eventoActual = nombreEvento;
   seleccionadas = [];
@@ -79,7 +69,6 @@ function cargarGaleria(nombreEvento) {
   galeria.innerHTML = "";
 
   eventos[nombreEvento].forEach(nombre => {
-    // URL para imagen con carpeta + nombre + extensión
     const url = `https://res.cloudinary.com/${cloudName}/image/upload/${tag}/${nombre}.jpg`;
 
     const div = document.createElement('div');
@@ -91,7 +80,6 @@ function cargarGaleria(nombreEvento) {
     img.src = url;
     img.alt = nombre;
 
-    // Nombre oculto para referencia interna
     const nombreDiv = document.createElement('div');
     nombreDiv.className = 'nombre-foto';
     nombreDiv.innerText = nombre;
@@ -104,7 +92,6 @@ function cargarGaleria(nombreEvento) {
   actualizarContador();
 }
 
-// Seleccionar o deseleccionar fotos
 function toggleSeleccion(div, nombre) {
   const index = seleccionadas.indexOf(nombre);
   if (index === -1) {
@@ -117,13 +104,11 @@ function toggleSeleccion(div, nombre) {
   actualizarContador();
 }
 
-// Actualizar texto del carrito
 function actualizarContador() {
   const total = seleccionadas.length * precioUnitario;
   document.getElementById('contador').innerText = `🛒 ${seleccionadas.length} fotos seleccionadas – $${total}`;
 }
 
-// Mostrar modal con resumen de compra
 function mostrarResumen() {
   if (seleccionadas.length === 0) {
     alert("Debes seleccionar al menos una foto para finalizar la compra.");
@@ -143,7 +128,6 @@ function mostrarResumen() {
   document.getElementById('modal').classList.remove('oculto');
 }
 
-// Confirmar compra y abrir WhatsApp
 function confirmarCompra() {
   const total = seleccionadas.length * precioUnitario;
   const mensaje = `Hola! Quiero encargar estas fotos del evento *${eventoActual}*:\n\n${seleccionadas.join("\n")}\n\nTotal a abonar: $${total}`;
