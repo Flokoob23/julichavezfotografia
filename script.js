@@ -1,18 +1,27 @@
-const cloudName = 'tu_cloud_name'; // ⚠️ Reemplazá con tu Cloud Name de Cloudinary
+const cloudName = 'dulazvlh6'; // Tu Cloudinary name
+const tag = 'fotos_prueba'; // Tag que le pusiste a tus fotos
+
 const eventos = {
-  "boda-luisa": ["foto1.jpg", "foto2.jpg", "foto3.jpg"],
-  "cumple-pedro": ["img1.jpg", "img2.jpg"]
+  "FOTOS PRUEBA": []
 };
 
 let seleccionadas = [];
 let eventoActual = "";
 
-document.addEventListener("DOMContentLoaded", () => {
+async function fetchFotos(tag) {
+  const url = `https://res.cloudinary.com/${cloudName}/image/list/${tag}.json`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.resources.map(r => r.public_id.split('/').pop());
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  eventos["FOTOS PRUEBA"] = await fetchFotos(tag);
   setTimeout(() => {
     document.getElementById('inicio').classList.add("oculto");
     document.getElementById('eventos').classList.remove("oculto");
     mostrarEventos();
-  }, 2000);
+  }, 1500);
 });
 
 function mostrarEventos() {
@@ -37,7 +46,7 @@ function cargarGaleria(nombreEvento) {
   galeria.innerHTML = "";
 
   eventos[nombreEvento].forEach(nombre => {
-    const url = `https://res.cloudinary.com/${cloudName}/image/upload/${nombreEvento}/${nombre}`;
+    const url = `https://res.cloudinary.com/${cloudName}/image/upload/FOTOS PRUEBA/${nombre}`;
     const div = document.createElement('div');
     div.classList.add('foto');
     div.onclick = () => toggleSeleccion(div, nombre);
@@ -71,3 +80,4 @@ function enviarPedido() {
   const url = `https://wa.me/543584328924?text=${encodeURIComponent(mensaje)}`;
   window.open(url, '_blank');
 }
+
