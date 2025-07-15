@@ -16,7 +16,6 @@ async function fetchFotos(tag) {
     const res = await fetch(url);
     if (!res.ok) throw new Error('No se pudo cargar la lista');
     const data = await res.json();
-    // data.resources es array con objetos { public_id, ... }
     return data.resources.map(r => r.public_id.split('/').pop());
   } catch (error) {
     alert('Error cargando fotos: ' + error.message);
@@ -25,32 +24,30 @@ async function fetchFotos(tag) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // Traemos las fotos y las guardamos en el objeto eventos
   eventos["FOTOS PRUEBA"] = await fetchFotos(tag);
 
   const titulo = document.getElementById('titulo-principal');
 
+  // Animación suave título que se mueve y achica
   setTimeout(() => {
-    // Cambiar estilos para animar suavemente el movimiento y achique
-    titulo.style.position = "fixed";
-    titulo.style.top = "15px";
-    titulo.style.right = "20px";
-    titulo.style.left = "auto";
-    titulo.style.transformOrigin = "top right";
-    titulo.style.transition = "all 1.6s ease";
-    titulo.style.fontSize = "30px";
-    titulo.style.transform = "scale(0.45)";
-    titulo.style.textAlign = "right";
-
-    // Mostrar los eventos tras la animación
-    setTimeout(() => {
-      const eventosSection = document.getElementById('eventos');
-      eventosSection.classList.remove('oculto');
-      eventosSection.classList.add('visible');
-    }, 1700);
-
+    titulo.classList.add('titulo-arriba');
   }, 2000);
 
+  // Mostrar eventos justo después de animar título
+  setTimeout(() => {
+    const eventosSection = document.getElementById('eventos');
+    eventosSection.classList.remove('oculto');
+    eventosSection.classList.add('visible');
+  }, 3700);
+
   mostrarEventos();
+
+  // Agregamos listener al botón finalizar compra
+  document.getElementById('btnFinalizar').addEventListener('click', mostrarResumen);
+
+  // Agregamos listener al botón confirmar compra
+  document.getElementById('btnConfirmar').addEventListener('click', confirmarCompra);
 });
 
 // Mostrar botones de eventos
@@ -62,7 +59,7 @@ function mostrarEventos() {
     const btn = document.createElement('button');
     btn.innerText = nombre;
 
-    // Asignar el evento correctamente
+    // Aquí asignamos el evento click correctamente
     btn.addEventListener('click', () => cargarGaleria(nombre));
 
     contenedor.appendChild(btn);
