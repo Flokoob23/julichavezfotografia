@@ -1,5 +1,10 @@
+/* Fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;500&display=swap');
+
 :root {
+  --rosa-claro: #ff99cc;
   --rosa: #ff69b4;
+  --rosa-oscuro: #c71585;
   --negro: #111;
   --blanco: #fff;
 }
@@ -7,82 +12,227 @@
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: var(--negro);
-  color: var(--rosa);
+  background: linear-gradient(135deg, var(--rosa-claro), var(--rosa-oscuro));
+  color: var(--blanco);
   text-align: center;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-.titulo-centrado {
+/* TITULO INICIO */
+.pantalla-inicio {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
   z-index: 1000;
   transition: all 1.5s ease;
 }
 
-.titulo-arriba {
-  top: 10px;
-  left: auto;
-  right: 20px;
-  transform: none;
-  text-align: right;
+.centrado {
+  text-align: center;
+  transition: all 1.5s ease;
 }
 
-.titulo-centrado h1 {
+.centrado h1 {
   font-family: 'Playfair Display', serif;
-  font-size: 60px;
+  font-size: 70px;
   margin: 0;
+  letter-spacing: 4px;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
 }
-.titulo-centrado h2 {
-  font-size: 18px;
+
+.centrado h2 {
   font-weight: 300;
-  color: var(--blanco);
-  letter-spacing: 2px;
+  font-size: 22px;
   margin: 0;
+  letter-spacing: 3px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 }
 
-.pantalla-eventos, .pantalla-galeria {
-  padding: 120px 20px 40px;
+/* Cuando se desplaza a la esquina superior derecha */
+.titulo-arriba {
+  position: fixed !important;
+  top: 15px !important;
+  right: 20px !important;
+  left: auto !important;
+  transform: none !important;
+  text-align: right !important;
+  z-index: 1100;
 }
 
+/* SECCION EVENTOS */
+.pantalla-eventos {
+  margin-top: 140px;
+  color: var(--blanco);
+}
+
+.pantalla-eventos h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Botones eventos */
 .botones-eventos {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 15px;
+  gap: 20px;
 }
 
 .botones-eventos button {
   background-color: var(--rosa);
-  color: white;
   border: none;
-  padding: 12px 25px;
   border-radius: 30px;
-  font-size: 16px;
+  padding: 12px 28px;
+  font-size: 18px;
+  color: white;
   cursor: pointer;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 5px 10px rgba(255,105,180,0.6);
+  transition: background-color 0.3s ease;
 }
 
+.botones-eventos button:hover {
+  background-color: var(--rosa-oscuro);
+}
+
+/* GALERIA */
+.pantalla-galeria {
+  margin: 40px 20px 80px;
+  color: var(--blanco);
+}
+
+.pantalla-galeria h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  margin-bottom: 15px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Fotos - grid */
 .galeria {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 15px;
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 18px;
+  justify-items: center;
 }
 
+/* Cada foto */
 .foto {
-  border: 2px solid transparent;
-  border-radius: 10px;
+  position: relative;
+  border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 140px;
+  height: 140px;
 }
+
 .foto img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   display: block;
   filter: brightness(0.95);
-  transition: all 0.3s ease;
+  transition: filter 0.3s ease;
 }
+
 .foto:hover img {
-  filter: brightness(1
+  filter: brightness(1);
+}
+
+.foto.seleccionada {
+  box-shadow: 0 0 15px 4px var(--blanco);
+  transform: scale(1.08);
+}
+
+/* El nombre oculto */
+.foto .nombre-foto {
+  display: none;
+}
+
+/* CARRITO */
+.carrito {
+  margin-top: 25px;
+  background: var(--rosa);
+  padding: 12px 20px;
+  border-radius: 15px;
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(255,105,180,0.7);
+}
+
+.carrito button {
+  background: white;
+  color: var(--negro);
+  border: none;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transition: background-color 0.3s ease;
+}
+
+.carrito button:hover {
+  background-color: var(--rosa-oscuro);
+  color: white;
+}
+
+/* MODAL */
+.modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1500;
+}
+
+.modal-contenido {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 420px;
+  color: var(--negro);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  text-align: left;
+}
+
+.modal-contenido h3 {
+  margin-top: 0;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.modal-contenido ul {
+  list-style: disc inside;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  font-size: 16px;
+  padding-left: 15px;
+}
+
+/* Oculto */
+.oculto {
+  display: none;
+}
