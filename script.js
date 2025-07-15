@@ -27,11 +27,19 @@ async function fetchFotos(tag) {
 document.addEventListener("DOMContentLoaded", async () => {
   eventos["FOTOS PRUEBA"] = await fetchFotos(tag);
 
-  // Después de 2 segundos, animar título y mostrar eventos
+  // Animar título: desplazar y achicar con delay
+  const titulo = document.getElementById('titulo-principal');
+
   setTimeout(() => {
-    const titulo = document.getElementById('titulo-principal');
+    // Agrega clase que lanza animacion CSS
     titulo.classList.add('titulo-arriba');
-    document.getElementById('eventos').classList.remove('oculto');
+
+    // Luego de la animación (1.5s) mostrar eventos
+    setTimeout(() => {
+      document.getElementById('eventos').classList.remove('oculto');
+      document.getElementById('eventos').classList.add('visible');
+    }, 1600);
+
   }, 2000);
 
   mostrarEventos();
@@ -61,6 +69,7 @@ function cargarGaleria(nombreEvento) {
   galeria.innerHTML = "";
 
   eventos[nombreEvento].forEach(nombre => {
+    // URL para imagen con carpeta + nombre + extensión
     const url = `https://res.cloudinary.com/${cloudName}/image/upload/${tag}/${nombre}.jpg`;
 
     const div = document.createElement('div');
@@ -71,7 +80,7 @@ function cargarGaleria(nombreEvento) {
     img.src = url;
     img.alt = nombre;
 
-    // Nombre oculto, pero guardado para referencia
+    // Nombre oculto para referencia interna
     const nombreDiv = document.createElement('div');
     nombreDiv.className = 'nombre-foto';
     nombreDiv.innerText = nombre;
