@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JULI CHÁVEZ - Fotografía</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <section id="inicio" class="pantalla-inicio">
+    <h1>JULI CHÁVEZ</h1>
+    <h2>fotografía</h2>
+  </section>
+
+  <section id="eventos" class="pantalla-eventos oculto">
+    <h3>📁 Elegí el evento</h3>
+    <div id="listaEventos" class="botones-eventos"></div>
+  </section>
+
+  <section id="galeriaFotos" class="pantalla-galeria oculto">
+    <h3 id="tituloEvento"></h3>
+    <div id="galeria" class="galeria"></div>
+    <div id="resumen" class="resumen oculto">
+      <p><strong>Alias de pago:</strong> mi.alias.mp</p>
+      <button onclick="enviarPedido()">Encargar fotos</button>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
