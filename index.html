@@ -4,31 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>JULI CHÁVEZ - Fotografía</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
-  <section id="inicio" class="pantalla-inicio">
+  <header id="titulo" class="titulo-centrado">
     <h1>JULI CHÁVEZ</h1>
     <h2>fotografía</h2>
-  </section>
+  </header>
 
   <section id="eventos" class="pantalla-eventos oculto">
-    <h3>📁 Elegí el evento</h3>
     <div id="listaEventos" class="botones-eventos"></div>
   </section>
 
   <section id="galeriaFotos" class="pantalla-galeria oculto">
     <h3 id="tituloEvento"></h3>
     <div id="galeria" class="galeria"></div>
-    <div id="resumen" class="resumen oculto">
-      <p><strong>Alias de pago:</strong> mi.alias.mp</p>
-      <button onclick="enviarPedido()">Encargar fotos</button>
+
+    <div class="carrito">
+      <span id="contador">🛒 0 fotos seleccionadas – $0</span>
+      <button onclick="mostrarResumen()">Finalizar compra</button>
     </div>
   </section>
+
+  <!-- Modal -->
+  <div id="modal" class="modal oculto">
+    <div class="modal-contenido">
+      <h3>Resumen de compra</h3>
+      <ul id="listaResumen"></ul>
+      <p><strong>Total:</strong> $<span id="total"></span></p>
+      <button onclick="confirmarCompra()">Confirmar compra</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
 </html>
-
