@@ -9,7 +9,6 @@ const eventos = {
 let seleccionadas = [];
 let eventoActual = "";
 
-// Traer lista de fotos desde Cloudinary
 async function fetchFotos(tag) {
   const url = `https://res.cloudinary.com/${cloudName}/image/list/${tag}.json`;
   try {
@@ -27,10 +26,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   eventos["FOTOS PRUEBA"] = await fetchFotos(tag);
 
   const titulo = document.getElementById('titulo-principal');
+  const modal = document.getElementById('modal');
+  modal.classList.add("oculto"); // aseguramos que esté oculto al inicio
 
   setTimeout(() => {
     titulo.classList.add('titulo-arriba');
-    titulo.style.pointerEvents = "none"; // <--- Clave para que no bloquee clicks
+    titulo.style.pointerEvents = "none";
   }, 2000);
 
   setTimeout(() => {
@@ -134,3 +135,4 @@ function confirmarCompra() {
   const url = `https://wa.me/543584328924?text=${encodeURIComponent(mensaje)}`;
   window.open(url, '_blank');
 }
+
