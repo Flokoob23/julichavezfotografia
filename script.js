@@ -1,30 +1,21 @@
 const cloudName = 'dulazvlh6';
-const tag = 'fotos_prueba';
+const carpeta = 'FOTOS%20PRUEBA'; // Con espacio codificado
 const precioUnitario = 1500;
 
 const eventos = {
-  "FOTOS PRUEBA": []
+  "FOTOS PRUEBA": [
+    "img001.jpg",
+    "img002.jpg",
+    "img003.jpg"
+    // 👉 Agregá aquí más nombres si tenés más fotos
+  ]
 };
 
 let seleccionadas = [];
 let eventoActual = "";
 
-async function fetchFotos(tag) {
-  const url = `https://res.cloudinary.com/${cloudName}/image/list/${tag}.json`;
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    return data.resources.map(r => r.public_id.split('/').pop());
-  } catch (error) {
-    alert('Error al cargar fotos: ' + error.message);
-    return [];
-  }
-}
-
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('modal').classList.add("oculto");
-
-  eventos["FOTOS PRUEBA"] = await fetchFotos(tag);
 
   const titulo = document.getElementById('titulo-principal');
 
@@ -67,11 +58,10 @@ function cargarGaleria(nombreEvento) {
   galeria.innerHTML = "";
 
   eventos[nombreEvento].forEach(nombre => {
-    const url = `https://res.cloudinary.com/${cloudName}/image/upload/${tag}/${nombre}.jpg`;
+    const url = `https://res.cloudinary.com/${cloudName}/image/upload/${carpeta}/${nombre}`;
 
     const div = document.createElement('div');
     div.classList.add('foto');
-
     div.addEventListener('click', () => toggleSeleccion(div, nombre));
 
     const img = document.createElement('img');
