@@ -27,18 +27,26 @@ async function fetchFotos(tag) {
 document.addEventListener("DOMContentLoaded", async () => {
   eventos["FOTOS PRUEBA"] = await fetchFotos(tag);
 
-  // Animar título: desplazar y achicar con delay
   const titulo = document.getElementById('titulo-principal');
 
   setTimeout(() => {
-    // Agrega clase que lanza animacion CSS
-    titulo.classList.add('titulo-arriba');
+    // Cambiar estilos para animar suavemente el movimiento y achique
+    titulo.style.position = "fixed";
+    titulo.style.top = "15px";
+    titulo.style.right = "20px";
+    titulo.style.left = "auto";
+    titulo.style.transformOrigin = "top right";
+    titulo.style.transition = "all 1.6s ease";
+    titulo.style.fontSize = "30px";
+    titulo.style.transform = "scale(0.45)";
+    titulo.style.textAlign = "right";
 
-    // Luego de la animación (1.5s) mostrar eventos
+    // Mostrar los eventos tras la animación
     setTimeout(() => {
-      document.getElementById('eventos').classList.remove('oculto');
-      document.getElementById('eventos').classList.add('visible');
-    }, 1600);
+      const eventosSection = document.getElementById('eventos');
+      eventosSection.classList.remove('oculto');
+      eventosSection.classList.add('visible');
+    }, 1700);
 
   }, 2000);
 
@@ -48,10 +56,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Mostrar botones de eventos
 function mostrarEventos() {
   const contenedor = document.getElementById('listaEventos');
+  contenedor.innerHTML = ""; // limpiar por si acaso
+
   for (const nombre in eventos) {
     const btn = document.createElement('button');
     btn.innerText = nombre;
-    btn.onclick = () => cargarGaleria(nombre);
+
+    // Asignar el evento correctamente
+    btn.addEventListener('click', () => cargarGaleria(nombre));
+
     contenedor.appendChild(btn);
   }
 }
@@ -74,7 +87,8 @@ function cargarGaleria(nombreEvento) {
 
     const div = document.createElement('div');
     div.classList.add('foto');
-    div.onclick = () => toggleSeleccion(div, nombre);
+
+    div.addEventListener('click', () => toggleSeleccion(div, nombre));
 
     const img = document.createElement('img');
     img.src = url;
@@ -139,4 +153,3 @@ function confirmarCompra() {
   const url = `https://wa.me/543584328924?text=${encodeURIComponent(mensaje)}`;
   window.open(url, '_blank');
 }
-
