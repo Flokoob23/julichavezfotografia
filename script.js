@@ -1,5 +1,6 @@
-const cloudName = 'dulazvlh6'; // Tu Cloudinary name
-const tag = 'fotos_prueba'; // Tag que le pusiste a tus fotos
+const cloudName = 'dulazvlh6';
+const tag = 'fotos_prueba';
+const precioUnitario = 1500;
 
 const eventos = {
   "FOTOS PRUEBA": []
@@ -17,11 +18,15 @@ async function fetchFotos(tag) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   eventos["FOTOS PRUEBA"] = await fetchFotos(tag);
+
   setTimeout(() => {
-    document.getElementById('inicio').classList.add("oculto");
+    const titulo = document.getElementById('titulo');
+    titulo.classList.remove("titulo-centrado");
+    titulo.classList.add("titulo-arriba");
     document.getElementById('eventos').classList.remove("oculto");
-    mostrarEventos();
-  }, 1500);
+  }, 2000);
+
+  mostrarEventos();
 });
 
 function mostrarEventos() {
@@ -59,7 +64,7 @@ function cargarGaleria(nombreEvento) {
     galeria.appendChild(div);
   });
 
-  document.getElementById('resumen').classList.add('oculto');
+  actualizarContador();
 }
 
 function toggleSeleccion(div, nombre) {
@@ -72,11 +77,30 @@ function toggleSeleccion(div, nombre) {
     div.classList.remove('seleccionada');
   }
 
-  document.getElementById('resumen').classList.toggle('oculto', seleccionadas.length === 0);
+  actualizarContador();
 }
 
-function enviarPedido() {
-  const mensaje = `Hola! Quiero encargar estas fotos del evento *${eventoActual}*:\n\n${seleccionadas.join("\n")}`;
+function actualizarContador() {
+  const total = seleccionadas.length * precioUnitario;
+  document.getElementById('contador').innerText = `🛒 ${seleccionadas.length} fotos seleccionadas – $${total}`;
+}
+
+function mostrarResumen() {
+  const lista = document.getElementById('listaResumen');
+  lista.innerHTML = "";
+  seleccionadas.forEach(nombre => {
+    const li = document.createElement('li');
+    li.innerText = nombre;
+    lista.appendChild(li);
+  });
+
+  document.getElementById('total').innerText = seleccionadas.length * precioUnitario;
+  document.getElementById('modal').classList.remove('oculto');
+}
+
+function confirmarCompra() {
+  const total = seleccionadas.length * precioUnitario;
+  const mensaje = `Hola! Quiero encargar estas fotos del evento *${eventoActual}*:\n\n${seleccionadas.join("\n")}\n\nTotal a abonar: $${total}`;
   const url = `https://wa.me/543584328924?text=${encodeURIComponent(mensaje)}`;
   window.open(url, '_blank');
 }
