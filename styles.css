@@ -18,7 +18,6 @@ body, html {
   overflow-x: hidden;
 }
 
-/* Pantalla de bienvenida */
 .pantalla-inicio {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -30,17 +29,11 @@ body, html {
   transition: all 1.5s ease;
 }
 
-/* Título central inicial */
 .centrado {
   text-align: center;
   transition: all 1.6s ease;
   transform-origin: top right;
   position: relative;
-  top: 0;
-  right: 0;
-  padding: 0;
-  margin: 0;
-  line-height: 1;
 }
 
 .centrado h1 {
@@ -49,7 +42,6 @@ body, html {
   margin: 0;
   letter-spacing: 4px;
   text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-  transition: font-size 1.6s ease;
 }
 
 .centrado h2 {
@@ -58,34 +50,22 @@ body, html {
   margin: 0;
   letter-spacing: 3px;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-  transition: font-size 1.6s ease;
 }
 
-/* Cuando se mueve arriba */
 .centrado.titulo-arriba {
   position: fixed;
   top: 15px;
   right: 20px;
-  left: auto;
-  font-size: 30px !important;
   transform: scale(0.45);
   text-align: right;
   z-index: 1000;
-  pointer-events: none; /* Clave para permitir clicks detrás */
-  width: auto;
-  padding: 0;
-  margin: 0;
-  line-height: 1;
+  pointer-events: none;
 }
 
-/* Eventos */
 .pantalla-eventos {
   margin-top: 140px;
   opacity: 0;
   transition: opacity 1s ease;
-  z-index: 1100;
-  position: relative;
-  pointer-events: auto;
 }
 
 .pantalla-eventos.visible {
@@ -96,11 +76,8 @@ body, html {
   font-family: 'Playfair Display', serif;
   font-size: 28px;
   margin-bottom: 20px;
-  letter-spacing: 2px;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
 }
 
-/* Botones de eventos */
 .botones-eventos {
   display: flex;
   flex-wrap: wrap;
@@ -120,14 +97,12 @@ body, html {
   font-family: 'Poppins', sans-serif;
   box-shadow: 0 5px 10px rgba(255,105,180,0.6);
   transition: background-color 0.3s ease;
-  pointer-events: auto;
 }
 
 .botones-eventos button:hover {
   background-color: var(--rosa-oscuro);
 }
 
-/* Galería */
 .pantalla-galeria {
   margin: 40px 20px 80px;
   color: var(--blanco);
@@ -137,10 +112,8 @@ body, html {
   font-family: 'Playfair Display', serif;
   font-size: 26px;
   margin-bottom: 15px;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
 }
 
-/* Fotos en grilla */
 .galeria {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -177,12 +150,10 @@ body, html {
   transform: scale(1.08);
 }
 
-/* Nombre oculto */
 .foto .nombre-foto {
   display: none;
 }
 
-/* Carrito */
 .carrito {
   margin-top: 25px;
   background: var(--rosa);
@@ -209,7 +180,6 @@ body, html {
   font-size: 16px;
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  transition: background-color 0.3s ease;
 }
 
 .carrito button:hover {
@@ -217,7 +187,6 @@ body, html {
   color: white;
 }
 
-/* Modal */
 .modal {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -236,31 +205,12 @@ body, html {
   max-width: 420px;
   color: var(--negro);
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  text-align: left;
 }
 
-.modal-contenido h3 {
-  margin-top: 0;
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
-  font-size: 24px;
-}
-
-.modal-contenido ul {
-  list-style: disc inside;
-  max-height: 200px;
-  overflow-y: auto;
-  margin-bottom: 15px;
-  font-size: 16px;
-  padding-left: 15px;
-}
-
-/* Oculto */
 .oculto {
   display: none !important;
 }
 
-/* Responsive */
 @media screen and (max-width: 600px) {
   .centrado h1 {
     font-size: 40px !important;
@@ -292,4 +242,3 @@ body, html {
     padding: 8px 18px;
   }
 }
-
