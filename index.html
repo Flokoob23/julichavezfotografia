@@ -2,40 +2,40 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>JULI CHÁVEZ - Fotografía</title>
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;500&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <header id="encabezado" class="pantalla-inicio">
-    <div id="titulo-principal" class="centrado">
+  <header id="encabezado">
+    <div id="titulo-principal">
       <h1>JULI CHÁVEZ</h1>
-      <h2>fotografía</h2>
+      <h2>fotografía📷 </h2>
     </div>
   </header>
 
-  <section id="eventos" class="pantalla-eventos oculto">
-    <h2>ELIGE TU EVENTO</h2>
-    <div id="listaEventos" class="botones-eventos"></div>
-  </section>
+  <main>
+    <section id="selector-eventos" class="oculto">
+      <h2>ELIGE TU EVENTO</h2>
+      <div id="botones-eventos"></div>
+    </section>
 
-  <section id="galeriaFotos" class="pantalla-galeria oculto">
-    <h3 id="tituloEvento"></h3>
-    <div id="galeria" class="galeria"></div>
-
-    <div class="carrito">
-      <span id="contador">🛒 0 fotos seleccionadas – $0</span>
-      <button id="btnFinalizar" type="button">Finalizar compra</button>
-    </div>
-  </section>
+    <section id="galeria" class="oculto">
+      <div id="contenedor-fotos"></div>
+      <div class="carrito">
+        <span id="resumen-carrito">🛒 0 fotos seleccionadas – $0</span>
+        <button id="finalizar-compra">Finalizar compra</button>
+      </div>
+    </section>
+  </main>
 
   <div id="modal" class="modal oculto">
     <div class="modal-contenido">
       <h3>Resumen de compra</h3>
-      <ul id="listaResumen"></ul>
-      <p><strong>Total:</strong> $<span id="total"></span></p>
-      <button id="btnConfirmar" type="button">Confirmar compra</button>
+      <ul id="lista-fotos"></ul>
+      <p>Total: $<span id="total"></span></p>
+      <button id="confirmar-compra">Confirmar compra</button>
     </div>
   </div>
 
