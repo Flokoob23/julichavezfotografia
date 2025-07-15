@@ -1,4 +1,3 @@
-/* Fuentes */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;500&display=swap');
 
 :root {
@@ -31,9 +30,11 @@ body {
   transition: all 1.5s ease;
 }
 
+/* Centrado y grande */
 .centrado {
   text-align: center;
   transition: all 1.5s ease;
+  transform-origin: top right;
 }
 
 .centrado h1 {
@@ -42,6 +43,7 @@ body {
   margin: 0;
   letter-spacing: 4px;
   text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+  transition: font-size 1.5s ease;
 }
 
 .centrado h2 {
@@ -50,9 +52,10 @@ body {
   margin: 0;
   letter-spacing: 3px;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  transition: font-size 1.5s ease;
 }
 
-/* Cuando se desplaza a la esquina superior derecha */
+/* Cuando se desplaza a la esquina superior derecha y achica */
 .titulo-arriba {
   position: fixed !important;
   top: 15px !important;
@@ -61,12 +64,30 @@ body {
   transform: none !important;
   text-align: right !important;
   z-index: 1100;
+  animation: moverYachicar 1.5s forwards;
+}
+
+@keyframes moverYachicar {
+  0% {
+    font-size: 70px;
+    transform: translate(0,0) scale(1);
+  }
+  100% {
+    font-size: 30px;
+    transform: translate(0,0) scale(0.45);
+  }
 }
 
 /* SECCION EVENTOS */
 .pantalla-eventos {
   margin-top: 140px;
   color: var(--blanco);
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.pantalla-eventos.visible {
+  opacity: 1;
 }
 
 .pantalla-eventos h2 {
