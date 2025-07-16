@@ -1,104 +1,88 @@
-const urlJson = 'https://script.google.com/macros/s/AKfycbxI-Ouh6zDkoVtCBMUAECthVMhqS2Ona0mhNNWwzSl6KQW_EMxmkkOekiMocRB5m6U4/exec';
-const precio = 1500;
+let albumsData = [];
+let currentAlbum = [];
+let currentIndex = 0;
+let cart = [];
 
-let eventos = {};
-let seleccionadas = [];
+fetch('albums.json')
+  .then(res => res.json())
+  .then(data => {
+    albumsData = data;
+    const container = document.getElementById("albums-container");
+    data.forEach((album, index) => {
+      const btn = document.createElement("button");
+      btn.textContent = album.nombre;
+      btn.onclick = () => openAlbum(index);
+      container.appendChild(btn);
+    });
+  });
 
-window.onload = () => {
-  cargarDatos();
+function openAlbum(index) {
+  currentAlbum = albumsData[index].imagenes;
+  currentIndex = 0;
+  document.getElementById("gallery").classList.remove("hidden");
+  updateLargePhoto();
+  renderThumbnails();
+}
 
-  document.getElementById('finalizar-compra').onclick = mostrarResumen;
-  document.getElementById('confirmar-compra').onclick = enviarWhatsApp;
-  document.getElementById('cerrar-compra').onclick = () => {
-    document.getElementById('modal-compra').classList.add('oculto');
-  };
+function updateLargePhoto() {
+  document.getElementById("photo-large").src = currentAlbum[currentIndex];
+}
+
+document.getElementById("next").onclick = () => {
+  currentIndex = (currentIndex + 1) % currentAlbum.length;
+  updateLargePhoto();
 };
 
-function cargarDatos() {
-  fetch(urlJson)
-    .then(res => res.json())
-    .then(data => {
-      eventos = data;
-      mostrarEventos();
-    })
-    .catch(() => alert('Error al cargar los álbumes'));
-}
+document.getElementById("prev").onclick = () => {
+  currentIndex = (currentIndex - 1 + currentAlbum.length) % currentAlbum.length;
+  updateLargePhoto();
+};
 
-function mostrarEventos() {
-  const contenedor = document.getElementById('botones-eventos');
-  contenedor.innerHTML = '';
-  Object.keys(eventos).forEach(evento => {
-    const btn = document.createElement('button');
-    btn.textContent = evento;
-    btn.onclick = () => mostrarFotos(evento);
-    contenedor.appendChild(btn);
-  });
-}
-
-function mostrarFotos(evento) {
-  seleccionadas = [];
-  actualizarResumen();
-
-  const contenedor = document.getElementById('contenedor-fotos');
-  contenedor.innerHTML = '';
-
-  eventos[evento].forEach(foto => {
-    const div = document.createElement('div');
-    div.classList.add('foto');
-    div.onclick = () => toggleSeleccion(foto, div);
-
-    const img = document.createElement('img');
-    img.src = foto.url;
-    img.alt = foto.name;
-
-    div.appendChild(img);
-    contenedor.appendChild(div);
-  });
-
-  document.getElementById('fotos').classList.remove('oculto');
-  document.getElementById('carrito').classList.remove('oculto');
-  document.getElementById('eventos').classList.add('oculto');
-}
-
-function toggleSeleccion(foto, div) {
-  const index = seleccionadas.findIndex(f => f.name === foto.name);
-  if(index >= 0){
-    seleccionadas.splice(index,1);
-    div.classList.remove('seleccionada');
-  } else {
-    seleccionadas.push(foto);
-    div.classList.add('seleccionada');
+document.getElementById("add-cart").onclick = () => {
+  const photo = currentAlbum[currentIndex];
+  if (!cart.includes(photo)) {
+    cart.push(photo);
+    updateCart();
   }
-  actualizarResumen();
-}
+};
 
-function actualizarResumen(){
-  const resumen = document.getElementById('resumen-carrito');
-  resumen.textContent = `🛒 ${seleccionadas.length} fotos seleccionadas – $${seleccionadas.length * precio}`;
-}
-
-function mostrarResumen(){
-  if(seleccionadas.length === 0){
-    alert("Selecciona al menos una foto");
-    return;
-  }
-  const lista = document.getElementById('lista-fotos');
-  lista.innerHTML = '';
-  seleccionadas.forEach(foto => {
-    const li = document.createElement('li');
-    li.textContent = foto.name;
-    lista.appendChild(li);
+function renderThumbnails() {
+  const thumbs = document.getElementById("thumbnails");
+  thumbs.innerHTML = "";
+  currentAlbum.forEach((src, i) => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.onclick = () => {
+      currentIndex = i;
+      updateLargePhoto();
+    };
+    thumbs.appendChild(img);
   });
-  document.getElementById('total').textContent = seleccionadas.length * precio;
-  document.getElementById('modal-compra').classList.remove('oculto');
 }
 
-function enviarWhatsApp(){
-  const total = seleccionadas.length * precio;
-  const nombresFotos = seleccionadas.map(f => f.name).join('\n');
-  const mensaje = `Hola! Quiero encargar estas fotos:\n\n${nombresFotos}\n\nTotal: $${total}`;
-  const url = `https://wa.me/543584328924?text=${encodeURIComponent(mensaje)}`;
-  window.open(url,'_blank');
+function updateCart() {
+  document.getElementById("cart-count").textContent = cart.length;
+  document.getElementById("cart-total").textContent = cart.length * 1500;
 }
 
+document.getElementById("checkout").onclick = () => {
+  const modal = document.getElementById("checkout-modal");
+  const container = document.getElementById("selected-photos");
+  container.innerHTML = "";
+  cart.forEach(photo => {
+    const img = document.createElement("img");
+    img.src = photo;
+    container.appendChild(img);
+  });
+  const msg = `HOLA QUIERO COMPRAR LAS SIGUIENTES FOTOS:\n${cart.join('\n')}`;
+  const wspURL = `https://wa.me/543584328924?text=${encodeURIComponent(msg)}`;
+  document.getElementById("whatsapp-link").href = wspURL;
+  modal.classList.remove("hidden");
+};
 
+// Animación del logo
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.getElementById("header").classList.add("small");
+  }, 2500);
+});
