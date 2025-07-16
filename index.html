@@ -3,68 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>JULI CHAVEZ - Fotografía</title>
+  <title>Juli Chavez – Fotografía Profesional</title>
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Inter&display=swap" rel="stylesheet" />
-  <meta property="og:title" content="Juli Chavez - Fotografía Profesional">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:600|Inter:400,600&display=swap" rel="stylesheet" />
+  <meta name="description" content="Explorá y comprá fotografías profesionales de Juli Chavez. 🌟">
+  <meta property="og:title" content="Juli Chavez – Fotografía Profesional">
+  <meta property="og:description" content="Explorá y comprá fotografías profesionales de Juli Chavez. 🌟">
   <meta property="og:image" content="https://i.imgur.com/QFDRuAh.jpg">
-  <meta property="og:description" content="Compra tus fotos favoritas de Juli Chavez. Seleccioná, mirá y pedí por WhatsApp.">
+  <link rel="icon" href="favicon.ico" />
 </head>
 <body>
-  <!-- Pantalla de bienvenida -->
+  <!-- Intro -->
   <div id="intro">
-    <h1 class="fade-in" id="intro-title">📸 JULI CHAVEZ</h1>
-    <p class="fade-in delay" id="intro-sub">fotografía profesional</p>
+    <h1 id="intro-title">Juli Chavez</h1>
+    <p id="intro-sub">Fotografía profesional</p>
   </div>
 
-  <!-- Encabezado fijo -->
-  <header id="header" class="hidden">
-    <h1 id="logo">📸 JULI CHAVEZ</h1>
-    <p class="sub">fotografía profesional</p>
+  <!-- Header -->
+  <header id="header">
+    <h1 id="logo">Juli Chavez</h1>
+    <nav>
+      <input id="search-album" type="search" placeholder="Buscar álbum…" aria-label="Buscar álbum" />
+      <button id="toggle-theme" aria-label="Cambiar modo oscuro"><span>🌙</span></button>
+    </nav>
+    <button id="cart-btn" aria-label="Ver carrito"><span id="cart-indicator">🛒 0</span></button>
   </header>
 
   <!-- Álbumes -->
   <main>
-    <section id="albums-container" class="hidden"></section>
+    <section id="albums-container"></section>
     <section id="photo-grid" class="hidden"></section>
   </main>
 
-  <!-- Modal de imagen -->
-  <div id="photo-modal" class="modal hidden">
-    <div class="modal-content">
-      <button class="close-modal">❌</button>
-      <img id="modal-image" src="" alt="Foto grande" />
-      <div class="modal-nav">
-        <button id="prev" aria-label="Foto anterior">⟨</button>
-        <button id="next" aria-label="Foto siguiente">⟩</button>
-      </div>
-      <button id="add-cart">Agregar al carrito 🛒</button>
+  <!-- Modal de foto -->
+  <aside id="photo-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <button class="modal-close" aria-label="Cerrar imagen">✕</button>
+    <img id="modal-img" alt="" />
+    <div class="modal-controls">
+      <button id="prev" aria-label="Foto anterior">‹</button>
+      <button id="next" aria-label="Foto siguiente">›</button>
     </div>
-  </div>
+    <button id="add-cart">Agregar al carrito</button>
+  </aside>
 
-  <!-- Modal de compra -->
-  <div id="checkout-modal" class="modal hidden">
-    <div class="modal-content">
-      <h3>🖼️ Tus fotos seleccionadas</h3>
-      <input id="nombre" type="text" placeholder="Tu nombre" />
-      <input id="correo" type="email" placeholder="Tu correo (opcional)" />
-      <div id="selected-photos" class="grid-list"></div>
-      <button id="clear-cart">🗑️ Vaciar carrito</button>
-      <a id="whatsapp-link" href="#" target="_blank">📤 Enviar pedido por WhatsApp</a>
-      <button class="close-modal">❌ Cerrar</button>
+  <!-- Modal carrito -->
+  <aside id="cart-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <button class="modal-close" aria-label="Cerrar carrito">✕</button>
+    <h2>Tu carrito</h2>
+    <div id="cart-items"></div>
+    <div id="cart-summary">
+      <span id="total-items">0 fotos</span>
+      <span id="total-price">$0</span>
     </div>
-  </div>
+    <div id="checkout-section">
+      <input id="input-name" type="text" placeholder="Tu nombre" required />
+      <input id="input-email" type="email" placeholder="Tu correo (opcional)" />
+      <button id="checkout-btn">Enviar pedido por WhatsApp</button>
+      <button id="clear-btn">Vaciar carrito</button>
+    </div>
+  </aside>
 
-  <!-- Footer carrito -->
-  <footer id="cart-footer" class="hidden">
-    <span id="cart-count">0</span> fotos | Total: $<span id="cart-total">0</span>
-    <button id="checkout">🧾 Finalizar compra</button>
+  <footer>
+    <p>© 2025 Juli Chavez – Todos los derechos reservados.</p>
   </footer>
 
   <script src="app.js"></script>
 </body>
 </html>
-
 
 
 
