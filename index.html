@@ -5,16 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>JULI CHAVEZ - Fotografía</title>
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Poppins&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins&display=swap" rel="stylesheet" />
 </head>
 <body>
   <header id="header">
-    <h1 id="logo">JULI CHAVEZ</h1>
-    <p class="sub">fotografía</p>
+    <h1 id="logo">📸 JULI CHAVEZ</h1>
+    <p class="sub">fotografía profesional</p>
   </header>
 
   <main id="content">
-    <section id="albums-container"></section>
+    <section id="albums-container" class="hidden"></section>
 
     <section id="gallery" class="hidden">
       <div id="photo-viewer">
@@ -29,21 +29,25 @@
     </section>
   </main>
 
-  <footer>
+  <footer id="footer">
     <div id="cart">
       <span id="cart-count">0</span> fotos | Total: $<span id="cart-total">0</span>
-      <button id="checkout">Finalizar compra</button>
+      <button id="checkout">🧾 Finalizar compra</button>
     </div>
   </footer>
 
   <div id="checkout-modal" class="hidden">
-    <h3>Fotos seleccionadas</h3>
-    <div id="selected-photos"></div>
-    <button id="clear-cart">Vaciar carrito</button>
-    <a id="whatsapp-link" href="#" target="_blank">Enviar pedido por WhatsApp 📩</a>
+    <div class="modal-content">
+      <h3>🖼️ Tus fotos seleccionadas</h3>
+      <div id="selected-photos"></div>
+      <button id="clear-cart">🗑️ Vaciar carrito</button>
+      <a id="whatsapp-link" href="#" target="_blank">📤 Enviar pedido por WhatsApp</a>
+      <button onclick="document.getElementById('checkout-modal').classList.add('hidden')">❌ Cerrar</button>
+    </div>
   </div>
 
   <script src="app.js"></script>
 </body>
 </html>
+
 
