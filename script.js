@@ -1,27 +1,51 @@
-let albumsData = [];
+let albumsData = [
+  {
+    nombre: "Paisajes Naturales",
+    imagenes: [
+      "https://i.imgur.com/2jMCqQ2.jpg",
+      "https://i.imgur.com/QFDRuAh.jpg",
+      "https://i.imgur.com/8yIIokW.jpg"
+    ]
+  },
+  {
+    nombre: "Atardeceres",
+    imagenes: [
+      "https://i.imgur.com/pwpWaWu.jpg",
+      "https://i.imgur.com/KIPtISY.jpg",
+      "https://i.imgur.com/2jMCqQ2.jpg"
+    ]
+  },
+  {
+    nombre: "Montañas y Lagos",
+    imagenes: [
+      "https://images.pexels.com/photos/3348748/pexels-photo-3348748.jpeg",
+      "https://images.pexels.com/photos/3812944/pexels-photo-3812944.jpeg",
+      "https://images.pexels.com/photos/2100063/pexels-photo-2100063.jpeg"
+    ]
+  },
+  {
+    nombre: "Cámaras Urbanas",
+    imagenes: [
+      "https://images.pexels.com/photos/4725133/pexels-photo-4725133.jpeg",
+      "https://images.pexels.com/photos/1385472/pexels-photo-1385472.jpeg",
+      "https://images.pexels.com/photos/3228213/pexels-photo-3228213.jpeg"
+    ]
+  }
+];
+
 let currentAlbum = [];
 let currentIndex = 0;
 let cart = [];
 
-fetch('albums.json')
-  .then(res => res.json())
-  .then(data => {
-    albumsData = data;
-    const container = document.getElementById("albums-container");
-    data.forEach((album, index) => {
-      const btn = document.createElement("button");
-      btn.textContent = album.nombre;
-      btn.onclick = () => openAlbum(index);
-      container.appendChild(btn);
-    });
-  })
-  .catch(err => {
-    console.error("Error cargando albums.json:", err);
-  });
+const container = document.getElementById("albums-container");
+albumsData.forEach((album, index) => {
+  const btn = document.createElement("button");
+  btn.textContent = album.nombre;
+  btn.onclick = () => openAlbum(index);
+  container.appendChild(btn);
+});
 
 function openAlbum(index) {
-  if (!albumsData[index] || !albumsData[index].imagenes) return;
-
   currentAlbum = albumsData[index].imagenes;
   currentIndex = 0;
   document.getElementById("gallery").classList.remove("hidden");
@@ -34,13 +58,11 @@ function updateLargePhoto() {
 }
 
 document.getElementById("next").onclick = () => {
-  if (currentAlbum.length === 0) return;
   currentIndex = (currentIndex + 1) % currentAlbum.length;
   updateLargePhoto();
 };
 
 document.getElementById("prev").onclick = () => {
-  if (currentAlbum.length === 0) return;
   currentIndex = (currentIndex - 1 + currentAlbum.length) % currentAlbum.length;
   updateLargePhoto();
 };
@@ -93,4 +115,5 @@ window.addEventListener("load", () => {
     document.getElementById("header").classList.add("small");
   }, 2500);
 });
+
 
