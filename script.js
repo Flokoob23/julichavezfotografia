@@ -1,9 +1,11 @@
+const scriptURL = "https://script.google.com/macros/s/AKfycbyHIeraA2lk9cooKquvU7mEZ3ufVF0l5BLf6DYY04BFhrxLEb2QlHUL_va7OWVXklED/exec";
+
 let albumsData = [];
 let currentAlbum = [];
 let currentIndex = 0;
 let cart = [];
 
-fetch('albums.json')
+fetch(scriptURL)
   .then(res => res.json())
   .then(data => {
     albumsData = data;
@@ -75,14 +77,15 @@ document.getElementById("checkout").onclick = () => {
     container.appendChild(img);
   });
   const msg = `HOLA QUIERO COMPRAR LAS SIGUIENTES FOTOS:\n${cart.join('\n')}`;
-  const wspURL = `https://wa.me/543584328924?text=${encodeURIComponent(msg)}`;
+  const wspURL = `https://wa.me/549XXXXXXXXXX?text=${encodeURIComponent(msg)}`;
   document.getElementById("whatsapp-link").href = wspURL;
   modal.classList.remove("hidden");
 };
 
-// Animación del logo
+// Logo animación
 window.addEventListener("load", () => {
   setTimeout(() => {
     document.getElementById("header").classList.add("small");
   }, 2500);
 });
+
