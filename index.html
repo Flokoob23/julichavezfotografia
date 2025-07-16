@@ -8,46 +8,50 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins&display=swap" rel="stylesheet" />
 </head>
 <body>
+  <!-- Encabezado inicial -->
   <header id="header">
     <h1 id="logo">📸 JULI CHAVEZ</h1>
     <p class="sub">fotografía profesional</p>
   </header>
 
-  <main id="content">
+  <!-- Álbumes -->
+  <main>
     <section id="albums-container" class="hidden"></section>
-
-    <section id="gallery" class="hidden">
-      <div id="photo-viewer">
-        <img id="photo-large" src="" alt="Foto grande" />
-        <div class="nav">
-          <button id="prev">⟨</button>
-          <button id="next">⟩</button>
-        </div>
-        <button id="add-cart">Agregar al carrito 🛒</button>
-      </div>
-      <div id="thumbnails"></div>
-    </section>
   </main>
 
-  <footer id="footer">
-    <div id="cart">
-      <span id="cart-count">0</span> fotos | Total: $<span id="cart-total">0</span>
-      <button id="checkout">🧾 Finalizar compra</button>
+  <!-- Modal de galería -->
+  <div id="photo-modal" class="modal hidden">
+    <div class="modal-content">
+      <button class="close-modal">❌</button>
+      <img id="modal-image" src="" alt="Foto grande" />
+      <div class="modal-nav">
+        <button id="prev">⟨</button>
+        <button id="next">⟩</button>
+      </div>
+      <button id="add-cart">Agregar al carrito 🛒</button>
     </div>
-  </footer>
+  </div>
 
-  <div id="checkout-modal" class="hidden">
+  <!-- Modal de checkout -->
+  <div id="checkout-modal" class="modal hidden">
     <div class="modal-content">
       <h3>🖼️ Tus fotos seleccionadas</h3>
       <div id="selected-photos"></div>
       <button id="clear-cart">🗑️ Vaciar carrito</button>
-      <a id="whatsapp-link" href="#" target="_blank">📤 Enviar pedido por WhatsApp</a>
-      <button onclick="document.getElementById('checkout-modal').classList.add('hidden')">❌ Cerrar</button>
+      <a id="whatsapp-link" href=\"#\" target=\"_blank\">📤 Enviar pedido por WhatsApp</a>
+      <button class="close-modal">❌ Cerrar</button>
     </div>
   </div>
+
+  <!-- Carrito fijo abajo -->
+  <footer id="cart-footer" class="hidden">
+    <span id="cart-count">0</span> fotos | Total: $<span id="cart-total">0</span>
+    <button id="checkout">🧾 Finalizar compra</button>
+  </footer>
 
   <script src="app.js"></script>
 </body>
 </html>
+
 
 
