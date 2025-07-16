@@ -1,4 +1,4 @@
-/* Fuentes */
+/* Reset y fuentes */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
@@ -7,7 +7,53 @@ body {
   overflow-x: hidden;
 }
 
-/* Header en esquina superior derecha vertical */
+.hidden {
+  display: none !important;
+}
+
+/* Intro de bienvenida */
+#intro {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: #fdf2f8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1500;
+  animation: fadeOut 2s ease 2.5s forwards;
+}
+
+#intro h1,
+#intro p {
+  margin: 0;
+  text-align: center;
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+.fade-in.delay {
+  animation-delay: 0.6s;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Header */
 header {
   position: fixed;
   top: 10px;
@@ -72,7 +118,7 @@ header {
 #photo-grid {
   margin: 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 15px;
 }
 
@@ -83,11 +129,12 @@ header {
   cursor: pointer;
   border-radius: 10px;
   border: 3px solid transparent;
-  transition: border-color 0.3s ease;
+  transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
 #photo-grid img:hover {
   border-color: #e6007e;
+  transform: scale(1.05);
 }
 
 /* Modal general */
@@ -97,7 +144,7 @@ header {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.75);
+  background: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -180,18 +227,29 @@ header {
   background: #b00068;
 }
 
-/* Cuadrícula fotos seleccionadas en checkout */
+/* Inputs en checkout */
+#checkout-modal input {
+  display: block;
+  width: 100%;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+}
+
+/* Cuadrícula fotos seleccionadas */
 #selected-photos.grid-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(90px,1fr));
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
   gap: 12px;
   margin-bottom: 15px;
   max-height: 300px;
   overflow-y: auto;
   text-align: center;
+  counter-reset: item;
 }
 
-/* Cada foto con borde rosa y numeración */
 #selected-photos.grid-list img {
   width: 90px;
   height: 90px;
@@ -199,22 +257,6 @@ header {
   border-radius: 8px;
   border: 3px solid #e6007e;
   position: relative;
-  user-select: none;
-}
-
-/* Numeración en la esquina superior izquierda */
-#selected-photos.grid-list img::before {
-  content: counter(item) "";
-  counter-increment: item;
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  background: #e6007ecc;
-  color: white;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 8px;
-  font-size: 0.8em;
   user-select: none;
 }
 
@@ -251,11 +293,6 @@ header {
   background: #b00068;
 }
 
-/* Reset contador para numeración en fotos seleccionadas */
-#selected-photos.grid-list {
-  counter-reset: item;
-}
-
 /* Responsive */
 @media screen and (max-width: 700px) {
   #albums-container button {
@@ -283,11 +320,11 @@ header {
   }
 
   #photo-grid {
-    grid-template-columns: repeat(auto-fit,minmax(120px,1fr));
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
 
   #selected-photos.grid-list {
-    grid-template-columns: repeat(auto-fill,minmax(70px,1fr));
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
   }
 }
 
