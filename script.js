@@ -14,9 +14,14 @@ fetch('albums.json')
       btn.onclick = () => openAlbum(index);
       container.appendChild(btn);
     });
+  })
+  .catch(err => {
+    console.error("Error cargando albums.json:", err);
   });
 
 function openAlbum(index) {
+  if (!albumsData[index] || !albumsData[index].imagenes) return;
+
   currentAlbum = albumsData[index].imagenes;
   currentIndex = 0;
   document.getElementById("gallery").classList.remove("hidden");
@@ -29,11 +34,13 @@ function updateLargePhoto() {
 }
 
 document.getElementById("next").onclick = () => {
+  if (currentAlbum.length === 0) return;
   currentIndex = (currentIndex + 1) % currentAlbum.length;
   updateLargePhoto();
 };
 
 document.getElementById("prev").onclick = () => {
+  if (currentAlbum.length === 0) return;
   currentIndex = (currentIndex - 1 + currentAlbum.length) % currentAlbum.length;
   updateLargePhoto();
 };
@@ -74,6 +81,7 @@ document.getElementById("checkout").onclick = () => {
     img.src = photo;
     container.appendChild(img);
   });
+
   const msg = `HOLA QUIERO COMPRAR LAS SIGUIENTES FOTOS:\n${cart.join('\n')}`;
   const wspURL = `https://wa.me/549XXXXXXXXXX?text=${encodeURIComponent(msg)}`;
   document.getElementById("whatsapp-link").href = wspURL;
