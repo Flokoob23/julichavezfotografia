@@ -1,11 +1,9 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycbyHIeraA2lk9cooKquvU7mEZ3ufVF0l5BLf6DYY04BFhrxLEb2QlHUL_va7OWVXklED/exec";
-
 let albumsData = [];
 let currentAlbum = [];
 let currentIndex = 0;
 let cart = [];
 
-fetch(scriptURL)
+fetch('albums.json')
   .then(res => res.json())
   .then(data => {
     albumsData = data;
