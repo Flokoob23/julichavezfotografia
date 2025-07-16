@@ -3,36 +3,15 @@ const precio = 1500;
 
 let eventos = {};
 let seleccionadas = [];
-let eventoActual = "";
-let fotoActualIndex = 0;
 
 window.onload = () => {
-  const titulo = document.getElementById('titulo-principal');
-
-  // Al iniciar, el título está centrado y visible
-  // Después de 2.5s, mover el título arriba y achicarlo con animación
-  setTimeout(() => {
-    titulo.classList.add('mover-arriba');
-  }, 100);
-
-  // Después de la animación (2s), ocultar título y mostrar eventos
-  setTimeout(() => {
-    titulo.style.display = 'none'; // ocultar título al final
-    document.getElementById('selector-eventos').classList.remove('oculto');
-    cargarDatos();
-  }, 2100);
+  cargarDatos();
 
   document.getElementById('finalizar-compra').onclick = mostrarResumen;
   document.getElementById('confirmar-compra').onclick = enviarWhatsApp;
   document.getElementById('cerrar-compra').onclick = () => {
     document.getElementById('modal-compra').classList.add('oculto');
   };
-
-  // Modal visor botones
-  document.getElementById('cerrar-visor').onclick = cerrarVisor;
-  document.getElementById('prev-foto').onclick = () => cambiarFoto(-1);
-  document.getElementById('next-foto').onclick = () => cambiarFoto(1);
-  document.getElementById('toggle-carrito').onclick = toggleFotoEnVisor;
 };
 
 function cargarDatos() {
@@ -40,102 +19,66 @@ function cargarDatos() {
     .then(res => res.json())
     .then(data => {
       eventos = data;
-      cargarEventos();
+      mostrarEventos();
     })
-    .catch(() => alert("Error cargando datos de álbumes"));
+    .catch(() => alert('Error al cargar los álbumes'));
 }
 
-function cargarEventos() {
+function mostrarEventos() {
   const contenedor = document.getElementById('botones-eventos');
   contenedor.innerHTML = '';
-  Object.keys(eventos).forEach(nombre => {
+  Object.keys(eventos).forEach(evento => {
     const btn = document.createElement('button');
-    btn.textContent = nombre;
-    btn.onclick = () => mostrarFotos(nombre);
+    btn.textContent = evento;
+    btn.onclick = () => mostrarFotos(evento);
     contenedor.appendChild(btn);
   });
 }
 
 function mostrarFotos(evento) {
-  eventoActual = evento;
   seleccionadas = [];
   actualizarResumen();
 
-  document.getElementById('galeria').classList.remove('oculto');
   const contenedor = document.getElementById('contenedor-fotos');
   contenedor.innerHTML = '';
 
-  eventos[evento].forEach((foto, index) => {
-    const url = foto.url;
+  eventos[evento].forEach(foto => {
     const div = document.createElement('div');
     div.classList.add('foto');
-    div.onclick = () => abrirVisor(index);
+    div.onclick = () => toggleSeleccion(foto, div);
 
     const img = document.createElement('img');
-    img.src = url;
+    img.src = foto.url;
     img.alt = foto.name;
 
     div.appendChild(img);
     contenedor.appendChild(div);
   });
 
-  // Scroll arriba para que se vea la galería al abrir
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('fotos').classList.remove('oculto');
+  document.getElementById('carrito').classList.remove('oculto');
+  document.getElementById('eventos').classList.add('oculto');
 }
 
-function abrirVisor(index) {
-  fotoActualIndex = index;
-  actualizarVisor();
-  document.getElementById('modal-visor').classList.remove('oculto');
-}
-
-function actualizarVisor() {
-  const foto = eventos[eventoActual][fotoActualIndex];
-  const url = foto.url;
-  const nombre = foto.name;
-  const imgVisor = document.getElementById('img-visor');
-  imgVisor.src = url;
-  imgVisor.alt = nombre;
-
-  const btnToggle = document.getElementById('toggle-carrito');
-  if (seleccionadas.some(f => f.name === nombre)) {
-    btnToggle.textContent = 'Quitar del carrito';
-    btnToggle.style.backgroundColor = '#e91e63';
-  } else {
-    btnToggle.textContent = 'Agregar al carrito';
-    btnToggle.style.backgroundColor = '#ff69b4';
-  }
-}
-
-function cerrarVisor() {
-  document.getElementById('modal-visor').classList.add('oculto');
-}
-
-function cambiarFoto(delta) {
-  const total = eventos[eventoActual].length;
-  fotoActualIndex = (fotoActualIndex + delta + total) % total;
-  actualizarVisor();
-}
-
-function toggleFotoEnVisor() {
-  const foto = eventos[eventoActual][fotoActualIndex];
-  const indexEnCarrito = seleccionadas.findIndex(f => f.name === foto.name);
-  if (indexEnCarrito >= 0) {
-    seleccionadas.splice(indexEnCarrito, 1);
+function toggleSeleccion(foto, div) {
+  const index = seleccionadas.findIndex(f => f.name === foto.name);
+  if(index >= 0){
+    seleccionadas.splice(index,1);
+    div.classList.remove('seleccionada');
   } else {
     seleccionadas.push(foto);
+    div.classList.add('seleccionada');
   }
   actualizarResumen();
-  actualizarVisor();
 }
 
-function actualizarResumen() {
+function actualizarResumen(){
   const resumen = document.getElementById('resumen-carrito');
   resumen.textContent = `🛒 ${seleccionadas.length} fotos seleccionadas – $${seleccionadas.length * precio}`;
 }
 
-function mostrarResumen() {
-  if (seleccionadas.length === 0) {
+function mostrarResumen(){
+  if(seleccionadas.length === 0){
     alert("Selecciona al menos una foto");
     return;
   }
@@ -150,12 +93,12 @@ function mostrarResumen() {
   document.getElementById('modal-compra').classList.remove('oculto');
 }
 
-function enviarWhatsApp() {
+function enviarWhatsApp(){
   const total = seleccionadas.length * precio;
   const nombresFotos = seleccionadas.map(f => f.name).join('\n');
-  const mensaje = `Hola! Quiero encargar estas fotos del evento *${eventoActual}*:\n\n${nombresFotos}\n\nTotal: $${total}`;
+  const mensaje = `Hola! Quiero encargar estas fotos:\n\n${nombresFotos}\n\nTotal: $${total}`;
   const url = `https://wa.me/543584328924?text=${encodeURIComponent(mensaje)}`;
-  window.open(url, '_blank');
+  window.open(url,'_blank');
 }
 
 
