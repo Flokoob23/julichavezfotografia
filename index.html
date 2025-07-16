@@ -5,33 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>JULI CHÁVEZ - Fotografía</title>
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;500&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <header id="encabezado">
-    <div id="titulo-principal">
-      <h1>JULI CHÁVEZ</h1>
-      <h2>fotografía</h2>
-    </div>
+  <header>
+    <h1>JULI CHÁVEZ</h1>
+    <h2>fotografía</h2>
   </header>
 
   <main>
-    <!-- Aquí los álbumes aparecen solo después de que el título desaparezca -->
-    <section id="selector-eventos" class="oculto">
-      <h2>ELIGE TU EVENTO</h2>
+    <section id="eventos">
+      <h2>Elige tu álbum</h2>
       <div id="botones-eventos"></div>
     </section>
 
-    <section id="galeria" class="oculto">
+    <section id="fotos" class="oculto">
       <div id="contenedor-fotos"></div>
-      <div class="carrito">
-        <span id="resumen-carrito">🛒 0 fotos seleccionadas – $0</span>
-        <button id="finalizar-compra">Finalizar compra</button>
-      </div>
+    </section>
+
+    <section id="carrito" class="oculto">
+      <span id="resumen-carrito">🛒 0 fotos seleccionadas – $0</span>
+      <button id="finalizar-compra">Finalizar compra</button>
     </section>
   </main>
 
-  <!-- Modal resumen compra -->
   <div id="modal-compra" class="modal oculto">
     <div class="modal-contenido">
       <h3>Resumen de compra</h3>
@@ -42,21 +38,7 @@
     </div>
   </div>
 
-  <!-- Modal visor grande -->
-  <div id="modal-visor" class="modal oculto">
-    <div class="modal-visor-contenido">
-      <button id="cerrar-visor" class="close-btn">&times;</button>
-      <img id="img-visor" src="" alt="" />
-      <div class="visor-controls">
-        <button id="prev-foto">&lt;</button>
-        <button id="toggle-carrito"></button>
-        <button id="next-foto">&gt;</button>
-      </div>
-    </div>
-  </div>
-
   <script src="script.js"></script>
 </body>
 </html>
-
 
