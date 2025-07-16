@@ -22,10 +22,13 @@ body {
   justify-content: center;
   text-align: center;
   transition: all 1s ease;
+  position: relative;
 }
 
 #titulo-principal {
-  transition: all 1.5s ease;
+  transition: all 2s ease;
+  position: relative;
+  z-index: 10;
 }
 
 #titulo-principal.mover-arriba {
@@ -33,9 +36,9 @@ body {
   top: 10px;
   right: 20px;
   transform-origin: top right;
-  animation: moverYachicar 1.5s forwards;
+  animation: moverYachicar 2s forwards;
   text-align: right;
-  z-index: 999;
+  z-index: 1000;
 }
 
 @keyframes moverYachicar {
@@ -67,6 +70,10 @@ main {
 
 .oculto {
   display: none !important;
+}
+
+#selector-eventos {
+  margin-top: 20px;
 }
 
 #botones-eventos button {
