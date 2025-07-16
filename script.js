@@ -9,11 +9,18 @@ let fotoActualIndex = 0;
 window.onload = () => {
   const titulo = document.getElementById('titulo-principal');
 
+  // Al iniciar, el título está centrado y visible
+  // Después de 2.5s, mover el título arriba y achicarlo con animación
   setTimeout(() => {
     titulo.classList.add('mover-arriba');
+  }, 100);
+
+  // Después de la animación (2s), ocultar título y mostrar eventos
+  setTimeout(() => {
+    titulo.style.display = 'none'; // ocultar título al final
     document.getElementById('selector-eventos').classList.remove('oculto');
     cargarDatos();
-  }, 2500);
+  }, 2100);
 
   document.getElementById('finalizar-compra').onclick = mostrarResumen;
   document.getElementById('confirmar-compra').onclick = enviarWhatsApp;
@@ -71,6 +78,9 @@ function mostrarFotos(evento) {
     div.appendChild(img);
     contenedor.appendChild(div);
   });
+
+  // Scroll arriba para que se vea la galería al abrir
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function abrirVisor(index) {
