@@ -1,330 +1,77 @@
-/* Reset y fuentes */
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background-color: #fdf2f8;
-  color: #333;
-  overflow-x: hidden;
+@import url('https://fonts.googleapis.com/css?family=Montserrat:600|Inter:400,600&display=swap');
+:root {
+  --primary: #e6007e;
+  --bg: #fdf2f8;
+  --fg: #333;
+  --bg-dark: #1a1a1a;
+  --fg-dark: #eee;
 }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0;}
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--fg); min-height:100vh; }
+.hidden { display:none!important; }
 
-.hidden {
-  display: none !important;
-}
+/* Dark mode */
+body.dark { background: var(--bg-dark); color: var(--fg-dark); }
+body.dark header, body.dark footer { background: var(--bg-dark); color: var(--fg-dark); }
 
-/* Intro de bienvenida */
-#intro {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background-color: #fdf2f8;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1500;
-  animation: fadeOut 2s ease 2.5s forwards;
+/* Intro */
+#intro { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:2000;
+  animation: introFade 3s forwards;
 }
-
-#intro h1,
-#intro p {
-  margin: 0;
-  text-align: center;
-}
-
-.fade-in {
-  opacity: 0;
-  animation: fadeIn 1s forwards;
-}
-
-.fade-in.delay {
-  animation-delay: 0.6s;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeOut {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
+#intro-title { font-family:'Montserrat'; font-size:3rem; opacity:0; animation:fadeIn 1s forwards; }
+#intro-sub { font-size:1.2rem; opacity:0; animation:fadeIn 1s 0.5s forwards; }
+@keyframes fadeIn { to {opacity:1;} }
+@keyframes introFade { to {opacity:0; visibility:hidden;} }
 
 /* Header */
-header {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  background: transparent;
-  z-index: 1100;
-  user-select: none;
-}
+header { position:fixed; top:0; left:0; right:0; height:60px; background:var(--bg); display:flex; align-items:center; justify-content:space-between; padding:0.5rem 1rem; z-index:1500; border-bottom:1px solid #ddd;}
+#logo { font-family:'Montserrat'; font-size:1.4rem; color:var(--primary); }
+nav { display:flex; align-items:center; gap:0.5rem;}
+#search-album { padding:0.3rem; border:1px solid #ccc; border-radius:4px; }
+#toggle-theme { background:none; border:none; cursor:pointer; font-size:1.2rem; }
+#cart-btn { background:none; border:none; font-size:1.2rem; cursor:pointer; }
 
-#logo {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  font-size: 1.4em;
-  margin: 0;
-  color: #e6007e;
-}
+/* Main content */
+main { padding-top:70px; }
+#albums-container { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; padding:1rem; }
+.album-card { position:relative; overflow:hidden; border-radius:10px; cursor:pointer; transition:transform 0.3s; }
+.album-card img { display:block; width:100%; height:150px; object-fit:cover; filter:brightness(0.9); transition:transform 0.3s; }
+.album-card:hover { transform:scale(1.03); }
+.album-card:hover img { transform:scale(1.05); }
+.album-card span { position:absolute; bottom:10px; left:10px; color:white; font-weight:600; text-shadow:0 0 6px rgba(0,0,0,0.7); }
 
-.sub {
-  font-size: 0.85em;
-  color: #e6007ecc;
-  margin: 0;
-}
+/* Photo grid */
+#photo-grid { padding:1rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px;}
+#photo-grid img { width:100%; height:150px; object-fit:cover; border-radius:8px; cursor:pointer; transition:transform 0.3s; }
+#photo-grid img:hover { transform:scale(1.05); }
 
-/* Álbumes */
-#albums-container {
-  margin: 80px 20px 20px 20px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 1s ease;
-}
+/* Modals */
+.modal { position:fixed; inset:0; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:2000; padding:1rem;}
+.modal-close { position:absolute; top:15px; right:20px; background:var(--primary); color:white; border:none; border-radius:50%; width:32px; height:32px; cursor:pointer; }
+#photo-modal img { max-width:90vw; max-height:80vh; border-radius:8px; }
+.modal-controls { position:absolute; top:50%; transform:translateY(-50%); display:flex; width:100%; justify-content:space-between; padding:0 2rem; }
+.modal-controls button { background:rgba(255,255,255,0.7); border:none; font-size:2rem; padding:0.2rem 0.5rem; border-radius:50%; cursor:pointer; }
+#add-cart { position:absolute; bottom:20px; background:var(--primary); border:none; color:white; padding:0.7rem 1.2rem; border-radius:5px; cursor:pointer; }
 
-#albums-container.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+/* Cart modal */
+#cart-modal { width:90%; max-width:500px; flex-direction:column; background:var(--bg); color:var(--fg); border-radius:8px; padding:1rem; max-height:80vh; overflow-y:auto;}
+#cart-items { margin:1rem 0; }
+.cart-item { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.7rem;}
+.cart-item img { width:60px; height:60px; object-fit:cover; border-radius:6px;}
+#cart-summary { display:flex; justify-content:space-between; font-weight:600; margin-bottom:1rem;}
+#checkout-section { display:flex; flex-direction:column; gap:0.5rem;}
+#checkout-section input { padding:0.5rem; border:1px solid #ccc; border-radius:4px;}
+#checkout-btn, #clear-btn { padding:0.6rem; border:none; border-radius:4px; cursor:pointer;}
+#checkout-btn { background:var(--primary); color:white; }
+#clear-btn { background:#ccc; }
 
-#albums-container button {
-  background: #fff;
-  border: 2px solid #e6007e;
-  color: #e6007e;
-  padding: 15px 30px;
-  border-radius: 30px;
-  font-size: 1.1em;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  min-width: 180px;
-}
-
-#albums-container button:hover {
-  background: #e6007e;
-  color: white;
-}
-
-/* Cuadrícula fotos álbum */
-#photo-grid {
-  margin: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
-}
-
-#photo-grid img {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-  cursor: pointer;
-  border-radius: 10px;
-  border: 3px solid transparent;
-  transition: transform 0.3s ease, border-color 0.3s ease;
-}
-
-#photo-grid img:hover {
-  border-color: #e6007e;
-  transform: scale(1.05);
-}
-
-/* Modal general */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1200;
-}
-
-.modal.hidden {
-  display: none;
-}
-
-.modal-content {
-  background: white;
-  padding: 25px 30px;
-  max-width: 650px;
-  width: 90%;
-  border-radius: 15px;
-  text-align: center;
-  position: relative;
-}
-
-.modal-content img {
-  max-width: 100%;
-  max-height: 60vh;
-  margin-bottom: 15px;
-  border: 4px solid #e6007e;
-  border-radius: 12px;
-  user-select: none;
-}
-
-/* Navegación modal */
-.modal-nav {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-bottom: 15px;
-}
-
-.modal-nav button,
-#add-cart,
-#clear-cart,
-#checkout {
-  background: #e6007e;
-  color: white;
-  border: none;
-  padding: 12px 22px;
-  font-size: 1.1em;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-#clear-cart {
-  background: #aaa;
-  margin-right: 10px;
-}
-
-.modal-nav button:hover,
-#add-cart:hover,
-#clear-cart:hover,
-#checkout:hover {
-  background: #b00068;
-}
-
-.close-modal {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: #e6007e;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.close-modal:hover {
-  background: #b00068;
-}
-
-/* Inputs en checkout */
-#checkout-modal input {
-  display: block;
-  width: 100%;
-  margin: 10px auto;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1em;
-}
-
-/* Cuadrícula fotos seleccionadas */
-#selected-photos.grid-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-  gap: 12px;
-  margin-bottom: 15px;
-  max-height: 300px;
-  overflow-y: auto;
-  text-align: center;
-  counter-reset: item;
-}
-
-#selected-photos.grid-list img {
-  width: 90px;
-  height: 90px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 3px solid #e6007e;
-  position: relative;
-  user-select: none;
-}
-
-/* Footer carrito */
-#cart-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: white;
-  border-top: 3px solid #e6007e;
-  padding: 12px 20px;
-  font-size: 1.1em;
-  text-align: center;
-  z-index: 1150;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  font-weight: 600;
-}
-
-#cart-footer button {
-  background: #e6007e;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 25px;
-  font-size: 1.1em;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-#cart-footer button:hover {
-  background: #b00068;
-}
+/* Footer */
+footer { text-align:center; padding:1rem; font-size:0.9rem; background:var(--bg); }
 
 /* Responsive */
-@media screen and (max-width: 700px) {
-  #albums-container button {
-    width: 100%;
-    max-width: 280px;
-  }
-
-  #cart-footer {
-    flex-direction: column;
-    font-size: 1em;
-    padding: 10px;
-  }
-
-  #cart-footer button {
-    width: 100%;
-    max-width: 300px;
-  }
-
-  .modal-content {
-    padding: 20px 15px;
-  }
-
-  .modal-content img {
-    max-height: 40vh;
-  }
-
-  #photo-grid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  }
-
-  #selected-photos.grid-list {
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-  }
+@media (max-width:600px){
+  #intro-title { font-size:2.5rem;}
+  #intro-sub { font-size:1rem;}
+  #photo-modal img { max-width:100%; max-height:60vh;}
 }
 
