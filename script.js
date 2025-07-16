@@ -80,9 +80,9 @@ document.getElementById("checkout").onclick = () => {
   modal.classList.remove("hidden");
 };
 
-// Logo animación
 window.addEventListener("load", () => {
   setTimeout(() => {
     document.getElementById("header").classList.add("small");
   }, 2500);
 });
+
