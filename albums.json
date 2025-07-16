@@ -1,0 +1,31 @@
+[
+  {
+    "nombre": "Paisajes Naturales",
+    "imagenes": [
+      "https://i.imgur.com/2jMCqQ2.jpg",
+      "https://i.imgur.com/QFDRuAh.jpg",
+      "https://i.imgur.com/8yIIokW.jpg"
+    ]
+  },
+  {
+    "nombre": "Atardeceres",
+    "imagenes": [
+      "https://i.imgur.com/pwpWaWu.jpg",
+      "https://i.imgur.com/KIPtISY.jpg",
+      "https://i.imgur.com/2jMCqQ2.jpg"
+    ]
+  },
+  {
+    "nombre": "Montañas y Lagos",
+    "imagenes": [
+      "https://images.pexels.com/photos/3348748/pexels-photo-3348748.jpeg",
+      "https://images.pexels.com/photos/3812944/pexels-photo-3812944.jpeg",
+      "https://images.pexels.com/photos/2100063/pexels-photo-2100063.jpeg"
+    ]
+  },
+  {
+    "nombre": "Cámaras Urbanas",
+    "imagenes": [
+      "https://images.pexels.com/photos/4725133/pexels-photo-4725133.jpeg",
+      "https://images.pexels.com/photos/1385472/pexels-photo-1385472.jpeg",
+      "https://images.pexels.com/photos/3228213/pexels-photo-3228213
