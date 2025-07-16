@@ -2,43 +2,46 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>JULI CHÁVEZ - Fotografía</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JULI CHAVEZ - Fotografía</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Poppins&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <h1>JULI CHÁVEZ</h1>
-    <h2>fotografía</h2>
+  <header id="header">
+    <h1 id="logo">JULI CHAVEZ</h1>
+    <p class="sub">fotografía</p>
   </header>
 
-  <main>
-    <section id="eventos">
-      <h2>Elige tu álbum</h2>
-      <div id="botones-eventos"></div>
-    </section>
-
-    <section id="fotos" class="oculto">
-      <div id="contenedor-fotos"></div>
-    </section>
-
-    <section id="carrito" class="oculto">
-      <span id="resumen-carrito">🛒 0 fotos seleccionadas – $0</span>
-      <button id="finalizar-compra">Finalizar compra</button>
+  <main id="content">
+    <section id="albums-container"></section>
+    <section id="gallery" class="hidden">
+      <div id="photo-viewer">
+        <img id="photo-large" src="" alt="">
+        <div class="nav">
+          <button id="prev">⟨</button>
+          <button id="next">⟩</button>
+        </div>
+        <button id="add-cart">Agregar al carrito 🛒</button>
+      </div>
+      <div id="thumbnails"></div>
     </section>
   </main>
 
-  <div id="modal-compra" class="modal oculto">
-    <div class="modal-contenido">
-      <h3>Resumen de compra</h3>
-      <ul id="lista-fotos"></ul>
-      <p>Total: $<span id="total"></span></p>
-      <button id="confirmar-compra">Confirmar compra</button>
-      <button id="cerrar-compra">Cerrar</button>
+  <footer>
+    <div id="cart">
+      <span id="cart-count">0</span> fotos | Total: $<span id="cart-total">0</span>
+      <button id="checkout">Finalizar compra</button>
     </div>
+  </footer>
+
+  <div id="checkout-modal" class="hidden">
+    <h3>Fotos seleccionadas</h3>
+    <div id="selected-photos"></div>
+    <a id="whatsapp-link" href="#" target="_blank">Enviar pedido por WhatsApp 📩</a>
   </div>
 
-  <script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
-
