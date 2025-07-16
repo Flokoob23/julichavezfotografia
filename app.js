@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const whatsappNumber = "3584328924"; // número sin 0 ni +, para wa.me
+  const whatsappNumber = "3584328924";
   const pricePerPhoto = 1500;
 
   const albumsData = [
@@ -37,11 +37,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   ];
 
-  let cart = [];
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
   let currentAlbum = [];
   let currentIndex = 0;
 
-  // DOM references
+  // DOM Elements
+  const intro = document.getElementById("intro");
   const header = document.getElementById("header");
   const albumsContainer = document.getElementById("albums-container");
   const photoGrid = document.getElementById("photo-grid");
@@ -51,15 +52,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectedPhotosContainer = document.getElementById("selected-photos");
   const whatsappLink = document.getElementById("whatsapp-link");
 
-  // Inicial: animación header y mostrar álbumes
+  // Ocultar intro y mostrar álbumes
   setTimeout(() => {
-    header.classList.add("small");
+    intro.classList.add("hidden");
     albumsContainer.classList.remove("hidden");
     albumsContainer.classList.add("visible");
     cartFooter.classList.remove("hidden");
-  }, 2500);
+    updateCart();
+  }, 3000);
 
-  // Crear botones de álbumes
+  // Cargar álbumes
   albumsData.forEach((album) => {
     const btn = document.createElement("button");
     btn.textContent = album.nombre;
@@ -67,7 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
     albumsContainer.appendChild(btn);
   });
 
-  // Abrir álbum: muestra cuadrícula de fotos
   function openAlbum(imagenes) {
     currentAlbum = imagenes;
     currentIndex = 0;
@@ -79,26 +80,24 @@ document.addEventListener("DOMContentLoaded", () => {
       const img = document.createElement("img");
       img.src = src;
       img.alt = `Foto ${i + 1}`;
-      img.addEventListener("click", () => {
-        openPhotoModal(i);
-      });
+      img.addEventListener("click", () => openPhotoModal(i));
       photoGrid.appendChild(img);
     });
+
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  // Abrir modal con foto seleccionada
   function openPhotoModal(index) {
     currentIndex = index;
     modalImage.src = currentAlbum[currentIndex];
     photoModal.classList.remove("hidden");
   }
 
-  // Cerrar modales (photo-modal y checkout-modal)
   document.querySelectorAll(".close-modal").forEach((btn) =>
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".modal").forEach((modal) => modal.classList.add("hidden"));
-      // Si se cierra modal foto, mostrar cuadrícula de fotos
+      document.querySelectorAll(".modal").forEach((modal) =>
+        modal.classList.add("hidden")
+      );
       if (!albumsContainer.classList.contains("hidden")) {
         photoGrid.classList.add("hidden");
       } else {
@@ -107,7 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   );
 
-  // Navegación modal foto
   document.getElementById("next").addEventListener("click", () => {
     currentIndex = (currentIndex + 1) % currentAlbum.length;
     modalImage.src = currentAlbum[currentIndex];
@@ -118,22 +116,20 @@ document.addEventListener("DOMContentLoaded", () => {
     modalImage.src = currentAlbum[currentIndex];
   });
 
-  // Agregar foto al carrito
   document.getElementById("add-cart").addEventListener("click", () => {
     const photo = currentAlbum[currentIndex];
     if (!cart.includes(photo)) {
       cart.push(photo);
+      localStorage.setItem("cart", JSON.stringify(cart));
       updateCart();
     }
   });
 
-  // Actualizar carrito en footer
   function updateCart() {
     document.getElementById("cart-count").textContent = cart.length;
     document.getElementById("cart-total").textContent = cart.length * pricePerPhoto;
   }
 
-  // Abrir modal checkout
   document.getElementById("checkout").addEventListener("click", () => {
     if (cart.length === 0) return alert("No hay fotos en el carrito.");
 
@@ -146,23 +142,41 @@ document.addEventListener("DOMContentLoaded", () => {
       selectedPhotosContainer.appendChild(img);
     });
 
-    // Crear texto enumerado para WhatsApp
-    let listaFotos = cart
-      .map((url, i) => `${i + 1}. ${url}`)
-      .join("\n");
+    // Inputs dinámicos
+    if (!document.getElementById("nombre")) {
+      const nombreInput = document.createElement("input");
+      nombreInput.type = "text";
+      nombreInput.placeholder = "Tu nombre";
+      nombreInput.id = "nombre";
+      selectedPhotosContainer.after(nombreInput);
+    }
 
+    if (!document.getElementById("correo")) {
+      const correoInput = document.createElement("input");
+      correoInput.type = "email";
+      correoInput.placeholder = "Tu correo (opcional)";
+      correoInput.id = "correo";
+      document.getElementById("nombre").after(correoInput);
+    }
+
+    // Crear mensaje para WhatsApp
+    const nombre = document.getElementById("nombre").value || "Cliente";
+    const correo = document.getElementById("correo").value || "";
+
+    const listaFotos = cart.map((url, i) => `${i + 1}. ${url}`).join("\n");
     const total = cart.length * pricePerPhoto;
-    const mensaje = `Hola, quiero comprar las siguientes fotos:\n\n${listaFotos}\n\nTotal a abonar: $${total}`;
+    const mensaje = `Hola, soy ${nombre}, quiero comprar estas fotos:\n\n${listaFotos}\n\nTotal: $${total}\n${correo ? "Correo: " + correo : ""}`;
 
-    whatsappLink.href = `https://wa.me/543584328924?text=${encodeURIComponent(mensaje)}`;
-
+    whatsappLink.href = `https://wa.me/54${whatsappNumber}?text=${encodeURIComponent(mensaje)}`;
     document.getElementById("checkout-modal").classList.remove("hidden");
   });
 
-  // Vaciar carrito
   document.getElementById("clear-cart").addEventListener("click", () => {
-    cart = [];
-    updateCart();
-    selectedPhotosContainer.innerHTML = "";
+    if (confirm("¿Vaciar el carrito? Esta acción no se puede deshacer.")) {
+      cart = [];
+      updateCart();
+      selectedPhotosContainer.innerHTML = "";
+      localStorage.removeItem("cart");
+    }
   });
 });
