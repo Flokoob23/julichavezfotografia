@@ -1,6 +1,5 @@
-window.addEventListener("DOMContentLoaded", () => {
-
-  let albumsData = [
+document.addEventListener("DOMContentLoaded", () => {
+  const albumsData = [
     {
       nombre: "Paisajes Naturales",
       imagenes: [
@@ -39,18 +38,21 @@ window.addEventListener("DOMContentLoaded", () => {
   let currentIndex = 0;
   let cart = [];
 
-  const container = document.getElementById("albums-container");
-  albumsData.forEach((album, index) => {
+  const albumsContainer = document.getElementById("albums-container");
+  const gallery = document.getElementById("gallery");
+
+  // Crear botones de álbumes
+  albumsData.forEach((album, idx) => {
     const btn = document.createElement("button");
     btn.textContent = album.nombre;
-    btn.onclick = () => openAlbum(index);
-    container.appendChild(btn);
+    btn.onclick = () => openAlbum(idx);
+    albumsContainer.appendChild(btn);
   });
 
-  function openAlbum(index) {
-    currentAlbum = albumsData[index].imagenes;
+  function openAlbum(idx) {
+    currentAlbum = albumsData[idx].imagenes;
     currentIndex = 0;
-    document.getElementById("gallery").classList.remove("hidden");
+    gallery.classList.remove("hidden");
     updateLargePhoto();
     renderThumbnails();
   }
@@ -98,17 +100,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("checkout").onclick = () => {
     const modal = document.getElementById("checkout-modal");
-    const container = document.getElementById("selected-photos");
-    container.innerHTML = "";
+    const selContainer = document.getElementById("selected-photos");
+    selContainer.innerHTML = "";
     cart.forEach(photo => {
       const img = document.createElement("img");
       img.src = photo;
-      container.appendChild(img);
+      selContainer.appendChild(img);
     });
-
-    const msg = `HOLA QUIERO COMPRAR LAS SIGUIENTES FOTOS:\n${cart.join('\n')}`;
-    const wspURL = `https://wa.me/549XXXXXXXXXX?text=${encodeURIComponent(msg)}`;
-    document.getElementById("whatsapp-link").href = wspURL;
+    const msg = `HOLA QUIERO COMPRAR LAS SIGUIENTES FOTOS:\n${cart.join("\n")}`;
+    document.getElementById("whatsapp-link").href =
+      "https://wa.me/549XXXXXXXXXX?text=" + encodeURIComponent(msg);
     modal.classList.remove("hidden");
   };
 
@@ -117,7 +118,4 @@ window.addEventListener("DOMContentLoaded", () => {
       document.getElementById("header").classList.add("small");
     }, 2500);
   });
-
 });
-
-
