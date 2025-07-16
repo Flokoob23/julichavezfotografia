@@ -19,42 +19,64 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   ];
 
+  let cart = [];
   let currentAlbum = [];
   let currentIndex = 0;
-  let cart = [];
 
+  const header = document.getElementById("header");
   const albumsContainer = document.getElementById("albums-container");
-  const gallery = document.getElementById("gallery");
+  const photoModal = document.getElementById("photo-modal");
+  const modalImage = document.getElementById("modal-image");
+  const cartFooter = document.getElementById("cart-footer");
 
+  // Animación inicial y mostrar álbumes
+  setTimeout(() => {
+    header.classList.add("small");
+    albumsContainer.classList.remove("hidden");
+    albumsContainer.classList.add("visible");
+    cartFooter.classList.remove("hidden");
+  }, 2500);
+
+  // Generar botones de álbum
   albumsData.forEach((album, idx) => {
     const btn = document.createElement("button");
     btn.textContent = album.nombre;
-    btn.onclick = () => openAlbum(idx);
+    btn.onclick = () => openAlbum(album.imagenes);
     albumsContainer.appendChild(btn);
   });
 
-  function openAlbum(idx) {
-    currentAlbum = albumsData[idx].imagenes;
+  // Abrir álbum
+  function openAlbum(imagenes) {
+    currentAlbum = imagenes;
     currentIndex = 0;
-    gallery.classList.remove("hidden");
-    updateLargePhoto();
-    renderThumbnails();
+    openPhotoModal(currentAlbum[currentIndex]);
   }
 
-  function updateLargePhoto() {
-    document.getElementById("photo-large").src = currentAlbum[currentIndex];
+  // Mostrar modal con imagen
+  function openPhotoModal(src) {
+    modalImage.src = src;
+    photoModal.classList.remove("hidden");
   }
 
+  // Cerrar todos los modales
+  document.querySelectorAll(".close-modal").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll(".modal").forEach(m => m.classList.add("hidden"));
+    };
+  });
+
+  // Navegación
   document.getElementById("next").onclick = () => {
     currentIndex = (currentIndex + 1) % currentAlbum.length;
-    updateLargePhoto();
+    modalImage.src = currentAlbum[currentIndex];
   };
 
   document.getElementById("prev").onclick = () => {
     currentIndex = (currentIndex - 1 + currentAlbum.length) % currentAlbum.length;
-    updateLargePhoto();
+    modalImage.src = currentAlbum[currentIndex];
   };
 
+  // Agregar al carrito
   document.getElementById("add-cart").onclick = () => {
     const photo = currentAlbum[currentIndex];
     if (!cart.includes(photo)) {
@@ -63,44 +85,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  function renderThumbnails() {
-    const thumbs = document.getElementById("thumbnails");
-    thumbs.innerHTML = "";
-    currentAlbum.forEach((src, i) => {
-      const img = document.createElement("img");
-      img.src = src;
-      img.onclick = () => {
-        currentIndex = i;
-        updateLargePhoto();
-      };
-      thumbs.appendChild(img);
-    });
-  }
-
   function updateCart() {
     document.getElementById("cart-count").textContent = cart.length;
     document.getElementById("cart-total").textContent = cart.length * 1500;
   }
 
+  // Checkout
   document.getElementById("checkout").onclick = () => {
     const selContainer = document.getElementById("selected-photos");
     selContainer.innerHTML = "";
     cart.forEach((photo) => {
-      const wrapper = document.createElement("div");
-      wrapper.classList.add("thumb-container");
       const img = document.createElement("img");
       img.src = photo;
-      const remove = document.createElement("button");
-      remove.textContent = "×";
-      remove.classList.add("remove");
-      remove.onclick = () => {
-        cart = cart.filter(p => p !== photo);
-        updateCart();
-        wrapper.remove();
-      };
-      wrapper.appendChild(img);
-      wrapper.appendChild(remove);
-      selContainer.appendChild(wrapper);
+      selContainer.appendChild(img);
     });
 
     const msg = `Hola, quiero comprar las siguientes fotos:\n\n${cart.join("\n")}`;
@@ -108,18 +105,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("checkout-modal").classList.remove("hidden");
   };
 
+  // Vaciar carrito
   document.getElementById("clear-cart").onclick = () => {
     cart = [];
     updateCart();
     document.getElementById("selected-photos").innerHTML = "";
   };
-
-  // Movimiento inicial del header
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      document.getElementById("header").classList.add("small");
-      document.getElementById("albums-container").classList.remove("hidden");
-    }, 2500);
-  });
 });
-
