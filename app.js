@@ -1,37 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const whatsappNumber = "543584328924";
   const albumsData = [
-    {
-      nombre: "Paisajes Naturales",
-      imagenes: [
-        "https://i.imgur.com/2jMCqQ2.jpg",
-        "https://i.imgur.com/QFDRuAh.jpg",
-        "https://i.imgur.com/8yIIokW.jpg"
-      ]
-    },
-    {
-      nombre: "Atardeceres",
-      imagenes: [
-        "https://i.imgur.com/pwpWaWu.jpg",
-        "https://i.imgur.com/KIPtISY.jpg",
-        "https://i.imgur.com/2jMCqQ2.jpg"
-      ]
-    },
-    {
-      nombre: "Montañas y Lagos",
-      imagenes: [
-        "https://images.pexels.com/photos/3348748/pexels-photo-3348748.jpeg",
-        "https://images.pexels.com/photos/3812944/pexels-photo-3812944.jpeg",
-        "https://images.pexels.com/photos/2100063/pexels-photo-2100063.jpeg"
-      ]
-    },
-    {
-      nombre: "Cámaras Urbanas",
-      imagenes: [
-        "https://images.pexels.com/photos/4725133/pexels-photo-4725133.jpeg",
-        "https://images.pexels.com/photos/1385472/pexels-photo-1385472.jpeg",
-        "https://images.pexels.com/photos/3228213/pexels-photo-3228213.jpeg"
-      ]
-    }
+    { nombre: "Paisajes Naturales", imagenes: ["https://i.imgur.com/2jMCqQ2.jpg", "https://i.imgur.com/QFDRuAh.jpg", "https://i.imgur.com/8yIIokW.jpg"] },
+    { nombre: "Atardeceres", imagenes: ["https://i.imgur.com/pwpWaWu.jpg", "https://i.imgur.com/KIPtISY.jpg", "https://i.imgur.com/2jMCqQ2.jpg"] },
+    { nombre: "Montañas y Lagos", imagenes: ["https://images.pexels.com/photos/3348748/pexels-photo-3348748.jpeg", "https://images.pexels.com/photos/3812944/pexels-photo-3812944.jpeg", "https://images.pexels.com/photos/2100063/pexels-photo-2100063.jpeg"] },
+    { nombre: "Cámaras Urbanas", imagenes: ["https://images.pexels.com/photos/4725133/pexels-photo-4725133.jpeg", "https://images.pexels.com/photos/1385472/pexels-photo-1385472.jpeg", "https://images.pexels.com/photos/3228213/pexels-photo-3228213.jpeg"] }
   ];
 
   let currentAlbum = [];
@@ -40,8 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const albumsContainer = document.getElementById("albums-container");
   const gallery = document.getElementById("gallery");
+  const modal = document.getElementById("checkout-modal");
 
-  // Crear botones de álbumes
   albumsData.forEach((album, idx) => {
     const btn = document.createElement("button");
     btn.textContent = album.nombre;
@@ -58,7 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateLargePhoto() {
-    document.getElementById("photo-large").src = currentAlbum[currentIndex];
+    const img = document.getElementById("photo-large");
+    img.src = currentAlbum[currentIndex];
+    img.alt = `Foto ${currentIndex + 1} del álbum`;
   }
 
   document.getElementById("next").onclick = () => {
@@ -75,8 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const photo = currentAlbum[currentIndex];
     if (!cart.includes(photo)) {
       cart.push(photo);
+      alert(`Agregaste: ${photo.split("/").pop()}`);
       updateCart();
-    }
+    } else alert("Esa foto ya está en el carrito.");
   };
 
   function renderThumbnails() {
@@ -85,10 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
     currentAlbum.forEach((src, i) => {
       const img = document.createElement("img");
       img.src = src;
-      img.onclick = () => {
-        currentIndex = i;
-        updateLargePhoto();
-      };
+      img.alt = `Miniatura ${i + 1}`;
+      img.onclick = () => { currentIndex = i; updateLargePhoto(); };
       thumbs.appendChild(img);
     });
   }
@@ -99,18 +73,37 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.getElementById("checkout").onclick = () => {
-    const modal = document.getElementById("checkout-modal");
     const selContainer = document.getElementById("selected-photos");
     selContainer.innerHTML = "";
-    cart.forEach(photo => {
+    cart.forEach((photo, idx) => {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("thumb-container");
       const img = document.createElement("img");
       img.src = photo;
-      selContainer.appendChild(img);
+      img.alt = `Selección ${idx + 1}`;
+      const remove = document.createElement("button");
+      remove.textContent = "×";
+      remove.classList.add("remove");
+      remove.onclick = () => {
+        cart = cart.filter(p => p !== photo);
+        wrapper.remove();
+        updateCart();
+      };
+      wrapper.appendChild(img);
+      wrapper.appendChild(remove);
+      selContainer.appendChild(wrapper);
     });
     const msg = `HOLA QUIERO COMPRAR LAS SIGUIENTES FOTOS:\n${cart.join("\n")}`;
     document.getElementById("whatsapp-link").href =
-      "https://wa.me/549XXXXXXXXXX?text=" + encodeURIComponent(msg);
+      `https://wa.me/54${whatsappNumber}?text=` + encodeURIComponent(msg);
     modal.classList.remove("hidden");
+    modal.scrollIntoView({ behavior: "smooth" });
+  };
+
+  document.getElementById("clear-cart").onclick = () => {
+    cart = [];
+    updateCart();
+    document.getElementById("selected-photos").innerHTML = "";
   };
 
   window.addEventListener("load", () => {
