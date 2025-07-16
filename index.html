@@ -6,66 +6,63 @@
   <title>Juli Chavez – Fotografía Profesional</title>
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css?family=Montserrat:600|Inter:400,600&display=swap" rel="stylesheet" />
-  <meta name="description" content="Explorá y comprá fotografías profesionales de Juli Chavez. 🌟">
-  <meta property="og:title" content="Juli Chavez – Fotografía Profesional">
-  <meta property="og:description" content="Explorá y comprá fotografías profesionales de Juli Chavez. 🌟">
-  <meta property="og:image" content="https://i.imgur.com/QFDRuAh.jpg">
+  <meta name="description" content="Explorá y comprá fotografías profesionales de Juli Chavez." />
+  <meta property="og:title" content="Juli Chavez – Fotografía Profesional" />
+  <meta property="og:description" content="Explorá y comprá fotografías profesionales de Juli Chavez." />
+  <meta property="og:image" content="https://i.imgur.com/QFDRuAh.jpg" />
   <link rel="icon" href="favicon.ico" />
 </head>
 <body>
-  <!-- Intro -->
+  <!-- Intro animado -->
   <div id="intro">
     <h1 id="intro-title">Juli Chavez</h1>
-    <p id="intro-sub">Fotografía profesional</p>
+    <p id="intro-subtitle">Fotografía profesional</p>
   </div>
 
   <!-- Header -->
-  <header id="header">
-    <h1 id="logo">Juli Chavez</h1>
+  <header id="header" class="hidden">
+    <h1>Juli Chavez</h1>
     <nav>
-      <input id="search-album" type="search" placeholder="Buscar álbum…" aria-label="Buscar álbum" />
-      <button id="toggle-theme" aria-label="Cambiar modo oscuro"><span>🌙</span></button>
+      <input type="search" id="album-search" placeholder="Buscar álbum..." aria-label="Buscar álbum" />
     </nav>
-    <button id="cart-btn" aria-label="Ver carrito"><span id="cart-indicator">🛒 0</span></button>
+    <button id="cart-button" aria-label="Abrir carrito">🛒 <span id="cart-count">0</span></button>
   </header>
 
-  <!-- Álbumes -->
-  <main>
-    <section id="albums-container"></section>
-    <section id="photo-grid" class="hidden"></section>
-  </main>
+  <!-- Contenedor Álbumes -->
+  <section id="albums-container" class="hidden"></section>
 
-  <!-- Modal de foto -->
-  <aside id="photo-modal" class="modal hidden" role="dialog" aria-modal="true">
-    <button class="modal-close" aria-label="Cerrar imagen">✕</button>
-    <img id="modal-img" alt="" />
-    <div class="modal-controls">
+  <!-- Cuadrícula de fotos -->
+  <section id="photo-grid" class="hidden"></section>
+
+  <!-- Modal foto -->
+  <div id="photo-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-photo-title" tabindex="-1">
+    <button class="close-modal" aria-label="Cerrar modal">×</button>
+    <img id="modal-image" alt="" />
+    <div class="modal-nav">
       <button id="prev" aria-label="Foto anterior">‹</button>
       <button id="next" aria-label="Foto siguiente">›</button>
     </div>
-    <button id="add-cart">Agregar al carrito</button>
-  </aside>
+    <button id="add-to-cart">Agregar al carrito</button>
+  </div>
 
-  <!-- Modal carrito -->
-  <aside id="cart-modal" class="modal hidden" role="dialog" aria-modal="true">
-    <button class="modal-close" aria-label="Cerrar carrito">✕</button>
-    <h2>Tu carrito</h2>
-    <div id="cart-items"></div>
-    <div id="cart-summary">
-      <span id="total-items">0 fotos</span>
-      <span id="total-price">$0</span>
+  <!-- Footer carrito -->
+  <footer id="cart-footer" class="hidden">
+    <div id="cart-info">
+      <span>Fotos en carrito: <strong id="footer-cart-count">0</strong></span>
+      <span>Total: $<strong id="footer-cart-total">0</strong></span>
     </div>
-    <div id="checkout-section">
-      <input id="input-name" type="text" placeholder="Tu nombre" required />
-      <input id="input-email" type="email" placeholder="Tu correo (opcional)" />
-      <button id="checkout-btn">Enviar pedido por WhatsApp</button>
-      <button id="clear-btn">Vaciar carrito</button>
-    </div>
-  </aside>
-
-  <footer>
-    <p>© 2025 Juli Chavez – Todos los derechos reservados.</p>
+    <button id="checkout">Comprar por WhatsApp</button>
+    <button id="clear-cart">Vaciar carrito</button>
   </footer>
+
+  <!-- Modal checkout -->
+  <div id="checkout-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="checkout-title" tabindex="-1">
+    <button class="close-modal" aria-label="Cerrar modal">×</button>
+    <h2 id="checkout-title">Confirmar Compra</h2>
+    <div id="selected-photos"></div>
+    <p id="checkout-summary"></p>
+    <a id="whatsapp-link" href="#" target="_blank" rel="noopener" class="button">Enviar pedido por WhatsApp</a>
+  </div>
 
   <script src="app.js"></script>
 </body>
