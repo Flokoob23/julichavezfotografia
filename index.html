@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>JULI CHAVEZ - Fotografía</title>
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Inter&display=swap" rel="stylesheet" />
 </head>
 <body>
   <!-- Encabezado inicial -->
@@ -17,9 +17,10 @@
   <!-- Álbumes -->
   <main>
     <section id="albums-container" class="hidden"></section>
+    <section id="photo-grid" class="hidden"></section>
   </main>
 
-  <!-- Modal de galería -->
+  <!-- Modal de imagen -->
   <div id="photo-modal" class="modal hidden">
     <div class="modal-content">
       <button class="close-modal">❌</button>
@@ -32,18 +33,18 @@
     </div>
   </div>
 
-  <!-- Modal de checkout -->
+  <!-- Modal de compra -->
   <div id="checkout-modal" class="modal hidden">
     <div class="modal-content">
       <h3>🖼️ Tus fotos seleccionadas</h3>
-      <div id="selected-photos"></div>
+      <div id="selected-photos" class="grid-list"></div>
       <button id="clear-cart">🗑️ Vaciar carrito</button>
-      <a id="whatsapp-link" href=\"#\" target=\"_blank\">📤 Enviar pedido por WhatsApp</a>
+      <a id="whatsapp-link" href="#" target="_blank">📤 Enviar pedido por WhatsApp</a>
       <button class="close-modal">❌ Cerrar</button>
     </div>
   </div>
 
-  <!-- Carrito fijo abajo -->
+  <!-- Footer carrito -->
   <footer id="cart-footer" class="hidden">
     <span id="cart-count">0</span> fotos | Total: $<span id="cart-total">0</span>
     <button id="checkout">🧾 Finalizar compra</button>
