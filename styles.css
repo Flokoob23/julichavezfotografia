@@ -75,6 +75,7 @@ body {
   padding: 10px 20px;
   margin-top: 15px;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 #thumbnails img {
