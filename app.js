@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const msg = `Hola, quiero comprar las siguientes fotos:\n\n${cart.join("\n")}`;
-    document.getElementById("whatsapp-link").href = `https://wa.me/${whatsappNumber}?text=` + encodeURIComponent(msg);
+    document.getElementById("whatsapp-link").href = `https://wa.me/543584328924?text=` + encodeURIComponent(msg);
     document.getElementById("checkout-modal").classList.remove("hidden");
   };
 
