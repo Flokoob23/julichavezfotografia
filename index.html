@@ -6,10 +6,19 @@
   <title>JULI CHAVEZ - Fotografía</title>
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Inter&display=swap" rel="stylesheet" />
+  <meta property="og:title" content="Juli Chavez - Fotografía Profesional">
+  <meta property="og:image" content="https://i.imgur.com/QFDRuAh.jpg">
+  <meta property="og:description" content="Compra tus fotos favoritas de Juli Chavez. Seleccioná, mirá y pedí por WhatsApp.">
 </head>
 <body>
-  <!-- Encabezado inicial -->
-  <header id="header">
+  <!-- Pantalla de bienvenida -->
+  <div id="intro">
+    <h1 class="fade-in" id="intro-title">📸 JULI CHAVEZ</h1>
+    <p class="fade-in delay" id="intro-sub">fotografía profesional</p>
+  </div>
+
+  <!-- Encabezado fijo -->
+  <header id="header" class="hidden">
     <h1 id="logo">📸 JULI CHAVEZ</h1>
     <p class="sub">fotografía profesional</p>
   </header>
@@ -26,8 +35,8 @@
       <button class="close-modal">❌</button>
       <img id="modal-image" src="" alt="Foto grande" />
       <div class="modal-nav">
-        <button id="prev">⟨</button>
-        <button id="next">⟩</button>
+        <button id="prev" aria-label="Foto anterior">⟨</button>
+        <button id="next" aria-label="Foto siguiente">⟩</button>
       </div>
       <button id="add-cart">Agregar al carrito 🛒</button>
     </div>
@@ -37,6 +46,8 @@
   <div id="checkout-modal" class="modal hidden">
     <div class="modal-content">
       <h3>🖼️ Tus fotos seleccionadas</h3>
+      <input id="nombre" type="text" placeholder="Tu nombre" />
+      <input id="correo" type="email" placeholder="Tu correo (opcional)" />
       <div id="selected-photos" class="grid-list"></div>
       <button id="clear-cart">🗑️ Vaciar carrito</button>
       <a id="whatsapp-link" href="#" target="_blank">📤 Enviar pedido por WhatsApp</a>
@@ -53,6 +64,7 @@
   <script src="app.js"></script>
 </body>
 </html>
+
 
 
 
