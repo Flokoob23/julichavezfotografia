@@ -88,4 +88,3 @@ window.addEventListener("load", () => {
     document.getElementById("header").classList.add("small");
   }, 2500);
 });
-
