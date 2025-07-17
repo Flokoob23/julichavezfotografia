@@ -1,13 +1,12 @@
-/* Fuentes importadas */
-@import url("https://fonts.googleapis.com/css?family=Montserrat:600|Inter:400,600&display=swap");
+@import url('https://fonts.googleapis.com/css?family=Montserrat:600|Inter:400,600&display=swap');
 
 :root {
   --primary-color: #e6007e;
   --background: #fff;
   --text-color: #333;
-  --modal-bg: rgba(0, 0, 0, 0.8);
-  --font-heading: "Montserrat", sans-serif;
-  --font-body: "Inter", sans-serif;
+  --modal-bg: rgba(0,0,0,0.8);
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body: 'Inter', sans-serif;
   --price-per-photo: 1500;
 }
 
@@ -24,7 +23,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Intro Animado */
+/* --- Intro Animado --- */
 #intro {
   position: fixed;
   inset: 0;
@@ -38,39 +37,34 @@ body {
   animation-delay: 3s;
 }
 
-#intro-title,
-#intro-subtitle {
+#intro-title {
+  font-family: var(--font-heading);
+  font-size: 4rem;
+  margin-bottom: 0.3rem;
+  color: var(--primary-color);
   animation: fadeInUp 1s ease forwards;
 }
 
 #intro-subtitle {
+  font-size: 1.5rem;
+  color: #666;
+  animation: fadeInUp 1s ease forwards;
   animation-delay: 0.3s;
 }
 
-/* Animaciones */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes fadeOut {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
+  from {opacity: 0; transform: translateY(20px);}
+  to {opacity: 1; transform: translateY(0);}
 }
 
-/* Header */
+@keyframes fadeOut {
+  to {opacity: 0; visibility: hidden;}
+}
+
+/* --- Header --- */
 #header {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   height: 60px;
   background: #fff;
   border-bottom: 1px solid #ddd;
@@ -84,27 +78,31 @@ body {
   animation: fadeInHeader 1s forwards;
   animation-delay: 3.5s;
 }
+
 #header.hidden {
   display: none;
 }
+
 #header h1 {
   font-family: var(--font-heading);
+  font-size: 1.6rem;
   color: var(--primary-color);
-  font-weight: 600;
-  margin: 0;
 }
+
 nav {
   flex: 1;
   margin: 0 1rem;
 }
+
 #album-search {
   width: 100%;
   padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
   font-size: 1rem;
-  transition: border-color 0.3s;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease;
 }
+
 #album-search:focus {
   outline: none;
   border-color: var(--primary-color);
@@ -114,124 +112,23 @@ nav {
   background: var(--primary-color);
   border: none;
   color: white;
+  font-weight: 700;
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.3s;
   font-size: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  user-select: none;
+  transition: background-color 0.3s ease;
 }
+
 #cart-button:hover {
   background: #b20063;
 }
 
-/* Álbumes */
-#albums-container {
-  max-width: 1200px;
-  margin: 6.5rem auto 2rem;
-  padding: 0 1rem;
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  opacity: 0;
-  animation: fadeInAlbums 1s forwards;
-  animation-delay: 4s;
-}
-.album-card {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #ffe6f0; /* rosa claro */
-  box-shadow: 0 4px 15px rgb(0 0 0 / 0.1);
-  cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  height: 180px;
-}
-.album-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgb(0 0 0 / 0.15);
-}
-.album-card img {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-.album-card span {
-  background: rgba(230, 0, 126, 0.8);
-  color: white;
-  padding: 10px 8px;
-  font-weight: 600;
-  text-align: center;
-  font-size: 1rem;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-  user-select: none;
-}
-
-/* Fotos en álbum */
-#photo-grid {
-  max-width: 1200px;
-  margin: 6.5rem auto 3rem;
-  padding: 0 1rem;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  opacity: 0;
-  animation: fadeInPhotos 1s forwards;
-  animation-delay: 4.2s;
-}
-.photo-thumb {
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 3px 8px rgb(0 0 0 / 0.1);
-  cursor: pointer;
-  transition: transform 0.25s, box-shadow 0.25s;
-  height: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.photo-thumb:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgb(0 0 0 / 0.2);
-}
-.photo-thumb img {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-/* Icono carrito */
-.in-cart-icon {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: var(--primary-color);
-  color: white;
-  width: 20px;
-  height: 20px;
-  font-size: 0.8rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-/* Botón volver */
+/* --- Botón Volver a Álbumes --- */
 #back-to-albums {
-  grid-column: 1 / -1;
-  margin: 1rem 0;
+  display: inline-block;
+  margin: 5.5rem 1rem 1rem 1rem;
   padding: 0.5rem 1rem;
   font-weight: 600;
   font-size: 1rem;
@@ -243,212 +140,303 @@ nav {
   align-self: start;
   max-width: 180px;
   transition: background-color 0.3s;
+  z-index: 1400;
+  position: fixed;
+  top: 70px;
+  left: 1rem;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
 }
 #back-to-albums:hover {
   background: #b20063;
 }
+#back-to-albums.hidden {
+  display: none;
+}
 
-/* Modal */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
+/* --- Álbumes --- */
+#albums-container {
+  max-width: 1200px;
+  margin: 6.5rem auto 2rem;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
+  gap: 1.5rem;
+  opacity: 0;
+  animation: fadeInAlbums 1s forwards;
+  animation-delay: 4s;
+}
+
+.album-card {
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  background: #ffe0f0; /* rosa claro */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+  box-shadow: 0 4px 15px rgb(0 0 0 / 0.1);
+  transition: transform 0.2s ease;
+}
+
+.album-card:hover {
+  transform: scale(1.05);
+}
+
+.album-card img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.album-card h3 {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+/* --- Cuadrícula de fotos --- */
+#photo-grid {
+  margin: 0 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.photo-thumb {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #ddd;
+}
+
+.photo-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-thumb:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+.photo-thumb:after {
+  content: 'Ver foto';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  padding: 0.3rem;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* --- Modal Foto --- */
+.modal {
+  position: fixed;
+  inset: 0;
   background: var(--modal-bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 5000;
+  z-index: 2000;
   padding: 1rem;
-  opacity: 1;
-  transition: opacity 0.3s;
 }
+
 .modal.hidden {
-  opacity: 0;
-  pointer-events: none;
+  display: none;
 }
+
 .modal img {
   max-width: 90vw;
   max-height: 70vh;
   border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
-  user-select: none;
+  box-shadow: 0 0 20px rgb(0 0 0 / 0.7);
+  margin-bottom: 1rem;
 }
+
 .close-modal {
   position: absolute;
-  top: 10px;
-  right: 15px;
-  background: transparent;
+  top: 1rem;
+  right: 1rem;
+  background: var(--primary-color);
   border: none;
   color: white;
-  font-size: 2rem;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
+  font-weight: 700;
+  user-select: none;
 }
+
 .modal-nav {
-  margin: 1rem 0;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
+
 .modal-nav button {
   background: var(--primary-color);
   border: none;
   color: white;
-  font-size: 2rem;
-  margin: 0 0.5rem;
-  padding: 0.2rem 1rem;
-  border-radius: 10px;
+  font-size: 1.5rem;
+  border-radius: 8px;
+  padding: 0.3rem 0.8rem;
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.3s;
-}
-.modal-nav button:hover {
-  background: #b20063;
 }
 
 #add-to-cart {
-  background: var(--primary-color);
+  background: #b20063;
   border: none;
   color: white;
-  padding: 0.7rem 1.5rem;
   font-weight: 700;
-  font-size: 1.1rem;
-  border-radius: 10px;
+  font-size: 1rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
   user-select: none;
-}
-#add-to-cart:hover {
-  background: #b20063;
+  transition: background-color 0.3s ease;
 }
 
-/* Footer carrito */
+#add-to-cart:hover {
+  background: var(--primary-color);
+}
+
+/* --- Footer Carrito --- */
 #cart-footer {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #fff;
-  border-top: 2px solid var(--primary-color);
-  padding: 0.8rem 1rem;
+  bottom: 0; left: 0; right: 0;
+  background: var(--primary-color);
+  color: white;
+  padding: 0.7rem 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: 600;
-  box-shadow: 0 -3px 6px rgb(0 0 0 / 0.15);
-  z-index: 4000;
+  z-index: 1800;
+  gap: 1rem;
 }
+
 #cart-footer.hidden {
   display: none;
 }
-#cart-info {
-  display: flex;
-  gap: 2rem;
+
+#cart-info span {
+  font-weight: 600;
+  margin-right: 1.5rem;
   font-size: 1rem;
 }
+
 #checkout,
 #clear-cart {
-  background: var(--primary-color);
-  color: white;
+  background: white;
+  color: var(--primary-color);
+  font-weight: 700;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: 700;
-  transition: background-color 0.3s;
-  margin-left: 1rem;
-  user-select: none;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
 }
+
 #checkout:hover,
 #clear-cart:hover {
-  background: #b20063;
+  background: #f2f2f2;
 }
 
-/* Checkout Modal */
+/* --- Modal Checkout --- */
 #checkout-modal {
-  max-width: 600px;
-  width: 90vw;
-  background: white;
+  background: var(--modal-bg);
   padding: 2rem;
-  border-radius: 14px;
-  max-height: 80vh;
-  overflow-y: auto;
-  color: var(--text-color);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  max-width: 480px;
+  width: 90vw;
+  text-align: center;
+  color: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2500;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
-#checkout-modal .close-modal {
-  color: var(--text-color);
+
+#checkout-modal.hidden {
+  display: none;
 }
+
+#checkout-modal h2 {
+  font-family: var(--font-heading);
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+}
+
 #selected-photos {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.5rem;
+  overflow-x: auto;
+  max-height: 100px;
   margin-bottom: 1rem;
-  justify-content: center;
 }
+
 #selected-photos img {
-  width: 80px;
   height: 80px;
-  object-fit: cover;
   border-radius: 8px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 6px rgba(0,0,0,0.5);
 }
+
 #checkout-summary {
+  font-size: 1.2rem;
   font-weight: 600;
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
-.button {
+
+#whatsapp-link {
   background: var(--primary-color);
   color: white;
-  text-decoration: none;
   padding: 0.8rem 1.5rem;
-  border-radius: 10px;
+  text-decoration: none;
+  border-radius: 8px;
   font-weight: 700;
-  font-size: 1.2rem;
-  display: inline-block;
   user-select: none;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
-.button:hover {
+
+#whatsapp-link:hover {
   background: #b20063;
 }
 
-/* Accesibilidad (ocultar texto) */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
-}
-
-/* Animaciones fadeIn para header y secciones */
+/* --- Animaciones --- */
 @keyframes fadeInHeader {
-  to {
-    opacity: 1;
-  }
+  from {opacity: 0; transform: translateY(-20px);}
+  to {opacity: 1; transform: translateY(0);}
 }
+
 @keyframes fadeInAlbums {
-  to {
-    opacity: 1;
-  }
+  from {opacity: 0;}
+  to {opacity: 1;}
 }
+
 @keyframes fadeInPhotos {
-  to {
-    opacity: 1;
-  }
+  from {opacity: 0;}
+  to {opacity: 1;}
 }
-
-/* Responsive */
-@media (max-width: 768px) {
-  #albums-container {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  }
-  #photo-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
-}
-
