@@ -1,73 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Galería de Fotos</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería de Fotos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Header -->
-  <header id="header" class="hidden">
+
+<!-- Header -->
+<header id="header" class="hidden">
     <input type="text" id="album-search" placeholder="Buscar álbum...">
     <button id="cart-button">
-      <span id="cart-count">0</span> 🛒
+        <span id="cart-count">0</span> 🛒
     </button>
-  </header>
+</header>
 
-  <!-- Contenedor de los Álbumes -->
-  <section id="albums-container">
+<!-- Contenedor de los Álbumes -->
+<section id="albums-container">
     <h1>Álbumes de Fotos</h1>
     <div class="album-card-container" id="albums-container">
-      <!-- Aquí se cargarán los álbumes -->
+        <!-- Aquí se cargarán los álbumes -->
     </div>
-  </section>
+</section>
 
-  <!-- Galería de Fotos -->
-  <section id="photo-grid" class="hidden">
+<!-- Galería de Fotos -->
+<section id="photo-grid" class="hidden">
     <button id="back-to-albums" class="hidden">Volver a Álbumes</button>
     <div class="grid-container" id="photo-grid">
-      <!-- Aquí se cargarán las miniaturas de las fotos -->
+        <!-- Aquí se cargarán las miniaturas de las fotos -->
     </div>
-  </section>
+</section>
 
-  <!-- Modal de Foto -->
-  <div id="photo-modal" class="modal hidden">
+<!-- Modal de Foto -->
+<div id="photo-modal" class="modal hidden">
     <div class="modal-content">
-      <span class="close-modal">✖</span>
-      <div class="modal-nav">
-        <button id="prev">←</button>
-        <button id="next">→</button>
-      </div>
-      <img id="modal-image" src="" alt="Imagen Ampliada">
-      <button id="add-to-cart">Agregar al carrito</button>
+        <span class="close-modal">✖</span>
+        <div class="modal-nav">
+            <button id="prev">←</button>
+            <button id="next">→</button>
+        </div>
+        <img id="modal-image" src="" alt="Imagen Ampliada">
+        <button id="add-to-cart">Agregar al carrito</button>
     </div>
-  </div>
+</div>
 
-  <!-- Carrito -->
-  <div id="cart-footer">
+<!-- Carrito -->
+<div id="cart-footer">
     <div id="cart-info">
-      <p>Total: <span id="footer-cart-total">$0</span></p>
-      <p><span id="footer-cart-count">0</span> Artículos</p>
+        <p>Total: <span id="footer-cart-total">$0</span></p>
+        <p><span id="footer-cart-count">0</span> Artículos</p>
     </div>
     <button id="checkout">Checkout</button>
-  </div>
+</div>
 
-  <!-- Modal de Checkout -->
-  <div id="checkout-modal" class="modal hidden">
+<!-- Modal de Checkout -->
+<div id="checkout-modal" class="modal hidden">
     <div class="modal-content">
-      <h2>Resumen de Compra</h2>
-      <ul id="selected-photos"></ul>
-      <a href="#" id="whatsapp-link">Comprar por WhatsApp</a>
-      <button id="clear-cart">Limpiar Carrito</button>
+        <h2>Resumen de Compra</h2>
+        <ul id="selected-photos"></ul>
+        <a href="#" id="whatsapp-link">Comprar por WhatsApp</a>
+        <button id="clear-cart">Limpiar Carrito</button>
     </div>
-  </div>
+</div>
 
-  <script src="app.js"></script>
+<script src="app.js"></script>
+
 </body>
 </html>
-
 
 
 
