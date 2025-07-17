@@ -1,57 +1,22 @@
-// Datos de ejemplo (Álbumes y fotos)
-// Puedes cambiar las URLs o agregar más álbumes y fotos aquí
-const albumsData = [
-  {
-    id: "viajes",
-    name: "Viajes",
-    cover: "https://i.imgur.com/8zYLrBa.jpg",
-    photos: [
-      "https://i.imgur.com/4QJX9FM.jpg",
-      "https://i.imgur.com/g9GqRrD.jpg",
-      "https://i.imgur.com/yXEKkTp.jpg",
-      "https://i.imgur.com/3PfVpHP.jpg",
-      "https://i.imgur.com/qgoOTGH.jpg",
-    ],
-  },
-  {
-    id: "bodas",
-    name: "Bodas",
-    cover: "https://i.imgur.com/TWxMDqs.jpg",
-    photos: [
-      "https://i.imgur.com/xOvO3j0.jpg",
-      "https://i.imgur.com/dFlI0S3.jpg",
-      "https://i.imgur.com/G5bMfKU.jpg",
-      "https://i.imgur.com/cPS8ylk.jpg",
-    ],
-  },
-  {
-    id: "familia",
-    name: "Familia",
-    cover: "https://i.imgur.com/8SakYIo.jpg",
-    photos: [
-      "https://i.imgur.com/NVvIjhp.jpg",
-      "https://i.imgur.com/Lz2osS4.jpg",
-      "https://i.imgur.com/MHlptNz.jpg",
-    ],
-  },
-];
-
-const pricePerPhoto = 1500;
-
+// Variables globales
 const albumsContainer = document.getElementById("albums-container");
 const photoGrid = document.getElementById("photo-grid");
+const albumSearch = document.getElementById("album-search");
 const backToAlbumsBtn = document.getElementById("back-to-albums");
 const header = document.getElementById("header");
-const intro = document.getElementById("intro");
-const albumSearch = document.getElementById("album-search");
 const cartButton = document.getElementById("cart-button");
-const cartCountSpan = document.getElementById("cart-count");
+const cartCount = document.getElementById("cart-count");
 const cartFooter = document.getElementById("cart-footer");
 const footerCartCount = document.getElementById("footer-cart-count");
 const footerCartTotal = document.getElementById("footer-cart-total");
 const checkoutBtn = document.getElementById("checkout");
 const clearCartBtn = document.getElementById("clear-cart");
+const checkoutModal = document.getElementById("checkout-modal");
+const whatsappLink = document.getElementById("whatsapp-link");
+const selectedPhotosContainer = document.getElementById("selected-photos");
+const checkoutSummary = document.getElementById("checkout-summary");
 
+// Modal foto elementos
 const photoModal = document.getElementById("photo-modal");
 const modalImage = document.getElementById("modal-image");
 const closeModalBtn = photoModal.querySelector(".close-modal");
@@ -59,302 +24,157 @@ const prevBtn = document.getElementById("prev");
 const nextBtn = document.getElementById("next");
 const addToCartBtn = document.getElementById("add-to-cart");
 
-const checkoutModal = document.getElementById("checkout-modal");
-const closeCheckoutBtn = checkoutModal.querySelector(".close-modal");
-const selectedPhotosContainer = document.getElementById("selected-photos");
-const checkoutSummary = document.getElementById("checkout-summary");
-const whatsappLink = document.getElementById("whatsapp-link");
-
 let currentAlbum = null;
 let currentPhotoIndex = 0;
+let cart = [];
 
-let cart = JSON.parse(localStorage.getItem("photoCart")) || {};
+// Datos de álbumes con imágenes públicas
+const albumsData = [
+  {
+    id: "viajes",
+    name: "Viajes",
+    cover: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
+    photos: [
+      "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=400&q=80",
+      "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=400&q=80",
+      "https://images.unsplash.com/photo-1468071174046-657d9d351a40?auto=format&fit=crop&w=400&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80",
+    ],
+  },
+  {
+    id: "naturaleza",
+    name: "Naturaleza",
+    cover: "https://images.unsplash.com/photo-1470822584919-cfbe16fa5a5e?auto=format&fit=crop&w=600&q=80",
+    photos: [
+      "https://images.unsplash.com/photo-1501616460907-c97e5e3fa338?auto=format&fit=crop&w=400&q=80",
+      "https://images.unsplash.com/photo-1475687357230-b40843a1b67d?auto=format&fit=crop&w=400&q=80",
+      "https://images.unsplash.com/photo-1476314589304-c2bc16c6f3b4?auto=format&fit=crop&w=400&q=80",
+    ],
+  },
+  // Añadir más álbums según sea necesario
+];
 
-// Mostrar el header y álbumes tras anim intro
-intro.addEventListener("animationend", () => {
-  intro.classList.add("hidden");
-  header.classList.remove("hidden");
-  albumsContainer.classList.remove("hidden");
-  renderAlbums(albumsData);
-  updateCartUI();
-});
-
-// Renderiza los álbumes
-function renderAlbums(albums) {
-  albumsContainer.innerHTML = "";
-  if (albums.length === 0) {
-    albumsContainer.innerHTML = `<p>No se encontraron álbumes.</p>`;
-    return;
-  }
-  albums.forEach((album) => {
-    const card = document.createElement("article");
-    card.className = "album-card";
-    card.setAttribute("tabindex", "0");
-    card.setAttribute("role", "button");
-    card.setAttribute("aria-pressed", "false");
-    card.setAttribute("aria-label", `Abrir álbum ${album.name}`);
-    card.innerHTML = `
-      <img src="${album.cover}" alt="Portada álbum ${album.name}" loading="lazy" />
-      <span>${album.name}</span>
-    `;
-    card.addEventListener("click", () => openAlbum(album));
-    card.addEventListener("keypress", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        openAlbum(album);
-      }
-    });
-    albumsContainer.appendChild(card);
-  });
-  albumsContainer.style.opacity = "1";
-}
-
-// Abrir álbum y mostrar fotos
-function openAlbum(album) {
-  currentAlbum = album;
-  albumsContainer.classList.add("hidden");
-  photoGrid.classList.remove("hidden");
-  photoGrid.style.opacity = "0";
-  backToAlbumsBtn.focus();
-  renderPhotos(album.photos);
-  header.querySelector("nav").style.display = "none";
-  fadeIn(photoGrid);
-}
-
-// Volver a álbumes
-backToAlbumsBtn.addEventListener("click", () => {
-  photoGrid.classList.add("hidden");
-  albumsContainer.classList.remove("hidden");
-  header.querySelector("nav").style.display = "block";
-  albumSearch.value = "";
-  renderAlbums(albumsData);
-  fadeIn(albumsContainer);
-  currentAlbum = null;
-  currentPhotoIndex = 0;
-});
-
-// Renderiza fotos en el grid
-function renderPhotos(photos) {
-  // Limpio y agrego fotos
-  photoGrid.querySelectorAll(".photo-thumb").forEach((el) => el.remove());
-  photos.forEach((url, i) => {
-    const div = document.createElement("div");
-    div.className = "photo-thumb";
-    div.setAttribute("tabindex", "0");
-    div.setAttribute("role", "button");
-    div.setAttribute("aria-label", `Abrir foto ${i + 1} de ${currentAlbum.name}`);
-    div.innerHTML = `<img src="${url}" alt="Foto ${i + 1} del álbum ${currentAlbum.name}" loading="lazy" />`;
+// Función para renderizar los álbumes
+const renderAlbums = () => {
+  albumsContainer.innerHTML = '';
+  albumsData.forEach(album => {
+    const albumCard = document.createElement("div");
+    albumCard.classList.add("album-card");
+    albumCard.addEventListener("click", () => openAlbum(album));
     
-    // Mostrar icono si está en carrito
-    if (cart[url]) {
-      const icon = document.createElement("div");
-      icon.className = "in-cart-icon";
-      icon.textContent = "✓";
-      div.appendChild(icon);
-    }
-
-    div.addEventListener("click", () => openPhotoModal(i));
-    div.addEventListener("keypress", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        openPhotoModal(i);
-      }
-    });
-    photoGrid.appendChild(div);
+    const albumImage = document.createElement("img");
+    albumImage.src = album.cover;
+    
+    const albumName = document.createElement("h3");
+    albumName.textContent = album.name;
+    
+    albumCard.appendChild(albumImage);
+    albumCard.appendChild(albumName);
+    albumsContainer.appendChild(albumCard);
   });
-  photoGrid.style.opacity = "1";
-}
+};
 
-// Abrir modal con foto seleccionada
-function openPhotoModal(index) {
+// Función para abrir un álbum
+const openAlbum = (album) => {
+  currentAlbum = album;
+  photoGrid.classList.remove("hidden");
+  albumsContainer.classList.add("hidden");
+  header.classList.remove("hidden");
+  backToAlbumsBtn.classList.remove("hidden");
+
+  const filteredPhotos = album.photos.filter(photo => 
+    photo.includes(albumSearch.value)
+  );
+
+  renderPhotoGrid(filteredPhotos);
+};
+
+// Función para renderizar las fotos
+const renderPhotoGrid = (photos) => {
+  photoGrid.innerHTML = '';
+  photos.forEach((photo, index) => {
+    const photoThumb = document.createElement("div");
+    photoThumb.classList.add("photo-thumb");
+    photoThumb.addEventListener("click", () => openPhoto(photo, index));
+    
+    const img = document.createElement("img");
+    img.src = photo;
+    
+    photoThumb.appendChild(img);
+    photoGrid.appendChild(photoThumb);
+  });
+};
+
+// Función para abrir una foto en el modal
+const openPhoto = (photo, index) => {
   currentPhotoIndex = index;
-  updateModalImage();
+  modalImage.src = photo;
   photoModal.classList.remove("hidden");
-  photoModal.focus();
-  addToCartBtn.disabled = cart[currentAlbum.photos[currentPhotoIndex]] ? true : false;
-  updateAddToCartBtn();
-}
+};
 
-// Actualizar imagen del modal
-function updateModalImage() {
-  const url = currentAlbum.photos[currentPhotoIndex];
-  modalImage.src = url;
-  modalImage.alt = `Foto ${currentPhotoIndex + 1} del álbum ${currentAlbum.name}`;
-}
+// Cerrar el modal
+closeModalBtn.addEventListener("click", () => {
+  photoModal.classList.add("hidden");
+});
 
-// Navegación modal
+// Cambiar foto anterior
 prevBtn.addEventListener("click", () => {
   currentPhotoIndex = (currentPhotoIndex - 1 + currentAlbum.photos.length) % currentAlbum.photos.length;
-  updateModalImage();
-  updateAddToCartBtn();
+  modalImage.src = currentAlbum.photos[currentPhotoIndex];
 });
+
+// Cambiar foto siguiente
 nextBtn.addEventListener("click", () => {
   currentPhotoIndex = (currentPhotoIndex + 1) % currentAlbum.photos.length;
-  updateModalImage();
-  updateAddToCartBtn();
+  modalImage.src = currentAlbum.photos[currentPhotoIndex];
 });
 
-// Cerrar modal foto
-closeModalBtn.addEventListener("click", closePhotoModal);
-
-function closePhotoModal() {
-  photoModal.classList.add("hidden");
-  // Devolver foco a la foto en el grid
-  const photos = photoGrid.querySelectorAll(".photo-thumb");
-  if (photos[currentPhotoIndex]) photos[currentPhotoIndex].focus();
-}
-
-// Agregar al carrito
+// Agregar foto al carrito
 addToCartBtn.addEventListener("click", () => {
-  const url = currentAlbum.photos[currentPhotoIndex];
-  if (!cart[url]) {
-    cart[url] = { album: currentAlbum.name, url };
-    saveCart();
-    updateCartUI();
-    addToCartBtn.disabled = true;
-    updateAddToCartBtn();
-    markPhotoInCart(url, true);
+  const photo = currentAlbum.photos[currentPhotoIndex];
+  if (!cart.includes(photo)) {
+    cart.push(photo);
+    cartCount.textContent = cart.length;
+    footerCartCount.textContent = cart.length;
+    footerCartTotal.textContent = cart.length * 1500;
+    selectedPhotosContainer.innerHTML = '';
+    cart.forEach((photo, index) => {
+      const img = document.createElement("img");
+      img.src = photo;
+      selectedPhotosContainer.appendChild(img);
+    });
   }
 });
 
-// Marca foto en grid como en carrito (o no)
-function markPhotoInCart(url, isInCart) {
-  const photos = photoGrid.querySelectorAll(".photo-thumb");
-  photos.forEach((div) => {
-    const img = div.querySelector("img");
-    if (img && img.src === url) {
-      if (isInCart) {
-        if (!div.querySelector(".in-cart-icon")) {
-          const icon = document.createElement("div");
-          icon.className = "in-cart-icon";
-          icon.textContent = "✓";
-          div.appendChild(icon);
-        }
-      } else {
-        const icon = div.querySelector(".in-cart-icon");
-        if (icon) icon.remove();
-      }
-    }
-  });
-}
+// Vaciar el carrito
+clearCartBtn.addEventListener("click", () => {
+  cart = [];
+  cartCount.textContent = 0;
+  footerCartCount.textContent = 0;
+  footerCartTotal.textContent = 0;
+  selectedPhotosContainer.innerHTML = '';
+});
 
-// Actualizar estado botón agregar carrito en modal
-function updateAddToCartBtn() {
-  const url = currentAlbum.photos[currentPhotoIndex];
-  addToCartBtn.disabled = !!cart[url];
-  addToCartBtn.textContent = addToCartBtn.disabled ? "Ya en carrito" : "Agregar al carrito";
-}
+// Realizar el pedido a través de WhatsApp
+whatsappLink.addEventListener("click", () => {
+  const message = `¡Hola! Quiero comprar las siguientes fotos:\n\n${cart.join("\n")}`;
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  window.open(whatsappUrl, "_blank");
+});
 
-// Guardar carrito en localStorage
-function saveCart() {
-  localStorage.setItem("photoCart", JSON.stringify(cart));
-}
-
-// Actualizar interfaz carrito
-function updateCartUI() {
-  const count = Object.keys(cart).length;
-  cartCountSpan.textContent = count;
-  footerCartCount.textContent = count;
-  footerCartTotal.textContent = count * pricePerPhoto;
-
-  if (count > 0) {
+// Función para mostrar y ocultar el carrito
+const showCartFooter = () => {
+  if (cart.length > 0) {
     cartFooter.classList.remove("hidden");
   } else {
     cartFooter.classList.add("hidden");
   }
-}
+};
 
-// Vaciar carrito
-clearCartBtn.addEventListener("click", () => {
-  if (confirm("¿Querés vaciar el carrito?")) {
-    cart = {};
-    saveCart();
-    updateCartUI();
-    // Actualizo iconos en fotos
-    if (currentAlbum) {
-      currentAlbum.photos.forEach((url) => markPhotoInCart(url, false));
-    }
-  }
+// Iniciar la app
+document.addEventListener("DOMContentLoaded", () => {
+  renderAlbums();
+  showCartFooter();
+  header.classList.add("hidden");
+  backToAlbumsBtn.classList.add("hidden");
 });
-
-// Abrir modal checkout
-checkoutBtn.addEventListener("click", () => {
-  if (Object.keys(cart).length === 0) {
-    alert("No hay fotos en el carrito para comprar.");
-    return;
-  }
-  renderCheckout();
-  checkoutModal.classList.remove("hidden");
-  checkoutModal.focus();
-});
-
-// Cerrar modal checkout
-closeCheckoutBtn.addEventListener("click", () => {
-  checkoutModal.classList.add("hidden");
-});
-
-// Renderiza checkout con fotos seleccionadas y mensaje WhatsApp
-function renderCheckout() {
-  selectedPhotosContainer.innerHTML = "";
-  const cartPhotos = Object.values(cart);
-  cartPhotos.forEach(({ url, album }) => {
-    const img = document.createElement("img");
-    img.src = url;
-    img.alt = `Foto del álbum ${album}`;
-    selectedPhotosContainer.appendChild(img);
-  });
-  const totalPrice = cartPhotos.length * pricePerPhoto;
-  checkoutSummary.textContent = `Total: $${totalPrice} ARS - Precio por foto: $${pricePerPhoto} ARS`;
-
-  // Generar mensaje WhatsApp
-  const phoneNumber = "5491161234567"; // Cambiar por el número real
-  let message =
-    `¡Hola Juli! Quisiera comprar las siguientes fotos de tus álbumes:%0A%0A` +
-    cartPhotos
-      .map((p, i) => `${i + 1}. Álbum: ${p.album} - Foto: ${p.url}`)
-      .join("%0A") +
-    `%0A%0ATotal a pagar: $${totalPrice} ARS.%0AGracias.`;
-  whatsappLink.href = `https://wa.me/${phoneNumber}?text=${message}`;
-}
-
-// Filtrar álbumes por búsqueda
-albumSearch.addEventListener("input", (e) => {
-  const query = e.target.value.toLowerCase().trim();
-  const filtered = albumsData.filter((album) =>
-    album.name.toLowerCase().includes(query)
-  );
-  renderAlbums(filtered);
-});
-
-// Función auxiliar para animar fadeIn
-function fadeIn(element) {
-  element.style.opacity = 0;
-  element.classList.remove("hidden");
-  let op = 0;
-  const interval = setInterval(() => {
-    if (op >= 1) {
-      clearInterval(interval);
-    }
-    element.style.opacity = op;
-    op += 0.05;
-  }, 20);
-}
-
-// Accesibilidad: cerrar modales con ESC y navegar con teclado
-document.addEventListener("keydown", (e) => {
-  if (!photoModal.classList.contains("hidden")) {
-    if (e.key === "Escape") closePhotoModal();
-    else if (e.key === "ArrowLeft") prevBtn.click();
-    else if (e.key === "ArrowRight") nextBtn.click();
-  }
-  if (!checkoutModal.classList.contains("hidden")) {
-    if (e.key === "Escape") checkoutModal.classList.add("hidden");
-  }
-});
-
-// Inicialización (mostrar intro)
-intro.classList.remove("hidden");
-header.classList.add("hidden");
-albumsContainer.classList.add("hidden");
-photoGrid.classList.add("hidden");
-cartFooter.classList.add("hidden");
