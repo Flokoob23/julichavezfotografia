@@ -1,50 +1,49 @@
-// Variables globales y constantes
-const albums = [
+// Datos de ejemplo (Álbumes y fotos)
+// Puedes cambiar las URLs o agregar más álbumes y fotos aquí
+const albumsData = [
   {
-    name: "Desconocido 1",
+    id: "viajes",
+    name: "Viajes",
+    cover: "https://i.imgur.com/8zYLrBa.jpg",
     photos: [
-      "https://i.imgur.com/Vhm8SI7.jpg",
-      "https://i.imgur.com/GZOBVbP.jpg",
-      "https://i.imgur.com/0AxAf0m.jpg",
-      "https://i.imgur.com/tYHqf0n.jpg",
-      "https://i.imgur.com/V2F7KmN.jpg",
-      "https://i.imgur.com/jtTxrfz.jpg",
+      "https://i.imgur.com/4QJX9FM.jpg",
+      "https://i.imgur.com/g9GqRrD.jpg",
+      "https://i.imgur.com/yXEKkTp.jpg",
+      "https://i.imgur.com/3PfVpHP.jpg",
+      "https://i.imgur.com/qgoOTGH.jpg",
     ],
   },
   {
-    name: "Desconocido 2",
+    id: "bodas",
+    name: "Bodas",
+    cover: "https://i.imgur.com/TWxMDqs.jpg",
     photos: [
-      "https://i.imgur.com/QFDRuAh.jpg",
-      "https://i.imgur.com/cCN6fVX.jpg",
-      "https://i.imgur.com/pnPe0Ne.jpg",
-      "https://i.imgur.com/xHQMFCN.jpg",
-      "https://i.imgur.com/1P3qEr7.jpg",
-      "https://i.imgur.com/dR8cg0Z.jpg",
+      "https://i.imgur.com/xOvO3j0.jpg",
+      "https://i.imgur.com/dFlI0S3.jpg",
+      "https://i.imgur.com/G5bMfKU.jpg",
+      "https://i.imgur.com/cPS8ylk.jpg",
     ],
   },
   {
-    name: "Desconocido 3",
+    id: "familia",
+    name: "Familia",
+    cover: "https://i.imgur.com/8SakYIo.jpg",
     photos: [
-      "https://i.imgur.com/6uQXxRl.jpg",
-      "https://i.imgur.com/BYntSaX.jpg",
-      "https://i.imgur.com/mffke8I.jpg",
-      "https://i.imgur.com/3bC6v1p.jpg",
-      "https://i.imgur.com/nAc2xmy.jpg",
-      "https://i.imgur.com/cqVPcvI.jpg",
+      "https://i.imgur.com/NVvIjhp.jpg",
+      "https://i.imgur.com/Lz2osS4.jpg",
+      "https://i.imgur.com/MHlptNz.jpg",
     ],
   },
 ];
 
 const pricePerPhoto = 1500;
 
-// DOM Elements
-const intro = document.getElementById("intro");
-const header = document.getElementById("header");
 const albumsContainer = document.getElementById("albums-container");
 const photoGrid = document.getElementById("photo-grid");
-const photoModal = document.getElementById("photo-modal");
-const modalImage = document.getElementById("modal-image");
-const addToCartBtn = document.getElementById("add-to-cart");
+const backToAlbumsBtn = document.getElementById("back-to-albums");
+const header = document.getElementById("header");
+const intro = document.getElementById("intro");
+const albumSearch = document.getElementById("album-search");
 const cartButton = document.getElementById("cart-button");
 const cartCountSpan = document.getElementById("cart-count");
 const cartFooter = document.getElementById("cart-footer");
@@ -52,142 +51,212 @@ const footerCartCount = document.getElementById("footer-cart-count");
 const footerCartTotal = document.getElementById("footer-cart-total");
 const checkoutBtn = document.getElementById("checkout");
 const clearCartBtn = document.getElementById("clear-cart");
-const photoSearchInput = document.getElementById("album-search");
+
+const photoModal = document.getElementById("photo-modal");
+const modalImage = document.getElementById("modal-image");
+const closeModalBtn = photoModal.querySelector(".close-modal");
+const prevBtn = document.getElementById("prev");
+const nextBtn = document.getElementById("next");
+const addToCartBtn = document.getElementById("add-to-cart");
+
 const checkoutModal = document.getElementById("checkout-modal");
-const checkoutCloseBtn = checkoutModal.querySelector(".close-modal");
+const closeCheckoutBtn = checkoutModal.querySelector(".close-modal");
 const selectedPhotosContainer = document.getElementById("selected-photos");
 const checkoutSummary = document.getElementById("checkout-summary");
 const whatsappLink = document.getElementById("whatsapp-link");
-const modalCloseBtn = photoModal.querySelector(".close-modal");
-const prevBtn = document.getElementById("prev");
-const nextBtn = document.getElementById("next");
 
-// Estado
-let currentAlbumIndex = null;
-let currentPhotoIndex = null;
-let cart = []; // { albumIndex, photoIndex }
+let currentAlbum = null;
+let currentPhotoIndex = 0;
 
-// --- Funciones --- //
+let cart = JSON.parse(localStorage.getItem("photoCart")) || {};
 
-// Mostrar álbumes en pantalla
-function renderAlbums(filter = "") {
+// Mostrar el header y álbumes tras anim intro
+intro.addEventListener("animationend", () => {
+  intro.classList.add("hidden");
+  header.classList.remove("hidden");
+  albumsContainer.classList.remove("hidden");
+  renderAlbums(albumsData);
+  updateCartUI();
+});
+
+// Renderiza los álbumes
+function renderAlbums(albums) {
   albumsContainer.innerHTML = "";
-  const filteredAlbums = albums.filter(album =>
-    album.name.toLowerCase().includes(filter.toLowerCase())
-  );
-  if (filteredAlbums.length === 0) {
-    albumsContainer.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#999;">No se encontraron álbumes.</p>`;
+  if (albums.length === 0) {
+    albumsContainer.innerHTML = `<p>No se encontraron álbumes.</p>`;
     return;
   }
-
-  filteredAlbums.forEach((album, index) => {
-    const albumCard = document.createElement("div");
-    albumCard.className = "album-card";
-    albumCard.setAttribute("tabindex", "0");
-    albumCard.setAttribute("role", "button");
-    albumCard.setAttribute("aria-label", `Abrir álbum ${album.name}`);
-    albumCard.dataset.index = albums.indexOf(album);
-
-    albumCard.innerHTML = `
-      <img src="${album.photos[0]}" alt="Portada álbum ${album.name}" loading="lazy" />
+  albums.forEach((album) => {
+    const card = document.createElement("article");
+    card.className = "album-card";
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-pressed", "false");
+    card.setAttribute("aria-label", `Abrir álbum ${album.name}`);
+    card.innerHTML = `
+      <img src="${album.cover}" alt="Portada álbum ${album.name}" loading="lazy" />
       <span>${album.name}</span>
     `;
-
-    albumCard.addEventListener("click", () => openAlbum(albums.indexOf(album)));
-    albumCard.addEventListener("keydown", e => {
+    card.addEventListener("click", () => openAlbum(album));
+    card.addEventListener("keypress", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        openAlbum(albums.indexOf(album));
+        openAlbum(album);
       }
     });
-
-    albumsContainer.appendChild(albumCard);
+    albumsContainer.appendChild(card);
   });
+  albumsContainer.style.opacity = "1";
 }
 
 // Abrir álbum y mostrar fotos
-function openAlbum(index) {
-  currentAlbumIndex = index;
-  renderPhotos();
+function openAlbum(album) {
+  currentAlbum = album;
   albumsContainer.classList.add("hidden");
   photoGrid.classList.remove("hidden");
-  photoGrid.focus?.();
+  photoGrid.style.opacity = "0";
+  backToAlbumsBtn.focus();
+  renderPhotos(album.photos);
+  header.querySelector("nav").style.display = "none";
+  fadeIn(photoGrid);
 }
 
-// Mostrar fotos del álbum actual
-function renderPhotos() {
-  photoGrid.innerHTML = "";
-  const album = albums[currentAlbumIndex];
-  album.photos.forEach((photoUrl, index) => {
-    const photoDiv = document.createElement("div");
-    photoDiv.className = "photo-thumb";
-    photoDiv.setAttribute("tabindex", "0");
-    photoDiv.setAttribute("role", "button");
-    photoDiv.setAttribute("aria-label", `Ver foto ${index + 1} del álbum ${album.name}`);
-    photoDiv.dataset.index = index;
-    photoDiv.innerHTML = `<img src="${photoUrl}" alt="Foto ${index + 1} del álbum ${album.name}" loading="lazy" />`;
+// Volver a álbumes
+backToAlbumsBtn.addEventListener("click", () => {
+  photoGrid.classList.add("hidden");
+  albumsContainer.classList.remove("hidden");
+  header.querySelector("nav").style.display = "block";
+  albumSearch.value = "";
+  renderAlbums(albumsData);
+  fadeIn(albumsContainer);
+  currentAlbum = null;
+  currentPhotoIndex = 0;
+});
 
-    photoDiv.addEventListener("click", () => openModal(index));
-    photoDiv.addEventListener("keydown", e => {
+// Renderiza fotos en el grid
+function renderPhotos(photos) {
+  // Limpio y agrego fotos
+  photoGrid.querySelectorAll(".photo-thumb").forEach((el) => el.remove());
+  photos.forEach((url, i) => {
+    const div = document.createElement("div");
+    div.className = "photo-thumb";
+    div.setAttribute("tabindex", "0");
+    div.setAttribute("role", "button");
+    div.setAttribute("aria-label", `Abrir foto ${i + 1} de ${currentAlbum.name}`);
+    div.innerHTML = `<img src="${url}" alt="Foto ${i + 1} del álbum ${currentAlbum.name}" loading="lazy" />`;
+    
+    // Mostrar icono si está en carrito
+    if (cart[url]) {
+      const icon = document.createElement("div");
+      icon.className = "in-cart-icon";
+      icon.textContent = "✓";
+      div.appendChild(icon);
+    }
+
+    div.addEventListener("click", () => openPhotoModal(i));
+    div.addEventListener("keypress", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        openModal(index);
+        openPhotoModal(i);
       }
     });
-
-    photoGrid.appendChild(photoDiv);
+    photoGrid.appendChild(div);
   });
+  photoGrid.style.opacity = "1";
 }
 
-// Abrir modal foto
-function openModal(photoIndex) {
-  currentPhotoIndex = photoIndex;
+// Abrir modal con foto seleccionada
+function openPhotoModal(index) {
+  currentPhotoIndex = index;
   updateModalImage();
   photoModal.classList.remove("hidden");
   photoModal.focus();
+  addToCartBtn.disabled = cart[currentAlbum.photos[currentPhotoIndex]] ? true : false;
+  updateAddToCartBtn();
 }
 
-// Actualizar imagen en modal
+// Actualizar imagen del modal
 function updateModalImage() {
-  const album = albums[currentAlbumIndex];
-  const photoUrl = album.photos[currentPhotoIndex];
-  modalImage.src = photoUrl;
-  modalImage.alt = `Foto ${currentPhotoIndex + 1} del álbum ${album.name}`;
+  const url = currentAlbum.photos[currentPhotoIndex];
+  modalImage.src = url;
+  modalImage.alt = `Foto ${currentPhotoIndex + 1} del álbum ${currentAlbum.name}`;
 }
 
 // Navegación modal
-function prevPhoto() {
-  const album = albums[currentAlbumIndex];
-  currentPhotoIndex = (currentPhotoIndex - 1 + album.photos.length) % album.photos.length;
+prevBtn.addEventListener("click", () => {
+  currentPhotoIndex = (currentPhotoIndex - 1 + currentAlbum.photos.length) % currentAlbum.photos.length;
   updateModalImage();
+  updateAddToCartBtn();
+});
+nextBtn.addEventListener("click", () => {
+  currentPhotoIndex = (currentPhotoIndex + 1) % currentAlbum.photos.length;
+  updateModalImage();
+  updateAddToCartBtn();
+});
+
+// Cerrar modal foto
+closeModalBtn.addEventListener("click", closePhotoModal);
+
+function closePhotoModal() {
+  photoModal.classList.add("hidden");
+  // Devolver foco a la foto en el grid
+  const photos = photoGrid.querySelectorAll(".photo-thumb");
+  if (photos[currentPhotoIndex]) photos[currentPhotoIndex].focus();
 }
 
-function nextPhoto() {
-  const album = albums[currentAlbumIndex];
-  currentPhotoIndex = (currentPhotoIndex + 1) % album.photos.length;
-  updateModalImage();
-}
-
-// Agregar foto al carrito
-function addToCart() {
-  const exists = cart.some(
-    item => item.albumIndex === currentAlbumIndex && item.photoIndex === currentPhotoIndex
-  );
-  if (!exists) {
-    cart.push({ albumIndex: currentAlbumIndex, photoIndex: currentPhotoIndex });
+// Agregar al carrito
+addToCartBtn.addEventListener("click", () => {
+  const url = currentAlbum.photos[currentPhotoIndex];
+  if (!cart[url]) {
+    cart[url] = { album: currentAlbum.name, url };
+    saveCart();
     updateCartUI();
-    alert("Foto agregada al carrito");
-  } else {
-    alert("Esta foto ya está en el carrito");
+    addToCartBtn.disabled = true;
+    updateAddToCartBtn();
+    markPhotoInCart(url, true);
   }
+});
+
+// Marca foto en grid como en carrito (o no)
+function markPhotoInCart(url, isInCart) {
+  const photos = photoGrid.querySelectorAll(".photo-thumb");
+  photos.forEach((div) => {
+    const img = div.querySelector("img");
+    if (img && img.src === url) {
+      if (isInCart) {
+        if (!div.querySelector(".in-cart-icon")) {
+          const icon = document.createElement("div");
+          icon.className = "in-cart-icon";
+          icon.textContent = "✓";
+          div.appendChild(icon);
+        }
+      } else {
+        const icon = div.querySelector(".in-cart-icon");
+        if (icon) icon.remove();
+      }
+    }
+  });
 }
 
-// Actualizar UI carrito
+// Actualizar estado botón agregar carrito en modal
+function updateAddToCartBtn() {
+  const url = currentAlbum.photos[currentPhotoIndex];
+  addToCartBtn.disabled = !!cart[url];
+  addToCartBtn.textContent = addToCartBtn.disabled ? "Ya en carrito" : "Agregar al carrito";
+}
+
+// Guardar carrito en localStorage
+function saveCart() {
+  localStorage.setItem("photoCart", JSON.stringify(cart));
+}
+
+// Actualizar interfaz carrito
 function updateCartUI() {
-  const count = cart.length;
+  const count = Object.keys(cart).length;
   cartCountSpan.textContent = count;
   footerCartCount.textContent = count;
   footerCartTotal.textContent = count * pricePerPhoto;
+
   if (count > 0) {
     cartFooter.classList.remove("hidden");
   } else {
@@ -195,97 +264,97 @@ function updateCartUI() {
   }
 }
 
-// Abrir carrito (scroll footer)
-cartButton.addEventListener("click", () => {
-  if (cartFooter.classList.contains("hidden")) {
-    cartFooter.classList.remove("hidden");
-    cartFooter.scrollIntoView({ behavior: "smooth" });
-  } else {
-    cartFooter.classList.add("hidden");
+// Vaciar carrito
+clearCartBtn.addEventListener("click", () => {
+  if (confirm("¿Querés vaciar el carrito?")) {
+    cart = {};
+    saveCart();
+    updateCartUI();
+    // Actualizo iconos en fotos
+    if (currentAlbum) {
+      currentAlbum.photos.forEach((url) => markPhotoInCart(url, false));
+    }
   }
 });
 
-// Checkout
-function checkout() {
-  if (cart.length === 0) {
-    alert("No hay fotos en el carrito.");
+// Abrir modal checkout
+checkoutBtn.addEventListener("click", () => {
+  if (Object.keys(cart).length === 0) {
+    alert("No hay fotos en el carrito para comprar.");
     return;
   }
-  // Mostrar modal checkout con fotos y resumen
-  selectedPhotosContainer.innerHTML = "";
-  cart.forEach(({ albumIndex, photoIndex }) => {
-    const img = document.createElement("img");
-    img.src = albums[albumIndex].photos[photoIndex];
-    img.alt = `Foto ${photoIndex + 1} del álbum ${albums[albumIndex].name}`;
-    selectedPhotosContainer.appendChild(img);
-  });
-  const total = cart.length * pricePerPhoto;
-  checkoutSummary.textContent = `Total a pagar: $${total}`;
+  renderCheckout();
   checkoutModal.classList.remove("hidden");
   checkoutModal.focus();
-}
-
-// Enviar pedido por WhatsApp
-function sendWhatsApp() {
-  const baseUrl = "https://wa.me/5491125832571?text=";
-  const messageIntro = "Hola Juli, me gustaría comprar las siguientes fotos:\n";
-  const items = cart.map(({ albumIndex, photoIndex }, i) => {
-    const albumName = albums[albumIndex].name;
-    return `${i + 1}. Álbum: ${albumName} - Foto #${photoIndex + 1}`;
-  }).join("\n");
-  const total = cart.length * pricePerPhoto;
-  const messageTotal = `\nTotal: $${total}`;
-  const fullMessage = encodeURIComponent(messageIntro + items + messageTotal);
-  whatsappLink.href = baseUrl + fullMessage;
-  // Abrirá en nueva pestaña (rel noopener)
-}
-
-// Vaciar carrito
-function clearCart() {
-  if (confirm("¿Querés vaciar el carrito?")) {
-    cart = [];
-    updateCartUI();
-  }
-}
-
-// Filtrar álbumes
-photoSearchInput.addEventListener("input", e => {
-  renderAlbums(e.target.value);
 });
 
-// Cerrar modales
-function closeModal(modal) {
-  modal.classList.add("hidden");
+// Cerrar modal checkout
+closeCheckoutBtn.addEventListener("click", () => {
+  checkoutModal.classList.add("hidden");
+});
+
+// Renderiza checkout con fotos seleccionadas y mensaje WhatsApp
+function renderCheckout() {
+  selectedPhotosContainer.innerHTML = "";
+  const cartPhotos = Object.values(cart);
+  cartPhotos.forEach(({ url, album }) => {
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = `Foto del álbum ${album}`;
+    selectedPhotosContainer.appendChild(img);
+  });
+  const totalPrice = cartPhotos.length * pricePerPhoto;
+  checkoutSummary.textContent = `Total: $${totalPrice} ARS - Precio por foto: $${pricePerPhoto} ARS`;
+
+  // Generar mensaje WhatsApp
+  const phoneNumber = "5491161234567"; // Cambiar por el número real
+  let message =
+    `¡Hola Juli! Quisiera comprar las siguientes fotos de tus álbumes:%0A%0A` +
+    cartPhotos
+      .map((p, i) => `${i + 1}. Álbum: ${p.album} - Foto: ${p.url}`)
+      .join("%0A") +
+    `%0A%0ATotal a pagar: $${totalPrice} ARS.%0AGracias.`;
+  whatsappLink.href = `https://wa.me/${phoneNumber}?text=${message}`;
 }
 
-// Eventos modales y botones
-modalCloseBtn.addEventListener("click", () => closeModal(photoModal));
-checkoutCloseBtn.addEventListener("click", () => closeModal(checkoutModal));
-prevBtn.addEventListener("click", prevPhoto);
-nextBtn.addEventListener("click", nextPhoto);
-addToCartBtn.addEventListener("click", addToCart);
-checkoutBtn.addEventListener("click", checkout);
-clearCartBtn.addEventListener("click", clearCart);
-whatsappLink.addEventListener("click", sendWhatsApp);
+// Filtrar álbumes por búsqueda
+albumSearch.addEventListener("input", (e) => {
+  const query = e.target.value.toLowerCase().trim();
+  const filtered = albumsData.filter((album) =>
+    album.name.toLowerCase().includes(query)
+  );
+  renderAlbums(filtered);
+});
 
-// Cerrar modal con ESC y navegación teclado
-window.addEventListener("keydown", e => {
-  if (e.key === "Escape") {
-    if (!photoModal.classList.contains("hidden")) {
-      closeModal(photoModal);
+// Función auxiliar para animar fadeIn
+function fadeIn(element) {
+  element.style.opacity = 0;
+  element.classList.remove("hidden");
+  let op = 0;
+  const interval = setInterval(() => {
+    if (op >= 1) {
+      clearInterval(interval);
     }
-    if (!checkoutModal.classList.contains("hidden")) {
-      closeModal(checkoutModal);
-    }
+    element.style.opacity = op;
+    op += 0.05;
+  }, 20);
+}
+
+// Accesibilidad: cerrar modales con ESC y navegar con teclado
+document.addEventListener("keydown", (e) => {
+  if (!photoModal.classList.contains("hidden")) {
+    if (e.key === "Escape") closePhotoModal();
+    else if (e.key === "ArrowLeft") prevBtn.click();
+    else if (e.key === "ArrowRight") nextBtn.click();
+  }
+  if (!checkoutModal.classList.contains("hidden")) {
+    if (e.key === "Escape") checkoutModal.classList.add("hidden");
   }
 });
 
-// Mostrar álbumes e interfaz tras intro animación
-setTimeout(() => {
-  intro.style.display = "none";
-  header.classList.remove("hidden");
-  albumsContainer.classList.remove("hidden");
-  renderAlbums();
-}, 3500);
-
-updateCartUI();
+// Inicialización (mostrar intro)
+intro.classList.remove("hidden");
+header.classList.add("hidden");
+albumsContainer.classList.add("hidden");
+photoGrid.classList.add("hidden");
+cartFooter.classList.add("hidden");
