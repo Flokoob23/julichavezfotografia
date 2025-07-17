@@ -9,7 +9,7 @@ const albumsData = [
         cover: "album2.jpg",
         photos: ["photo4.jpg", "photo5.jpg", "photo6.jpg"],
     },
-    // Puedes agregar más álbumes aquí.
+    // Agregar más álbumes si lo deseas.
 ];
 
 let currentAlbum = null;
@@ -141,5 +141,4 @@ albumSearch.addEventListener("input", () => {
     const filteredAlbums = albumsData.filter(album => album.name.toLowerCase().includes(query));
     renderAlbums(filteredAlbums);
 });
-
 
