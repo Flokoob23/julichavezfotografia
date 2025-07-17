@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Juli Chavez – Fotografía Profesional</title>
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:600|Inter:400,600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css?family=Montserrat:600|Inter:400,600&display=swap"
+    rel="stylesheet"
+  />
   <meta name="description" content="Explorá y comprá fotografías profesionales de Juli Chavez." />
   <meta property="og:title" content="Juli Chavez – Fotografía Profesional" />
   <meta property="og:description" content="Explorá y comprá fotografías profesionales de Juli Chavez." />
@@ -14,33 +17,51 @@
 </head>
 <body>
   <!-- Intro animado -->
-  <div id="intro">
+  <div id="intro" role="banner" aria-label="Introducción Juli Chavez">
     <h1 id="intro-title">Juli Chavez</h1>
     <p id="intro-subtitle">Fotografía profesional</p>
   </div>
 
   <!-- Header -->
-  <header id="header" class="hidden">
+  <header id="header" class="hidden" role="banner">
     <h1>Juli Chavez</h1>
     <nav>
-      <input type="search" id="album-search" placeholder="Buscar álbum..." aria-label="Buscar álbum" />
+      <input
+        type="search"
+        id="album-search"
+        placeholder="Buscar álbum..."
+        aria-label="Buscar álbum"
+        autocomplete="off"
+      />
     </nav>
-    <button id="cart-button" aria-label="Abrir carrito">🛒 <span id="cart-count">0</span></button>
+    <button id="cart-button" aria-label="Abrir carrito de compras" aria-haspopup="true" aria-expanded="false">
+      🛒 <span id="cart-count">0</span>
+    </button>
   </header>
 
   <!-- Contenedor Álbumes -->
-  <section id="albums-container" class="hidden"></section>
+  <main>
+    <section id="albums-container" class="hidden" aria-label="Lista de álbumes"></section>
 
-  <!-- Cuadrícula de fotos -->
-  <section id="photo-grid" class="hidden">
-    <button id="back-to-albums" aria-label="Volver a los álbumes">← Volver a Álbumes</button>
-  </section>
+    <!-- Cuadrícula de fotos -->
+    <section id="photo-grid" class="hidden" aria-label="Fotos del álbum">
+      <button id="back-to-albums" aria-label="Volver a los álbumes">← Volver a Álbumes</button>
+    </section>
+  </main>
 
   <!-- Modal foto -->
-  <div id="photo-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-photo-title" tabindex="-1">
+  <div
+    id="photo-modal"
+    class="modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-photo-title"
+    tabindex="-1"
+  >
     <button class="close-modal" aria-label="Cerrar modal">×</button>
+    <h2 id="modal-photo-title" class="sr-only">Vista ampliada de foto</h2>
     <img id="modal-image" alt="" />
-    <div class="modal-nav">
+    <div class="modal-nav" role="navigation" aria-label="Navegación de fotos">
       <button id="prev" aria-label="Foto anterior">‹</button>
       <button id="next" aria-label="Foto siguiente">›</button>
     </div>
@@ -48,7 +69,7 @@
   </div>
 
   <!-- Footer carrito -->
-  <footer id="cart-footer" class="hidden">
+  <footer id="cart-footer" class="hidden" role="contentinfo" aria-label="Carrito de compras">
     <div id="cart-info">
       <span>Fotos en carrito: <strong id="footer-cart-count">0</strong></span>
       <span>Total: $<strong id="footer-cart-total">0</strong></span>
@@ -58,17 +79,33 @@
   </footer>
 
   <!-- Modal checkout -->
-  <div id="checkout-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="checkout-title" tabindex="-1">
+  <div
+    id="checkout-modal"
+    class="modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="checkout-title"
+    tabindex="-1"
+  >
     <button class="close-modal" aria-label="Cerrar modal">×</button>
     <h2 id="checkout-title">Confirmar Compra</h2>
-    <div id="selected-photos"></div>
+    <div id="selected-photos" aria-label="Fotos seleccionadas para compra"></div>
     <p id="checkout-summary"></p>
-    <a id="whatsapp-link" href="#" target="_blank" rel="noopener" class="button">Enviar pedido por WhatsApp</a>
+    <a
+      id="whatsapp-link"
+      href="#"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="button"
+      aria-label="Enviar pedido por WhatsApp"
+      >Enviar pedido por WhatsApp</a
+    >
   </div>
 
   <script src="app.js"></script>
 </body>
 </html>
+
 
 
 
