@@ -12,10 +12,11 @@
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
   font-family: var(--font-body);
   background: var(--background);
   color: var(--text-color);
@@ -42,13 +43,11 @@ body {
   font-size: 4rem;
   margin-bottom: 0.3rem;
   color: var(--primary-color);
-  animation: fadeInUp 1s ease forwards;
 }
 
 #intro-subtitle {
   font-size: 1.5rem;
   color: #666;
-  animation: fadeInUp 1s ease forwards;
   animation-delay: 0.3s;
 }
 
@@ -72,7 +71,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0 1.5rem;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   z-index: 1500;
   opacity: 0;
   animation: fadeInHeader 1s forwards;
@@ -100,7 +99,6 @@ nav {
   font-size: 1rem;
   border-radius: 5px;
   border: 1px solid #ccc;
-  transition: border-color 0.3s ease;
 }
 
 #album-search:focus {
@@ -112,45 +110,15 @@ nav {
   background: var(--primary-color);
   border: none;
   color: white;
-  font-weight: 700;
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
   font-size: 1rem;
-  user-select: none;
   transition: background-color 0.3s ease;
 }
 
 #cart-button:hover {
   background: #b20063;
-}
-
-/* --- Botón Volver a Álbumes --- */
-#back-to-albums {
-  display: inline-block;
-  margin: 5.5rem 1rem 1rem 1rem;
-  padding: 0.5rem 1rem;
-  font-weight: 600;
-  font-size: 1rem;
-  background: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  align-self: start;
-  max-width: 180px;
-  transition: background-color 0.3s;
-  z-index: 1400;
-  position: fixed;
-  top: 70px;
-  left: 1rem;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-}
-#back-to-albums:hover {
-  background: #b20063;
-}
-#back-to-albums.hidden {
-  display: none;
 }
 
 /* --- Álbumes --- */
@@ -169,91 +137,99 @@ nav {
 .album-card {
   border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   position: relative;
-  background: #ffe0f0; /* rosa claro */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 150px;
-  box-shadow: 0 4px 15px rgb(0 0 0 / 0.1);
-  transition: transform 0.2s ease;
+  background: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .album-card:hover {
-  transform: scale(1.05);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .album-card img {
   width: 100%;
-  height: 100%;
+  height: 150px;
   object-fit: cover;
-  border-radius: 12px;
 }
 
-.album-card h3 {
+.album-card span {
   position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--font-heading);
+  bottom: 12px;
+  left: 12px;
+  color: white;
+  font-weight: 700;
   font-size: 1.2rem;
-  color: var(--primary-color);
+  text-shadow: 0 0 6px rgba(0,0,0,0.7);
 }
 
-/* --- Cuadrícula de fotos --- */
+/* --- Cuadrícula Fotos --- */
 #photo-grid {
-  margin: 0 1rem;
+  max-width: 1200px;
+  margin: 6.5rem auto 3rem;
+  padding: 0 1rem;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill,minmax(160px,1fr));
   gap: 1rem;
-}
-
-.photo-thumb {
-  position: relative;
-  height: 200px;
-  overflow: hidden;
-  border-radius: 12px;
-  background: #ddd;
+  opacity: 0;
+  animation: fadeInPhotos 1s forwards;
 }
 
 .photo-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
 }
 
-.photo-thumb:hover {
+.photo-thumb:hover img {
   transform: scale(1.05);
-  transition: transform 0.2s ease;
 }
 
-.photo-thumb:after {
+.photo-thumb {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.photo-thumb::after {
   content: 'Ver foto';
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
-  width: 100%;
+  right: 0;
+  bottom: 0;
   background: rgba(0,0,0,0.5);
   color: white;
-  padding: 0.3rem;
-  text-align: center;
-  font-size: 1.1rem;
-  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-/* --- Modal Foto --- */
+.photo-thumb:hover::after {
+  opacity: 1;
+}
+
+/* --- Modal de Foto --- */
 .modal {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: var(--modal-bg);
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 2000;
-  padding: 1rem;
+  opacity: 0;
+  animation: fadeInModal 0.5s forwards;
 }
 
 .modal.hidden {
@@ -261,182 +237,108 @@ nav {
 }
 
 .modal img {
-  max-width: 90vw;
-  max-height: 70vh;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgb(0 0 0 / 0.7);
-  margin-bottom: 1rem;
-}
-
-.close-modal {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: var(--primary-color);
-  border: none;
-  color: white;
-  font-size: 1.5rem;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  font-weight: 700;
-  user-select: none;
-}
-
-.modal-nav {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  max-width: 90%;
+  max-height: 80%;
+  border-radius: 10px;
 }
 
 .modal-nav button {
-  background: var(--primary-color);
+  background: rgba(255, 255, 255, 0.7);
   border: none;
-  color: white;
-  font-size: 1.5rem;
-  border-radius: 8px;
-  padding: 0.3rem 0.8rem;
+  color: var(--primary-color);
+  font-size: 2rem;
+  padding: 10px;
+  border-radius: 50%;
   cursor: pointer;
-  user-select: none;
+  margin: 0 1rem;
+}
+
+.modal-nav button:hover {
+  background: rgba(255, 255, 255, 1);
 }
 
 #add-to-cart {
-  background: #b20063;
-  border: none;
+  margin-top: 20px;
+  background: var(--primary-color);
   color: white;
-  font-weight: 700;
+  border: none;
+  padding: 10px 20px;
   font-size: 1rem;
-  padding: 0.5rem 1.2rem;
   border-radius: 8px;
   cursor: pointer;
-  user-select: none;
-  transition: background-color 0.3s ease;
 }
 
 #add-to-cart:hover {
-  background: var(--primary-color);
+  background: #b20063;
 }
 
-/* --- Footer Carrito --- */
+/* --- Footer carrito --- */
 #cart-footer {
   position: fixed;
-  bottom: 0; left: 0; right: 0;
-  background: var(--primary-color);
-  color: white;
-  padding: 0.7rem 1rem;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  box-shadow: 0 -2px 15px rgba(0,0,0,0.1);
+  padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1800;
-  gap: 1rem;
+  font-family: var(--font-body);
 }
 
-#cart-footer.hidden {
-  display: none;
-}
-
-#cart-info span {
-  font-weight: 600;
-  margin-right: 1.5rem;
+#cart-info {
   font-size: 1rem;
 }
 
-#checkout,
-#clear-cart {
-  background: white;
-  color: var(--primary-color);
-  font-weight: 700;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 1rem;
-}
-
-#checkout:hover,
-#clear-cart:hover {
-  background: #f2f2f2;
-}
-
-/* --- Modal Checkout --- */
-#checkout-modal {
-  background: var(--modal-bg);
-  padding: 2rem;
-  border-radius: 12px;
-  max-width: 480px;
-  width: 90vw;
-  text-align: center;
+#checkout {
+  background: var(--primary-color);
   color: white;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2500;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-#checkout-modal.hidden {
-  display: none;
-}
-
-#checkout-modal h2 {
-  font-family: var(--font-heading);
-  margin-bottom: 1rem;
-  font-size: 1.8rem;
-  color: var(--primary-color);
-}
-
-#selected-photos {
-  display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-  max-height: 100px;
-  margin-bottom: 1rem;
-}
-
-#selected-photos img {
-  height: 80px;
+  padding: 10px 20px;
   border-radius: 8px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.5);
+  font-size: 1rem;
+  cursor: pointer;
 }
 
-#checkout-summary {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
+#checkout:hover {
+  background: #b20063;
+}
+
+#clear-cart {
+  background: #ddd;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#clear-cart:hover {
+  background: #ccc;
+}
+
+/* --- Modal checkout --- */
+#checkout-modal {
+  padding: 20px;
+  background: var(--background);
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
 #whatsapp-link {
+  display: block;
+  text-align: center;
   background: var(--primary-color);
   color: white;
-  padding: 0.8rem 1.5rem;
   text-decoration: none;
+  padding: 10px 20px;
+  font-size: 1rem;
   border-radius: 8px;
-  font-weight: 700;
-  user-select: none;
-  transition: background-color 0.3s ease;
+  margin-top: 10px;
 }
 
 #whatsapp-link:hover {
   background: #b20063;
 }
 
-/* --- Animaciones --- */
-@keyframes fadeInHeader {
-  from {opacity: 0; transform: translateY(-20px);}
-  to {opacity: 1; transform: translateY(0);}
-}
-
-@keyframes fadeInAlbums {
-  from {opacity: 0;}
-  to {opacity: 1;}
-}
-
-@keyframes fadeInPhotos {
-  from {opacity: 0;}
-  to {opacity: 1;}
-}
