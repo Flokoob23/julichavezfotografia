@@ -1,519 +1,383 @@
-// Variables globales
-let albums = [
-  // Ejemplo:
-  // { id: 1, name: 'Naturaleza' },
-  // { id: 2, name: 'Retratos' },
+// Datos iniciales de ejemplo
+const initialAlbums = [
+    {
+        id: 'album1',
+        title: 'Bodas',
+        photos: [
+            { id: 'b1', title: 'Novios felices', url: 'https://picsum.photos/id/1011/400/300' },
+            { id: 'b2', title: 'Anillo', url: 'https://picsum.photos/id/1012/400/300' },
+            { id: 'b3', title: 'Baile', url: 'https://picsum.photos/id/1013/400/300' },
+        ],
+    },
+    {
+        id: 'album2',
+        title: 'Retratos',
+        photos: [
+            { id: 'r1', title: 'Sonrisa', url: 'https://picsum.photos/id/1027/400/300' },
+            { id: 'r2', title: 'Mirada', url: 'https://picsum.photos/id/1028/400/300' },
+            { id: 'r3', title: 'Elegancia', url: 'https://picsum.photos/id/1031/400/300' },
+        ],
+    },
+    {
+        id: 'album3',
+        title: 'Paisajes',
+        photos: [
+            { id: 'p1', title: 'Montañas', url: 'https://picsum.photos/id/1043/400/300' },
+            { id: 'p2', title: 'Atardecer', url: 'https://picsum.photos/id/1044/400/300' },
+            { id: 'p3', title: 'Río', url: 'https://picsum.photos/id/1045/400/300' },
+        ],
+    },
 ];
-let photos = {
-  // albumId: [ { id, title, src }, ... ]
-  // Ejemplo:
-  // 1: [{ id: 1, title: 'Árbol', src: 'path/to/tree.jpg' }]
-};
 
+// Variables estado
+let albums = [];
+let currentAlbumId = null;
 let cart = [];
-let orders = [];
+let adminLoggedIn = false;
+let purchases = []; // Registros de compra
 
-let currentAlbum = null;
-let currentPhotoIndex = 0;
+// DOM references
+const albumsContainer = document.getElementById('albums-container');
+const photosSection = document.getElementById('photos-section');
+const albumsSection = document.getElementById('albums-section');
+const photosContainer = document.getElementById('photos-container');
+const albumTitle = document.getElementById('album-title');
+const backToAlbumsBtn = document.getElementById('back-to-albums');
 
-// Mostrar lista de álbumes (versión usuario)
-function loadAlbums() {
-  const albumsSection = document.getElementById('albumsSection');
-  albumsSection.innerHTML = '';
-  albums.forEach(album => {
-    const div = document.createElement('div');
-    div.className = 'cursor-pointer p-4 border rounded hover:bg-gray-100';
-    div.textContent = album.name;
-    div.onclick = () => {
-      currentAlbum = album.id;
-      showPhotos(album.id);
-    };
-    albumsSection.appendChild(div);
-  });
+const cartItemsContainer = document.getElementById('cart-items');
+const cartTotalSpan = document.getElementById('cart-total');
+const checkoutBtn = document.getElementById('checkout-btn');
+
+const checkoutSection = document.getElementById('checkout-section');
+const checkoutForm = document.getElementById('checkout-form');
+const deliveryMethodSelect = document.getElementById('delivery-method');
+const deliveryContactInput = document.getElementById('delivery-contact');
+const deliveryContactLabel = document.getElementById('delivery-contact-label');
+const paymentAmountSpan = document.getElementById('payment-amount');
+const cancelCheckoutBtn = document.getElementById('cancel-checkout');
+
+const adminToggleBtn = document.getElementById('admin-toggle');
+const adminPanel = document.getElementById('admin-panel');
+const adminLoginSection = document.getElementById('admin-login-section');
+const adminControls = document.getElementById('admin-controls');
+const adminUsernameInput = document.getElementById('admin-username');
+const adminPasswordInput = document.getElementById('admin-password');
+const adminLoginBtn = document.getElementById('admin-login-btn');
+const adminLogoutBtn = document.getElementById('admin-logout-btn');
+const adminLoginMsg = document.getElementById('admin-login-msg');
+const newAlbumTitleInput = document.getElementById('new-album-title');
+const addAlbumBtn = document.getElementById('add-album-btn');
+const adminAlbumList = document.getElementById('admin-album-list');
+const purchaseRecordsBody = document.querySelector('#purchase-records tbody');
+
+const PRICE_PER_PHOTO = 1500;
+
+// --- Funciones ---
+
+// Guardar y cargar estado (opcional para persistencia simple localStorage)
+function saveState() {
+    localStorage.setItem('albums', JSON.stringify(albums));
+    localStorage.setItem('purchases', JSON.stringify(purchases));
 }
-
-// Mostrar fotos de un álbum (usuario)
-function showPhotos(albumId) {
-  currentAlbum = albumId;
-  document.getElementById('albumsSection').classList.add('hidden');
-  const photosSection = document.getElementById('photosSection');
-  photosSection.classList.remove('hidden');
-  photosSection.innerHTML = '';
-
-  const albumPhotos = photos[albumId] || [];
-  albumPhotos.forEach((photo, index) => {
-    const photoDiv = document.createElement('div');
-    photoDiv.className = 'inline-block m-2 cursor-pointer rounded overflow-hidden border hover:shadow-lg';
-    photoDiv.style.width = '150px';
-    photoDiv.innerHTML = `<img src="${photo.src}" alt="${photo.title}" class="w-full h-auto" />`;
-    photoDiv.onclick = () => openPhotoModal(index);
-    photosSection.appendChild(photoDiv);
-  });
-
-  // Botón para volver a álbumes
-  const backBtn = document.createElement('button');
-  backBtn.textContent = '← Volver a álbumes';
-  backBtn.className = 'mt-4 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400';
-  backBtn.onclick = () => {
-    document.getElementById('photosSection').classList.add('hidden');
-    document.getElementById('albumsSection').classList.remove('hidden');
-    currentAlbum = null;
-  };
-  photosSection.appendChild(backBtn);
+function loadState() {
+    const storedAlbums = localStorage.getItem('albums');
+    const storedPurchases = localStorage.getItem('purchases');
+    if (storedAlbums) albums = JSON.parse(storedAlbums);
+    else albums = JSON.parse(JSON.stringify(initialAlbums)); // deep copy
+    if (storedPurchases) purchases = JSON.parse(storedPurchases);
+    else purchases = [];
 }
+loadState();
 
-// Abrir modal foto
-function openPhotoModal(index) {
-  currentPhotoIndex = index;
-  const albumPhotos = photos[currentAlbum] || [];
-  const photo = albumPhotos[index];
-  if (!photo) return;
-
-  const modalImage = document.getElementById('modalImage');
-  const modalPhotoTitle = document.getElementById('modalPhotoTitle');
-  const addToCartBtn = document.getElementById('addToCartBtn');
-
-  modalImage.src = photo.src;
-  modalPhotoTitle.textContent = photo.title;
-
-  const isInCart = cart.some(item => item.id === photo.id);
-  if (isInCart) {
-    addToCartBtn.textContent = 'Ya en el carrito';
-    addToCartBtn.disabled = true;
-    addToCartBtn.classList.add('bg-gray-400');
-    addToCartBtn.classList.remove('bg-black', 'hover:bg-gray-800');
-  } else {
-    addToCartBtn.textContent = 'Agregar al carrito';
-    addToCartBtn.disabled = false;
-    addToCartBtn.classList.remove('bg-gray-400');
-    addToCartBtn.classList.add('bg-black', 'hover:bg-gray-800');
-  }
-
-  document.getElementById('photoModal').classList.remove('hidden');
-}
-
-// Cerrar modal foto
-function closePhotoModal() {
-  document.getElementById('photoModal').classList.add('hidden');
-}
-
-// Mostrar siguiente foto
-function showNextPhoto() {
-  const albumPhotos = photos[currentAlbum] || [];
-  currentPhotoIndex = (currentPhotoIndex + 1) % albumPhotos.length;
-  openPhotoModal(currentPhotoIndex);
-}
-
-// Mostrar foto anterior
-function showPreviousPhoto() {
-  const albumPhotos = photos[currentAlbum] || [];
-  currentPhotoIndex = (currentPhotoIndex - 1 + albumPhotos.length) % albumPhotos.length;
-  openPhotoModal(currentPhotoIndex);
-}
-
-// Agregar foto actual al carrito
-function addCurrentPhotoToCart() {
-  const albumPhotos = photos[currentAlbum] || [];
-  const photo = albumPhotos[currentPhotoIndex];
-  if (!photo) return;
-
-  if (!cart.some(item => item.id === photo.id)) {
-    cart.push({
-      id: photo.id,
-      title: photo.title,
-      src: photo.src,
-      price: 1500
+// Mostrar álbumes
+function renderAlbums() {
+    albumsContainer.innerHTML = '';
+    albums.forEach(album => {
+        const card = document.createElement('div');
+        card.className = 'album-card';
+        card.tabIndex = 0;
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-pressed', 'false');
+        card.innerHTML = `<h4>${album.title}</h4>`;
+        card.addEventListener('click', () => openAlbum(album.id));
+        card.addEventListener('keypress', e => {
+            if(e.key === 'Enter' || e.key === ' ') openAlbum(album.id);
+        });
+        albumsContainer.appendChild(card);
     });
-    updateCartCount();
-
-    const addToCartBtn = document.getElementById('addToCartBtn');
-    addToCartBtn.textContent = 'Ya en el carrito';
-    addToCartBtn.disabled = true;
-    addToCartBtn.classList.add('bg-gray-400');
-    addToCartBtn.classList.remove('bg-black', 'hover:bg-gray-800');
-
-    showSuccessModal('¡Agregado al carrito!', 'La foto ha sido agregada a tu carrito de compras.');
-  }
 }
 
-// Actualizar contador carrito
-function updateCartCount() {
-  document.getElementById('cartCount').textContent = cart.length;
+// Abrir álbum y mostrar fotos
+function openAlbum(albumId) {
+    currentAlbumId = albumId;
+    const album = albums.find(a => a.id === albumId);
+    if (!album) return;
+    albumTitle.textContent = album.title;
+    photosContainer.innerHTML = '';
+    album.photos.forEach(photo => {
+        const photoDiv = document.createElement('div');
+        photoDiv.className = 'photo-card';
+        photoDiv.tabIndex = 0;
+        photoDiv.setAttribute('role', 'button');
+        photoDiv.setAttribute('aria-pressed', 'false');
+        photoDiv.title = photo.title;
+        photoDiv.innerHTML = `<img src="${photo.url}" alt="${photo.title}" />`;
+        photoDiv.addEventListener('click', () => togglePhotoInCart(photo));
+        photoDiv.addEventListener('keypress', e => {
+            if(e.key === 'Enter' || e.key === ' ') togglePhotoInCart(photo);
+        });
+        photosContainer.appendChild(photoDiv);
+    });
+    albumsSection.classList.add('hidden');
+    photosSection.classList.remove('hidden');
+}
+
+// Volver a albums
+backToAlbumsBtn.addEventListener('click', () => {
+    photosSection.classList.add('hidden');
+    albumsSection.classList.remove('hidden');
+    currentAlbumId = null;
+});
+
+// Añadir foto al carrito o quitar si ya está
+function togglePhotoInCart(photo) {
+    const index = cart.findIndex(p => p.id === photo.id);
+    if (index > -1) {
+        cart.splice(index, 1);
+    } else {
+        cart.push(photo);
+    }
+    renderCart();
 }
 
 // Mostrar carrito
-function showCart() {
-  if (cart.length === 0) {
-    showSuccessModal('Carrito vacío', 'No hay fotos en tu carrito de compras.');
-    return;
-  }
-
-  const cartItems = document.getElementById('cartItems');
-  cartItems.innerHTML = '';
-
-  let total = 0;
-
-  cart.forEach(item => {
-    const itemElement = document.createElement('div');
-    itemElement.className = 'flex items-center justify-between py-4 border-b border-gray-200';
-
-    itemElement.innerHTML = `
-      <div class="flex items-center">
-        <img src="${item.src}" alt="${item.title}" class="w-16 h-16 object-cover rounded-md mr-4" />
-        <div>
-          <h5 class="font-bold">${item.title}</h5>
-          <p class="text-gray-600">$${item.price}</p>
-        </div>
-      </div>
-      <button class="text-red-500 hover:text-red-700" data-item-id="${item.id}" aria-label="Eliminar del carrito">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-        </svg>
-      </button>
-    `;
-
-    cartItems.appendChild(itemElement);
-
-    // Evento eliminar
-    itemElement.querySelector('button').addEventListener('click', function () {
-      const itemId = parseInt(this.getAttribute('data-item-id'));
-      removeFromCart(itemId);
-    });
-
-    total += item.price;
-  });
-
-  document.getElementById('cartTotal').textContent = `$${total}`;
-  document.getElementById('cartModal').classList.remove('hidden');
-}
-
-// Cerrar modal carrito
-function closeCartModal() {
-  document.getElementById('cartModal').classList.add('hidden');
-}
-
-// Eliminar item del carrito
-function removeFromCart(itemId) {
-  cart = cart.filter(item => item.id !== itemId);
-  updateCartCount();
-  showCart();
-}
-
-// Mostrar checkout
-function showCheckout() {
-  if (cart.length === 0) {
-    showSuccessModal('Carrito vacío', 'No hay fotos en tu carrito de compras.');
-    return;
-  }
-
-  closeCartModal();
-
-  const checkoutPhotos = document.getElementById('checkoutPhotos');
-  checkoutPhotos.innerHTML = '';
-
-  let total = 0;
-
-  cart.forEach(item => {
-    const photoElement = document.createElement('div');
-    photoElement.className = 'aspect-square bg-gray-100 rounded-md overflow-hidden';
-
-    photoElement.innerHTML = `<img src="${item.src}" alt="${item.title}" class="w-full h-full object-cover" />`;
-
-    checkoutPhotos.appendChild(photoElement);
-    total += item.price;
-  });
-
-  document.getElementById('checkoutTotal').textContent = `$${total}`;
-  document.getElementById('checkoutModal').classList.remove('hidden');
-
-  // Reset form fields
-  document.getElementById('deliveryMethod').value = 'email';
-  toggleDeliveryFields();
-}
-
-// Cerrar modal checkout
-function closeCheckoutModal() {
-  document.getElementById('checkoutModal').classList.add('hidden');
-}
-
-// Alternar campos delivery según método
-function toggleDeliveryFields() {
-  const method = document.getElementById('deliveryMethod').value;
-  const emailField = document.getElementById('emailField');
-  const whatsappField = document.getElementById('whatsappField');
-
-  if (method === 'email') {
-    emailField.classList.remove('hidden');
-    whatsappField.classList.add('hidden');
-    emailField.querySelector('input').required = true;
-    whatsappField.querySelector('input').required = false;
-  } else {
-    emailField.classList.add('hidden');
-    whatsappField.classList.remove('hidden');
-    emailField.querySelector('input').required = false;
-    whatsappField.querySelector('input').required = true;
-  }
-}
-
-// Procesar pedido
-function processOrder(e) {
-  e.preventDefault();
-
-  const form = e.target;
-  const customerName = form.customerName.value.trim();
-  const deliveryMethod = document.getElementById('deliveryMethod').value;
-  const contact = deliveryMethod === 'email' ?
-    document.querySelector('#emailField input').value.trim() :
-    document.querySelector('#whatsappField input').value.trim();
-
-  if (!customerName || !contact) {
-    showSuccessModal('Error', 'Por favor completa todos los campos.');
-    return;
-  }
-
-  // Crear nuevo pedido
-  const newOrder = {
-    id: orders.length + 1,
-    customerName,
-    deliveryMethod,
-    contact,
-    photos: cart.map(item => item.id),
-    total: cart.reduce((sum, item) => sum + item.price, 0),
-    date: new Date().toISOString().split('T')[0]
-  };
-
-  orders.push(newOrder);
-
-  // Vaciar carrito
-  cart = [];
-  updateCartCount();
-
-  closeCheckoutModal();
-  showSuccessModal('¡Compra realizada!', 'Tu pedido ha sido procesado correctamente. Recibirás tus fotos pronto.');
-
-  // Opcional: reset form
-  form.reset();
-  toggleDeliveryFields();
-}
-
-// Mostrar modal login admin
-function showAdminLogin() {
-  document.getElementById('adminLoginModal').classList.remove('hidden');
-  document.getElementById('adminUsername').value = '';
-  document.getElementById('adminPassword').value = '';
-  document.getElementById('loginError').classList.add('hidden');
-}
-
-// Cerrar modal login admin
-function closeAdminLoginModal() {
-  document.getElementById('adminLoginModal').classList.add('hidden');
-}
-
-// Manejar login admin
-function handleAdminLogin(e) {
-  e.preventDefault();
-
-  const username = document.getElementById('adminUsername').value.trim();
-  const password = document.getElementById('adminPassword').value.trim();
-
-  if (username === 'tesai25' && password === 'julifotos25') {
-    closeAdminLoginModal();
-    showAdminPanel();
-  } else {
-    document.getElementById('loginError').classList.remove('hidden');
-  }
-}
-
-// Mostrar panel admin
-function showAdminPanel() {
-  loadAdminAlbums();
-  loadAdminOrders();
-  switchAdminTab('albums');
-  document.getElementById('adminPanelModal').classList.remove('hidden');
-}
-
-// Cerrar panel admin
-function closeAdminPanelModal() {
-  document.getElementById('adminPanelModal').classList.add('hidden');
-}
-
-// Cambiar tab admin
-function switchAdminTab(tabId) {
-  document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-    if (btn.getAttribute('data-tab') === tabId) {
-      btn.classList.add('border-black');
-      btn.classList.remove('border-transparent');
-    } else {
-      btn.classList.remove('border-black');
-      btn.classList.add('border-transparent');
+function renderCart() {
+    cartItemsContainer.innerHTML = '';
+    if(cart.length === 0){
+        cartItemsContainer.innerHTML = '<p>Carrito vacío</p>';
+        checkoutBtn.disabled = true;
+        cartTotalSpan.textContent = '$0';
+        return;
     }
-  });
 
-  if (tabId === 'albums') {
-    document.getElementById('adminAlbumsTab').classList.remove('hidden');
-    document.getElementById('adminOrdersTab').classList.add('hidden');
-  } else {
-    document.getElementById('adminAlbumsTab').classList.add('hidden');
-    document.getElementById('adminOrdersTab').classList.remove('hidden');
-  }
-}
-
-// Cargar álbumes admin
-function loadAdminAlbums() {
-  const albumsList = document.getElementById('albumsList');
-  albumsList.innerHTML = '';
-
-  albums.forEach(album => {
-    const albumElement = document.createElement('div');
-    albumElement.className = 'flex items-center justify-between p-4 bg-gray-100 rounded-md';
-
-    albumElement.innerHTML = `
-      <div>
-        <h5 class="font-bold">${album.name}</h5>
-        <p class="text-gray-600">${(photos[album.id] || []).length} fotos</p>
-      </div>
-      <div class="flex space-x-2">
-        <button class="bg-black text-white px-3 py-1 rounded-md hover:bg-gray-800 transition" data-album-id="${album.id}">
-          Editar
-        </button>
-        <button class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition" data-album-id="${album.id}">
-          Eliminar
-        </button>
-      </div>
-    `;
-
-    albumsList.appendChild(albumElement);
-
-    const buttons = albumElement.querySelectorAll('button');
-    buttons[0].addEventListener('click', () => editAlbum(album.id));
-    buttons[1].addEventListener('click', () => deleteAlbum(album.id));
-  });
-}
-
-// Cargar pedidos admin
-function loadAdminOrders() {
-  const ordersList = document.getElementById('ordersList');
-  ordersList.innerHTML = '';
-
-  if (orders.length === 0) {
-    ordersList.innerHTML = '<p class="text-gray-600">No hay pedidos registrados.</p>';
-    return;
-  }
-
-  orders.forEach(order => {
-    const orderElement = document.createElement('div');
-    orderElement.className = 'p-4 bg-gray-100 rounded-md';
-
-    const photosList = order.photos.map(photoId => {
-      for (const albumId in photos) {
-        const photo = photos[albumId].find(p => p.id === photoId);
-        if (photo) return photo.title;
-      }
-      return `Foto #${photoId}`;
-    }).join(', ');
-
-    orderElement.innerHTML = `
-      <div class="flex justify-between items-start">
-        <div>
-          <h5 class="font-bold">${order.customerName}</h5>
-          <p class="text-gray-600">Fecha: ${order.date}</p>
-          <p class="text-gray-600">Método de entrega: ${order.deliveryMethod === 'email' ? 'Correo electrónico' : 'WhatsApp'}</p>
-          <p class="text-gray-600">Contacto: ${order.contact}</p>
-          <p class="text-gray-600">Fotos: ${photosList}</p>
-        </div>
-        <div class="text-xl font-bold">$${order.total}</div>
-      </div>
-    `;
-
-    ordersList.appendChild(orderElement);
-  });
-}
-
-// Mostrar formulario agregar álbum
-function showAddAlbumForm() {
-  document.getElementById('addAlbumForm').classList.remove('hidden');
-  document.getElementById('newAlbumName').value = '';
-}
-
-// Ocultar formulario agregar álbum
-function hideAddAlbumForm() {
-  document.getElementById('addAlbumForm').classList.add('hidden');
-}
-
-// Agregar álbum
-function handleAddAlbum(e) {
-  e.preventDefault();
-  const albumName = document.getElementById('newAlbumName').value.trim();
-  if (albumName === '') return;
-
-  const newAlbumId = albums.length > 0 ? Math.max(...albums.map(a => a.id)) + 1 : 1;
-
-  albums.push({
-    id: newAlbumId,
-    name: albumName
-  });
-
-  photos[newAlbumId] = [];
-
-  hideAddAlbumForm();
-  loadAdminAlbums();
-  loadAlbums();
-
-  showSuccessModal('Álbum creado', `El álbum "${albumName}" ha sido creado correctamente.`);
-}
-
-// Editar álbum
-function editAlbum(albumId) {
-  const album = albums.find(a => a.id === albumId);
-  if (!album) return;
-
-  const newName = prompt('Editar nombre del álbum:', album.name);
-  if (newName && newName.trim() !== '') {
-    album.name = newName.trim();
-    loadAdminAlbums();
-    loadAlbums();
-
-    showSuccessModal('Álbum actualizado', `El álbum ha sido actualizado correctamente.`);
-  }
-}
-
-// Eliminar álbum
-function deleteAlbum(albumId) {
-  if (!confirm('¿Estás seguro de que deseas eliminar este álbum? Esta acción no se puede deshacer.')) {
-    return;
-  }
-
-  albums = albums.filter(a => a.id !== albumId);
-  delete photos[albumId];
-
-  loadAdminAlbums();
-  loadAlbums();
-
-  showSuccessModal('Álbum eliminado', `El álbum ha sido eliminado correctamente.`);
-}
-
-// Mostrar modal éxito
-function showSuccessModal(title, message) {
-  document.getElementById('successTitle').textContent = title;
-  document.getElementById('successMessage').textContent = message;
-  document.getElementById('successModal').classList.remove('hidden');
-}
-
-// Cerrar modal éxito
-function closeSuccessModal() {
-  document.getElementById('successModal').classList.add('hidden');
-}
-
-// Al cargar página: mostrar álbumes
-document.addEventListener('DOMContentLoaded', () => {
-  loadAlbums();
-
-  // Eventos para cambiar pestañas admin
-  document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      switchAdminTab(btn.getAttribute('data-tab'));
+    cart.forEach(photo => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cart-item';
+        itemDiv.textContent = photo.title;
+        const removeBtn = document.createElement('button');
+        removeBtn.title = 'Quitar del carrito';
+        removeBtn.innerHTML = '&times;';
+        removeBtn.addEventListener('click', () => {
+            cart = cart.filter(p => p.id !== photo.id);
+            renderCart();
+        });
+        itemDiv.appendChild(removeBtn);
+        cartItemsContainer.appendChild(itemDiv);
     });
-  });
+
+    const total = cart.length * PRICE_PER_PHOTO;
+    cartTotalSpan.textContent = `$${total.toLocaleString('es-AR')}`;
+    checkoutBtn.disabled = false;
+}
+
+// Checkout - mostrar form
+checkoutBtn.addEventListener('click', () => {
+    if (cart.length === 0) return;
+    checkoutSection.classList.remove('hidden');
+    document.getElementById('main-content').classList.add('hidden');
+    paymentAmountSpan.textContent = `$${(cart.length * PRICE_PER_PHOTO).toLocaleString('es-AR')}`;
+    deliveryContactInput.value = '';
+    deliveryContactInput.classList.add('hidden');
+    deliveryContactLabel.classList.add('hidden');
+    deliveryMethodSelect.value = '';
 });
 
+// Manejar cambio método entrega
+deliveryMethodSelect.addEventListener('change', () => {
+    const val = deliveryMethodSelect.value;
+    if(val === 'correo' || val === 'whatsapp'){
+        deliveryContactInput.classList.remove('hidden');
+        deliveryContactLabel.classList.remove('hidden');
+        deliveryContactLabel.textContent = val === 'correo' ? 'Ingrese correo electrónico:' : 'Ingrese número de WhatsApp:';
+        deliveryContactInput.placeholder = val === 'correo' ? 'correo@ejemplo.com' : '+54 9 11 1234 5678';
+    } else {
+        deliveryContactInput.classList.add('hidden');
+        deliveryContactLabel.classList.add('hidden');
+    }
+});
 
+// Cancelar checkout
+cancelCheckoutBtn.addEventListener('click', () => {
+    checkoutSection.classList.add('hidden');
+});
+
+// Manejar envío de compra
+checkoutForm.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const name = checkoutForm.customerName.value.trim();
+    const method = checkoutForm.deliveryMethod.value;
+    const contact = checkoutForm.deliveryContact.value.trim();
+    const fileInput = checkoutForm.paymentProof;
+
+    if (!name || !method || !contact || fileInput.files.length === 0) {
+        alert('Por favor complete todos los campos y cargue el comprobante.');
+        return;
+    }
+
+    // Leer archivo imagen comprobante (simplificado)
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const purchase = {
+            id: Date.now(),
+            customerName: name,
+            deliveryMethod: method,
+            deliveryContact: contact,
+            paymentProof: event.target.result, // base64 image
+            date: new Date().toLocaleString('es-AR'),
+            photos: cart.map(p => p.title),
+            total: cart.length * PRICE_PER_PHOTO
+        };
+        purchases.push(purchase);
+        saveState();
+        alert('Compra registrada correctamente. ¡Gracias!');
+        cart = [];
+        renderCart();
+        checkoutSection.classList.add('hidden');
+        albumsSection.classList.remove('hidden');
+        photosSection.classList.add('hidden');
+        renderPurchaseRecords();
+    }
+    reader.readAsDataURL(file);
+});
+
+// --- Admin panel ---
+
+// Toggle admin panel
+adminToggleBtn.addEventListener('click', () => {
+    adminPanel.classList.toggle('hidden');
+});
+
+// Login admin
+adminLoginBtn.addEventListener('click', () => {
+    const user = adminUsernameInput.value.trim();
+    const pass = adminPasswordInput.value.trim();
+
+    if(user === 'tesai25' && pass === 'julifotos25'){
+        adminLoggedIn = true;
+        adminLoginMsg.textContent = '';
+        adminLoginSection.classList.add('hidden');
+        adminControls.classList.remove('hidden');
+        adminLogoutBtn.classList.remove('hidden');
+        adminUsernameInput.value = '';
+        adminPasswordInput.value = '';
+        renderAdminAlbums();
+        renderPurchaseRecords();
+    } else {
+        adminLoginMsg.textContent = 'Usuario o contraseña incorrectos.';
+    }
+});
+
+// Logout admin
+adminLogoutBtn.addEventListener('click', () => {
+    adminLoggedIn = false;
+    adminLoginSection.classList.remove('hidden');
+    adminControls.classList.add('hidden');
+    adminLogoutBtn.classList.add('hidden');
+    adminLoginMsg.textContent = '';
+});
+
+// Render admin album list
+function renderAdminAlbums() {
+    adminAlbumList.innerHTML = '';
+    albums.forEach(album => {
+        const li = document.createElement('li');
+        li.textContent = album.title;
+        const delBtn = document.createElement('button');
+        delBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        delBtn.title = 'Eliminar álbum';
+        delBtn.addEventListener('click', () => {
+            if(confirm(`Eliminar álbum "${album.title}"? Esta acción no se puede deshacer.`)){
+                albums = albums.filter(a => a.id !== album.id);
+                saveState();
+                renderAlbums();
+                renderAdminAlbums();
+                if(currentAlbumId === album.id){
+                    photosSection.classList.add('hidden');
+                    albumsSection.classList.remove('hidden');
+                    currentAlbumId = null;
+                }
+            }
+        });
+        li.appendChild(delBtn);
+        adminAlbumList.appendChild(li);
+    });
+}
+
+// Agregar álbum nuevo
+addAlbumBtn.addEventListener('click', () => {
+    const title = newAlbumTitleInput.value.trim();
+    if(!title){
+        alert('Ingrese un título para el álbum.');
+        return;
+    }
+    // Crear id único simple
+    const newId = 'album_' + Date.now();
+    albums.push({ id: newId, title: title, photos: [] });
+    newAlbumTitleInput.value = '';
+    saveState();
+    renderAlbums();
+    renderAdminAlbums();
+});
+
+// Render registros de compra
+function renderPurchaseRecords() {
+    purchaseRecordsBody.innerHTML = '';
+    if(purchases.length === 0){
+        purchaseRecordsBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay compras registradas.</td></tr>';
+        return;
+    }
+    purchases.forEach(purchase => {
+        const tr = document.createElement('tr');
+
+        // Nombre
+        const tdName = document.createElement('td');
+        tdName.textContent = purchase.customerName;
+        tr.appendChild(tdName);
+
+        // Comprobante (mostrar imagen en miniatura, clic para abrir grande)
+        const tdProof = document.createElement('td');
+        const imgProof = document.createElement('img');
+        imgProof.src = purchase.paymentProof;
+        imgProof.alt = 'Comprobante';
+        imgProof.style.width = '60px';
+        imgProof.style.cursor = 'pointer';
+        imgProof.title = 'Ver comprobante';
+        imgProof.addEventListener('click', () => {
+            window.open(purchase.paymentProof, '_blank');
+        });
+        tdProof.appendChild(imgProof);
+        tr.appendChild(tdProof);
+
+        // Fecha
+        const tdDate = document.createElement('td');
+        tdDate.textContent = purchase.date;
+        tr.appendChild(tdDate);
+
+        // Fotos
+        const tdPhotos = document.createElement('td');
+        tdPhotos.textContent = purchase.photos.join(', ');
+        tr.appendChild(tdPhotos);
+
+        purchaseRecordsBody.appendChild(tr);
+    });
+}
+
+// Inicializar app
+function init() {
+    renderAlbums();
+    renderCart();
+}
+
+init();
