@@ -13,6 +13,7 @@ body {
   padding: 20px;
   min-height: 100vh;
   position: relative;
+  line-height: 1.5;
 }
 
 /* HEADER */
@@ -51,6 +52,7 @@ h3 {
   user-select: none;
 }
 
+/* Ocultar con clase */
 .hidden {
   display: none !important;
 }
@@ -64,23 +66,27 @@ h3 {
 }
 
 .album-card {
-  border: 3px solid #e91e63;
-  border-radius: 12px;
-  padding: 25px 30px;
+  border: 2px solid #e91e63;
+  border-radius: 10px;
+  padding: 22px 26px;
   min-width: 180px;
   cursor: pointer;
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   text-align: center;
   color: #e91e63;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
   user-select: none;
   outline-offset: 4px;
+  background: white;
+  box-shadow: 0 2px 6px rgb(233 30 99 / 0.15);
 }
 .album-card:hover,
 .album-card:focus-visible {
   background-color: #fce4ec;
-  outline: 2px solid #e91e63;
+  color: #b0003a;
+  outline: 2px solid #b0003a;
+  box-shadow: 0 4px 12px rgb(176 0 58 / 0.3);
 }
 
 /* FOTOS */
@@ -98,15 +104,17 @@ h3 {
   max-width: 200px;
   box-shadow: 0 0 7px rgba(233, 30, 99, 0.4);
   transition: transform 0.25s ease;
+  background: white;
 }
 .photo-card img {
   width: 100%;
   display: block;
+  user-select: none;
 }
 .photo-card:hover,
 .photo-card:focus-visible {
-  transform: scale(1.03);
-  outline: 2px solid #e91e63;
+  transform: scale(1.04);
+  outline: 2px solid #b0003a;
 }
 
 /* BOTÓN VOLVER */
@@ -121,6 +129,7 @@ h3 {
   font-weight: 700;
   font-size: 1rem;
   user-select: none;
+  transition: background-color 0.3s ease;
 }
 #back-to-albums:hover,
 #back-to-albums:focus-visible {
@@ -135,18 +144,21 @@ h3 {
   left: 50%;
   max-width: 90vw;
   max-height: 90vh;
+  overflow-y: auto;
   transform: translate(-50%, -50%);
   background: white;
-  border-radius: 14px;
-  box-shadow: 0 8px 30px rgba(233, 30, 99, 0.5);
-  padding: 20px 25px;
-  z-index: 9999;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgb(233 30 99 / 0.5);
+  padding: 24px 30px;
+  z-index: 10000;
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: opacity 0.3s ease;
 }
 .modal.hidden {
   display: none;
+  opacity: 0;
 }
 .modal button {
   cursor: pointer;
@@ -154,11 +166,12 @@ h3 {
   background: #e91e63;
   color: white;
   font-weight: 700;
-  border-radius: 8px;
-  padding: 8px 14px;
-  margin-top: 15px;
+  border-radius: 10px;
+  padding: 10px 18px;
+  margin-top: 20px;
   user-select: none;
   transition: background-color 0.25s ease;
+  font-size: 1rem;
 }
 .modal button:hover,
 .modal button:focus-visible {
@@ -166,241 +179,103 @@ h3 {
   outline: none;
 }
 
-/* Modal foto */
-#photo-modal {
-  width: 90vw;
+/* Modal Admin Panel grande */
+#admin-panel-modal {
   max-width: 600px;
-  max-height: 90vh;
-  overflow: hidden;
-  position: relative;
+  max-height: 85vh;
+  padding: 30px 40px;
 }
-#photo-modal img {
-  max-width: 100%;
-  max-height: 65vh;
-  border-radius: 12px;
+#admin-panel-modal section {
+  width: 100%;
+  margin-bottom: 1.8rem;
+}
+#admin-panel-modal input[type="text"],
+#admin-panel-modal input[type="file"] {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1.8px solid #e91e63;
+  font-weight: 600;
+  color: #b0003a;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  outline-offset: 2px;
+  outline-color: transparent;
+  transition: outline-color 0.3s ease;
+}
+#admin-panel-modal input[type="text"]:focus,
+#admin-panel-modal input[type="file"]:focus {
+  outline-color: #b0003a;
+}
+
+/* Lista álbumes admin */
+#admin-album-list {
+  list-style: none;
+  max-height: 140px;
+  overflow-y: auto;
+  padding: 8px 0;
+  border-radius: 10px;
+  border: 1.5px solid #e91e63;
   user-select: none;
 }
-#photo-modal #photo-close-btn {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: transparent;
-  font-size: 1.8rem;
-  color: #e91e63;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
-  text-align: center;
-}
-#photo-modal #photo-close-btn:hover,
-#photo-modal #photo-close-btn:focus-visible {
-  color: #b0003a;
-  outline: none;
-}
-.photo-nav {
-  margin-top: 12px;
-  display: flex;
-  gap: 15px;
-}
-.photo-nav button {
-  flex: 1;
-  background: #e91e63;
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-.photo-nav button:hover,
-.photo-nav button:focus-visible {
-  background: #b0003a;
-  outline: none;
-}
-
-/* BOTÓN TOGGLE CARRITO */
-#toggle-cart-btn {
-  margin-top: 18px;
-  width: 100%;
-  font-size: 1rem;
-}
-
-/* MODAL CARRITO */
-#cart-modal {
-  width: 90vw;
-  max-width: 420px;
-  max-height: 80vh;
-  overflow-y: auto;
-  position: fixed;
-  padding-bottom: 20px;
-  border-radius: 12px;
-  background: white;
-  box-shadow: 0 8px 30px rgba(233, 30, 99, 0.5);
-}
-#cart-close-btn {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: transparent;
-  font-size: 1.6rem;
-  color: #e91e63;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
-  text-align: center;
-  cursor: pointer;
-}
-#cart-close-btn:hover,
-#cart-close-btn:focus-visible {
-  color: #b0003a;
-  outline: none;
-}
-#cart-items-modal {
-  margin-top: 50px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-height: 80px;
-}
-.cart-item {
+#admin-album-list li {
+  padding: 8px 14px;
   background: #fce4ec;
-  border-radius: 8px;
-  padding: 8px 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  color: #b0003a;
   font-weight: 700;
-  color: #e91e63;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.cart-item button {
+#admin-album-list li button {
   background: transparent;
-  color: #e91e63;
+  border: none;
+  color: #b0003a;
   font-weight: 900;
-  font-size: 1.2rem;
-  line-height: 1;
-  padding: 0 6px;
-  border-radius: 4px;
+  font-size: 1.3rem;
   cursor: pointer;
   user-select: none;
 }
-.cart-item button:hover,
-.cart-item button:focus-visible {
-  background: #b0003a;
-  color: white;
+#admin-album-list li button:hover,
+#admin-album-list li button:focus-visible {
+  color: #e91e63;
   outline: none;
 }
-.cart-total {
-  font-weight: 900;
-  font-size: 1.1rem;
-  margin-top: 20px;
-  color: #e91e63;
-  text-align: right;
-}
 
-/* BOTÓN FINALIZAR COMPRA */
-#checkout-btn-modal {
-  margin-top: 15px;
+/* Tabla compras */
+#purchase-records {
   width: 100%;
-  font-size: 1.1rem;
-  font-weight: 900;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  color: #b0003a;
 }
-
-/* BOTÓN CARRITO ARRIBA */
-#cart-icon-btn {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: #e91e63;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  font-size: 1.8rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
-  z-index: 10000;
-}
-#cart-icon-btn:focus-visible {
-  outline: 3px solid #b0003a;
-}
-#cart-count {
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  background: white;
-  color: #e91e63;
-  font-weight: 900;
-  font-size: 0.85rem;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
-}
-
-/* CHECKOUT */
-#checkout-section {
-  max-width: 450px;
-  margin: 20px auto;
-  padding: 15px 25px;
-  border-radius: 12px;
-  border: 3px solid #e91e63;
+#purchase-records thead {
   background: #fce4ec;
   color: #b0003a;
-  font-weight: 700;
-  font-family: 'Roboto', sans-serif;
 }
-#checkout-section label {
-  display: block;
-  margin-top: 12px;
-  margin-bottom: 6px;
+#purchase-records th,
+#purchase-records td {
+  border: 1.5px solid #e91e63;
+  padding: 8px 12px;
+  text-align: left;
 }
-#checkout-section input[type="text"],
-#checkout-section input[type="email"],
-#checkout-section input[type="tel"],
-#checkout-section select,
-#checkout-section input[type="file"] {
+#purchase-records tbody tr:nth-child(even) {
+  background: #fce4ec;
+}
+
+/* Botones admin en modal */
+#admin-logout-btn {
   width: 100%;
-  padding: 7px 10px;
-  border-radius: 8px;
-  border: 2px solid #e91e63;
-  font-weight: 600;
-  font-family: 'Roboto', sans-serif;
-}
-#delivery-contact-label.hidden,
-#delivery-contact.hidden {
-  display: none !important;
-}
-.checkout-buttons {
-  margin-top: 18px;
-  display: flex;
-  gap: 15px;
-  justify-content: flex-end;
-}
-.checkout-buttons button {
-  background: #e91e63;
-  color: white;
-  border: none;
-  border-radius: 10px;
+  padding: 12px 0;
   font-weight: 900;
-  padding: 10px 18px;
-  cursor: pointer;
-  flex: 1;
-  user-select: none;
-  transition: background-color 0.25s ease;
-}
-.checkout-buttons button:hover,
-.checkout-buttons button:focus-visible {
-  background: #b0003a;
-  outline: none;
+  font-size: 1.1rem;
+  border-radius: 10px;
 }
 
-/* ADMIN */
-
+/* Botón administrador (engranaje) */
 #admin-toggle {
   position: fixed;
   bottom: 20px;
@@ -419,150 +294,32 @@ h3 {
   user-select: none;
   z-index: 11000;
 }
-
-#admin-panel {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(30, 30, 30, 0.95);
-  color: white;
-  padding: 25px;
-  overflow-y: auto;
-  z-index: 12000;
-  font-family: 'Roboto', sans-serif;
+#admin-toggle:focus-visible {
+  outline: 3px solid #b0003a;
 }
 
-#admin-panel input[type="text"],
-#admin-panel input[type="password"],
-#admin-panel input[type="file"] {
-  width: 100%;
-  padding: 8px 10px;
-  margin-top: 6px;
-  margin-bottom: 12px;
-  border-radius: 8px;
-  border: none;
-  font-size: 1rem;
-}
-
-#admin-login-section h3,
-#admin-controls h3 {
-  color: #e91e63;
-  margin-bottom: 12px;
-  font-weight: 900;
-  font-family: 'Playfair Display', serif;
-}
-
-#admin-login-btn,
-#admin-logout-btn,
-#add-album-btn,
-#add-photos-btn {
-  background: #e91e63;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 10px;
-  font-weight: 900;
-  cursor: pointer;
-  margin-bottom: 18px;
-  user-select: none;
-  transition: background-color 0.25s ease;
-  font-size: 1rem;
-}
-#admin-login-btn:hover,
-#admin-login-btn:focus-visible,
-#admin-logout-btn:hover,
-#admin-logout-btn:focus-visible,
-#add-album-btn:hover,
-#add-album-btn:focus-visible,
-#add-photos-btn:hover,
-#add-photos-btn:focus-visible {
-  background: #b0003a;
-  outline: none;
-}
-
-#admin-album-list {
-  list-style: none;
-  max-height: 150px;
-  overflow-y: auto;
-  margin-bottom: 20px;
-  border: 2px solid #e91e63;
-  border-radius: 8px;
-  padding: 8px 12px;
-}
-#admin-album-list li {
-  padding: 8px 12px;
-  background: #fce4ec;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  color: #b0003a;
-  font-weight: 700;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  user-select: none;
-}
-#admin-album-list li button {
-  background: transparent;
-  border: none;
-  color: #b0003a;
-  font-weight: 900;
-  cursor: pointer;
-  font-size: 1.2rem;
-  padding: 0 8px;
-  user-select: none;
-}
-#admin-album-list li button:hover,
-#admin-album-list li button:focus-visible {
-  color: #e91e63;
-  outline: none;
-}
-
-#purchase-records {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  font-size: 0.9rem;
-  color: white;
-}
-#purchase-records thead {
-  background: #b0003a;
-}
-#purchase-records th,
-#purchase-records td {
-  border: 1px solid #e91e63;
-  padding: 8px 12px;
-  text-align: left;
-  vertical-align: middle;
-}
-#purchase-records tbody tr:nth-child(even) {
-  background: rgba(255 255 255 / 0.15);
-}
-
+/* Mensajes de error */
 .error-msg {
-  color: #ff6666;
-  margin-top: -10px;
-  margin-bottom: 10px;
+  color: #e91e63;
+  margin-top: 8px;
   font-weight: 700;
   user-select: none;
+  min-height: 22px;
+  font-size: 0.9rem;
 }
 
 /* RESPONSIVE */
 @media (max-width: 600px) {
-  #albums-container,
-  #photos-container {
-    justify-content: center;
+  #albums-container {
     gap: 12px;
   }
-  .album-card,
-  .photo-card {
+  .album-card {
     min-width: 140px;
     max-width: 140px;
   }
-  #checkout-section {
-    margin: 10px 10px;
-    padding: 15px 20px;
+  #admin-panel-modal {
+    max-width: 90vw;
+    max-height: 80vh;
+    padding: 24px;
   }
 }
-
