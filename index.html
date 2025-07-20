@@ -4,182 +4,129 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Juli Chavez - Fotografía</title>
-
-  <!-- Montserrat Google Font -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap"
-    rel="stylesheet"
-  />
-
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <div id="logo-container" tabindex="0" aria-label="Inicio">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="32"
-        width="32"
-        viewBox="0 0 24 24"
-        fill="#e91e63"
-        aria-hidden="true"
-      >
-        <path
-          d="M20 5h-3.17l-1.83-2H8L6.17 5H3a1 1 0 0 0-1 1v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a1 1 0 0 0-1-1zm-8 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"
-        />
-      </svg>
-      <h1 id="main-title">Juli Chavez</h1>
+<header>
+  <div class="logo-container" aria-label="Logo Juli Chavez fotografía">
+    <span class="logo-text">Juli Chavez</span>
+    <span class="logo-camera" aria-hidden="true">📷</span>
+  </div>
+  <h2 class="subtitle">fotografía</h2>
+</header>
+
+<main>
+  <section id="albums-section" aria-label="Álbumes de fotos">
+    <h3>Álbumes</h3>
+    <div id="albums-container"></div>
+  </section>
+
+  <section id="photos-section" class="hidden" aria-label="Fotos del álbum">
+    <button id="back-to-albums" aria-label="Volver a álbumes">← Volver</button>
+    <h3 id="album-title"></h3>
+    <div id="photos-container"></div>
+  </section>
+
+  <!-- Modal Foto ampliada -->
+  <div id="photo-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="photo-modal-title">
+    <button id="photo-close-btn" aria-label="Cerrar foto">✖</button>
+    <h4 id="photo-modal-title"></h4>
+    <img id="photo-modal-img" src="" alt="" />
+    <div class="photo-nav">
+      <button id="prev-photo-btn" aria-label="Foto anterior">←</button>
+      <button id="next-photo-btn" aria-label="Foto siguiente">→</button>
     </div>
-    <h2 id="subtitle">fotografía</h2>
-
-    <button
-      id="admin-open-btn"
-      title="Panel Administrador"
-      aria-label="Abrir panel de administrador"
-    >
-      ⚙️
-    </button>
-
-    <button
-      id="cart-icon-btn"
-      title="Carrito de compras"
-      aria-label="Ver carrito de compras"
-    >
-      🛒 <span id="cart-count">0</span>
-    </button>
-  </header>
-
-  <main>
-    <section id="albums-section" aria-label="Álbumes">
-      <div id="albums-container"></div>
-    </section>
-
-    <section id="photos-section" class="hidden" aria-label="Fotos del álbum">
-      <button id="back-to-albums" aria-label="Volver a álbumes">← Volver</button>
-      <h3 id="album-title"></h3>
-      <div id="photos-container"></div>
-    </section>
-
-    <!-- Modal Foto -->
-    <div id="photo-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="photo-modal-title">
-      <div class="modal-content">
-        <button id="photo-close-btn" aria-label="Cerrar foto">✖</button>
-        <h4 id="photo-modal-title"></h4>
-        <img id="photo-modal-img" alt="Foto ampliada" />
-        <div class="photo-modal-controls">
-          <button id="prev-photo-btn" aria-label="Foto anterior">◀️</button>
-          <button id="toggle-cart-btn" aria-label="Agregar o quitar del carrito"></button>
-          <button id="next-photo-btn" aria-label="Foto siguiente">▶️</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal Carrito -->
-    <div id="cart-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="cart-modal-title">
-      <div class="modal-content">
-        <button id="cart-close-btn" aria-label="Cerrar carrito">✖</button>
-        <h3 id="cart-modal-title">Carrito de Compras</h3>
-        <div id="cart-items-modal"></div>
-        <div id="cart-total-modal"></div>
-        <button id="checkout-btn-modal">Finalizar Compra</button>
-      </div>
-    </div>
-
-    <!-- Sección Checkout -->
-    <section id="checkout-section" class="hidden" aria-label="Formulario de compra">
-      <h3>Finalizar Compra</h3>
-      <form id="checkout-form">
-        <label for="customer-name">Nombre completo:</label>
-        <input type="text" id="customer-name" required />
-
-        <label for="delivery-method">Medio para recibir las fotos:</label>
-        <select id="delivery-method" required>
-          <option value="">Seleccione</option>
-          <option value="correo">Correo electrónico</option>
-          <option value="whatsapp">WhatsApp</option>
-        </select>
-
-        <label for="delivery-contact" id="delivery-contact-label" class="hidden">Contacto:</label>
-        <input
-          type="text"
-          id="delivery-contact"
-          class="hidden"
-          required
-          autocomplete="off"
-        />
-
-        <p>Total a pagar: <span id="payment-amount"></span></p>
-
-        <label for="paymentProof">Cargar comprobante de pago:</label>
-        <input type="file" id="paymentProof" accept="image/*,application/pdf" required />
-
-        <div class="checkout-buttons">
-          <button type="submit">Enviar</button>
-          <button type="button" id="cancel-checkout">Cancelar</button>
-        </div>
-      </form>
-    </section>
-  </main>
-
-  <!-- Modal Login Admin -->
-  <div id="admin-login-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="admin-login-title">
-    <div class="modal-content">
-      <button id="admin-login-close-btn" aria-label="Cerrar ventana de login">✖</button>
-      <h3 id="admin-login-title">Acceso Administrador</h3>
-      <form id="admin-login-form">
-        <label for="admin-username">Usuario:</label>
-        <input type="text" id="admin-username" autocomplete="username" required />
-        <label for="admin-password">Contraseña:</label>
-        <input type="password" id="admin-password" autocomplete="current-password" required />
-        <p id="admin-login-msg" role="alert" aria-live="assertive"></p>
-        <button type="submit" id="admin-login-btn">Ingresar</button>
-      </form>
-    </div>
+    <button id="toggle-cart-btn">Agregar al carrito</button>
   </div>
 
-  <!-- Modal Panel Admin -->
-  <div id="admin-panel-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="admin-panel-title">
-    <div class="modal-content large">
-      <button id="admin-panel-close-btn" aria-label="Cerrar panel de administrador">✖</button>
-      <h3 id="admin-panel-title">Panel Administrador</h3>
-
-      <section id="admin-album-section">
-        <h4>Agregar nuevo álbum</h4>
-        <input type="text" id="new-album-title" placeholder="Nombre del álbum" />
-        <button id="add-album-btn">Agregar álbum</button>
-      </section>
-
-      <section id="admin-photo-upload-section" class="hidden">
-        <h4>Agregar fotos al álbum: <span id="selected-album-name"></span></h4>
-        <input type="file" id="photo-upload" multiple accept="image/*" />
-        <button id="add-photos-btn" disabled>Subir fotos</button>
-
-        <div id="upload-status-container"></div>
-      </section>
-
-      <section id="admin-album-list-section">
-        <h4>Álbumes existentes</h4>
-        <ul id="admin-album-list"></ul>
-      </section>
-
-      <section id="purchase-records-section">
-        <h4>Registros de compras</h4>
-        <table id="purchase-records">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Comprobante</th>
-              <th>Fecha</th>
-              <th>Fotos compradas</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </section>
+  <!-- Modal Carrito -->
+  <div id="cart-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="cart-modal-title">
+    <button id="cart-close-btn" aria-label="Cerrar carrito">✖</button>
+    <h4 id="cart-modal-title">Carrito de Compras</h4>
+    <div id="cart-items-modal"></div>
+    <div class="cart-total">
+      Total: <span id="cart-total-modal">$0</span>
     </div>
+    <button id="checkout-btn-modal" disabled>Finalizar Compra</button>
   </div>
 
-  <script src="app.js" defer></script>
+  <!-- Sección Checkout -->
+  <section id="checkout-section" class="hidden" aria-label="Formulario de compra">
+    <h3>Finalizar compra</h3>
+    <form id="checkout-form">
+      <label for="customer-name">Nombre completo:</label>
+      <input type="text" id="customer-name" name="customer-name" required />
+
+      <label for="delivery-method">Medio para recibir las fotos:</label>
+      <select id="delivery-method" name="delivery-method" required>
+        <option value="">Seleccione...</option>
+        <option value="correo">Correo electrónico</option>
+        <option value="whatsapp">WhatsApp</option>
+      </select>
+
+      <label for="delivery-contact" id="delivery-contact-label" class="hidden">Contacto:</label>
+      <input type="text" id="delivery-contact" name="delivery-contact" class="hidden" required />
+
+      <p>Donde abonar: <strong>desa2025</strong></p>
+      <p>Importe total: <span id="payment-amount">$0</span></p>
+
+      <label for="paymentProof">Cargar comprobante de pago:</label>
+      <input type="file" id="paymentProof" name="paymentProof" accept="image/*" required />
+
+      <div class="checkout-buttons">
+        <button type="submit">Enviar</button>
+        <button type="button" id="cancel-checkout">Cancelar</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<!-- Botón carrito arriba -->
+<button id="cart-icon-btn" title="Ver carrito" aria-label="Carrito de compras">
+  🛒 <span id="cart-count">0</span>
+</button>
+
+<!-- Panel admin toggle -->
+<button id="admin-toggle" aria-label="Abrir panel administrador" title="Administrador" class="admin-toggle">⚙️</button>
+
+<section id="admin-panel" class="hidden" aria-label="Panel de administración">
+  <div id="admin-login-section">
+    <h3>Login Administrador</h3>
+    <label for="admin-username">Usuario:</label>
+    <input type="text" id="admin-username" autocomplete="username" />
+    <label for="admin-password">Contraseña:</label>
+    <input type="password" id="admin-password" autocomplete="current-password" />
+    <button id="admin-login-btn">Entrar</button>
+    <p id="admin-login-msg" class="error-msg"></p>
+  </div>
+  <div id="admin-controls" class="hidden">
+    <button id="admin-logout-btn">Cerrar sesión</button>
+
+    <h3>Álbumes</h3>
+    <input type="text" id="new-album-title" placeholder="Título nuevo álbum" />
+    <button id="add-album-btn">Agregar Álbum</button>
+    <ul id="admin-album-list"></ul>
+
+    <h3>Agregar fotos al álbum seleccionado</h3>
+    <input type="file" id="photo-upload" accept="image/*" multiple />
+    <button id="add-photos-btn" disabled>Agregar fotos</button>
+
+    <h3>Registro de compras</h3>
+    <table id="purchase-records">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Comprobante</th>
+          <th>Fecha</th>
+          <th>Fotos compradas</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<script src="app.js"></script>
 </body>
 </html>
-
