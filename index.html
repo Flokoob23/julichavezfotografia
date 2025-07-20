@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Juli Chavez - Fotografía</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -87,32 +87,41 @@
   🛒 <span id="cart-count">0</span>
 </button>
 
-<!-- Panel admin toggle -->
-<button id="admin-toggle" aria-label="Abrir panel administrador" title="Administrador" class="admin-toggle">⚙️</button>
+<!-- Botón administrador (engranaje) -->
+<button id="admin-toggle" aria-label="Abrir login administrador" title="Administrador" class="admin-toggle">⚙️</button>
 
-<section id="admin-panel" class="hidden" aria-label="Panel de administración">
-  <div id="admin-login-section">
-    <h3>Login Administrador</h3>
+<!-- Modal Login Admin -->
+<div id="admin-login-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="admin-login-title">
+  <button id="admin-login-close" aria-label="Cerrar login">✖</button>
+  <h3 id="admin-login-title">Ingreso Administrador</h3>
+  <form id="admin-login-form">
     <label for="admin-username">Usuario:</label>
-    <input type="text" id="admin-username" autocomplete="username" />
+    <input type="text" id="admin-username" autocomplete="username" required />
     <label for="admin-password">Contraseña:</label>
-    <input type="password" id="admin-password" autocomplete="current-password" />
-    <button id="admin-login-btn">Entrar</button>
-    <p id="admin-login-msg" class="error-msg"></p>
-  </div>
-  <div id="admin-controls" class="hidden">
-    <button id="admin-logout-btn">Cerrar sesión</button>
+    <input type="password" id="admin-password" autocomplete="current-password" required />
+    <p id="admin-login-msg" class="error-msg" role="alert" aria-live="polite"></p>
+    <button type="submit" id="admin-login-btn">Entrar</button>
+  </form>
+</div>
 
-    <h3>Álbumes</h3>
+<!-- Modal Admin Panel grande -->
+<div id="admin-panel-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="admin-panel-title">
+  <button id="admin-panel-close" aria-label="Cerrar panel administrador">✖</button>
+  <h3 id="admin-panel-title">Panel Administrador</h3>
+
+  <section aria-label="Administrar álbumes">
     <input type="text" id="new-album-title" placeholder="Título nuevo álbum" />
-    <button id="add-album-btn">Agregar Álbum</button>
+    <button id="add-album-btn" disabled>Agregar Álbum</button>
     <ul id="admin-album-list"></ul>
+  </section>
 
-    <h3>Agregar fotos al álbum seleccionado</h3>
+  <section aria-label="Agregar fotos a álbum">
     <input type="file" id="photo-upload" accept="image/*" multiple />
     <button id="add-photos-btn" disabled>Agregar fotos</button>
+  </section>
 
-    <h3>Registro de compras</h3>
+  <section aria-label="Registro de compras" style="margin-top: 2rem;">
+    <h4>Registro de compras</h4>
     <table id="purchase-records">
       <thead>
         <tr>
@@ -124,8 +133,10 @@
       </thead>
       <tbody></tbody>
     </table>
-  </div>
-</section>
+  </section>
+
+  <button id="admin-logout-btn" style="margin-top: 2rem;">Cerrar sesión</button>
+</div>
 
 <script src="app.js"></script>
 </body>
