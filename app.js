@@ -1,162 +1,225 @@
-// Datos iniciales de ejemplo
-const initialAlbums = [
+// Datos iniciales - Álbumes y fotos ejemplo (se podrán modificar por admin luego)
+const albums = [
     {
         id: 'album1',
         title: 'Bodas',
         photos: [
-            { id: 'b1', title: 'Novios felices', url: 'https://picsum.photos/id/1011/400/300' },
-            { id: 'b2', title: 'Anillo', url: 'https://picsum.photos/id/1012/400/300' },
-            { id: 'b3', title: 'Baile', url: 'https://picsum.photos/id/1013/400/300' },
+            { id: 'photo1', title: 'Novios en el altar', url: 'https://picsum.photos/id/1011/600/400' },
+            { id: 'photo2', title: 'Anillo de compromiso', url: 'https://picsum.photos/id/1015/600/400' },
+            { id: 'photo3', title: 'Primer baile', url: 'https://picsum.photos/id/1016/600/400' },
         ],
     },
     {
         id: 'album2',
-        title: 'Retratos',
+        title: 'Eventos Corporativos',
         photos: [
-            { id: 'r1', title: 'Sonrisa', url: 'https://picsum.photos/id/1027/400/300' },
-            { id: 'r2', title: 'Mirada', url: 'https://picsum.photos/id/1028/400/300' },
-            { id: 'r3', title: 'Elegancia', url: 'https://picsum.photos/id/1031/400/300' },
+            { id: 'photo4', title: 'Conferencia principal', url: 'https://picsum.photos/id/1020/600/400' },
+            { id: 'photo5', title: 'Networking', url: 'https://picsum.photos/id/1021/600/400' },
+            { id: 'photo6', title: 'Cena de gala', url: 'https://picsum.photos/id/1022/600/400' },
         ],
     },
     {
         id: 'album3',
-        title: 'Paisajes',
+        title: 'Familia',
         photos: [
-            { id: 'p1', title: 'Montañas', url: 'https://picsum.photos/id/1043/400/300' },
-            { id: 'p2', title: 'Atardecer', url: 'https://picsum.photos/id/1044/400/300' },
-            { id: 'p3', title: 'Río', url: 'https://picsum.photos/id/1045/400/300' },
+            { id: 'photo7', title: 'Cumpleaños infantil', url: 'https://picsum.photos/id/1025/600/400' },
+            { id: 'photo8', title: 'Reunión familiar', url: 'https://picsum.photos/id/1026/600/400' },
+            { id: 'photo9', title: 'Vacaciones', url: 'https://picsum.photos/id/1027/600/400' },
         ],
     },
 ];
 
-// Variables estado
-let albums = [];
+// Precio fijo por foto
+const PRICE_PER_PHOTO = 1500;
+
+// Variables globales
 let currentAlbumId = null;
 let cart = [];
-let adminLoggedIn = false;
-let purchases = []; // Registros de compra
+let purchaseRecords = []; // Aquí se guardan las compras hechas (podés guardarlo en localStorage o backend si querés)
 
-// DOM references
-const albumsContainer = document.getElementById('albums-container');
-const photosSection = document.getElementById('photos-section');
 const albumsSection = document.getElementById('albums-section');
-const photosContainer = document.getElementById('photos-container');
+const albumsContainer = document.getElementById('albums-container');
+
+const photosSection = document.getElementById('photos-section');
 const albumTitle = document.getElementById('album-title');
+const photosContainer = document.getElementById('photos-container');
 const backToAlbumsBtn = document.getElementById('back-to-albums');
 
-const cartItemsContainer = document.getElementById('cart-items');
-const cartTotalSpan = document.getElementById('cart-total');
-const checkoutBtn = document.getElementById('checkout-btn');
+const cartIconBtn = document.getElementById('cart-icon-btn');
+const cartCountSpan = document.getElementById('cart-count');
+const cartModal = document.getElementById('cart-modal');
+const cartCloseBtn = document.getElementById('cart-close-btn');
+const cartItemsModal = document.getElementById('cart-items-modal');
+const cartTotalModal = document.getElementById('cart-total-modal');
+const checkoutBtnModal = document.getElementById('checkout-btn-modal');
+
+const photoModal = document.getElementById('photo-modal');
+const photoCloseBtn = document.getElementById('photo-close-btn');
+const photoModalTitle = document.getElementById('photo-modal-title');
+const photoModalImg = document.getElementById('photo-modal-img');
+const prevPhotoBtn = document.getElementById('prev-photo-btn');
+const nextPhotoBtn = document.getElementById('next-photo-btn');
+const toggleCartBtn = document.getElementById('toggle-cart-btn');
 
 const checkoutSection = document.getElementById('checkout-section');
 const checkoutForm = document.getElementById('checkout-form');
+const customerNameInput = document.getElementById('customer-name');
 const deliveryMethodSelect = document.getElementById('delivery-method');
 const deliveryContactInput = document.getElementById('delivery-contact');
 const deliveryContactLabel = document.getElementById('delivery-contact-label');
 const paymentAmountSpan = document.getElementById('payment-amount');
 const cancelCheckoutBtn = document.getElementById('cancel-checkout');
 
+// Admin
 const adminToggleBtn = document.getElementById('admin-toggle');
 const adminPanel = document.getElementById('admin-panel');
 const adminLoginSection = document.getElementById('admin-login-section');
-const adminControls = document.getElementById('admin-controls');
+const adminControlsSection = document.getElementById('admin-controls');
 const adminUsernameInput = document.getElementById('admin-username');
 const adminPasswordInput = document.getElementById('admin-password');
 const adminLoginBtn = document.getElementById('admin-login-btn');
-const adminLogoutBtn = document.getElementById('admin-logout-btn');
 const adminLoginMsg = document.getElementById('admin-login-msg');
 const newAlbumTitleInput = document.getElementById('new-album-title');
 const addAlbumBtn = document.getElementById('add-album-btn');
 const adminAlbumList = document.getElementById('admin-album-list');
-const purchaseRecordsBody = document.querySelector('#purchase-records tbody');
+const purchaseRecordsTableBody = document.querySelector('#purchase-records tbody');
+const adminLogoutBtn = document.getElementById('admin-logout-btn');
 
-const PRICE_PER_PHOTO = 1500;
+let currentPhotoIndex = 0; // Para navegación modal foto
 
-// --- Funciones ---
+// ---------- Funciones ----------
 
-// Guardar y cargar estado (opcional para persistencia simple localStorage)
-function saveState() {
-    localStorage.setItem('albums', JSON.stringify(albums));
-    localStorage.setItem('purchases', JSON.stringify(purchases));
-}
-function loadState() {
-    const storedAlbums = localStorage.getItem('albums');
-    const storedPurchases = localStorage.getItem('purchases');
-    if (storedAlbums) albums = JSON.parse(storedAlbums);
-    else albums = JSON.parse(JSON.stringify(initialAlbums)); // deep copy
-    if (storedPurchases) purchases = JSON.parse(storedPurchases);
-    else purchases = [];
-}
-loadState();
-
-// Mostrar álbumes
+// Render albums en la página principal
 function renderAlbums() {
     albumsContainer.innerHTML = '';
     albums.forEach(album => {
-        const card = document.createElement('div');
-        card.className = 'album-card';
-        card.tabIndex = 0;
-        card.setAttribute('role', 'button');
-        card.setAttribute('aria-pressed', 'false');
-        card.innerHTML = `<h4>${album.title}</h4>`;
-        card.addEventListener('click', () => openAlbum(album.id));
-        card.addEventListener('keypress', e => {
-            if(e.key === 'Enter' || e.key === ' ') openAlbum(album.id);
+        const div = document.createElement('div');
+        div.className = 'album-card';
+        div.tabIndex = 0;
+        div.textContent = album.title;
+        div.addEventListener('click', () => openAlbum(album.id));
+        div.addEventListener('keypress', e => {
+            if (e.key === 'Enter' || e.key === ' ') openAlbum(album.id);
         });
-        albumsContainer.appendChild(card);
+        albumsContainer.appendChild(div);
     });
 }
 
-// Abrir álbum y mostrar fotos
+// Abrir álbum y mostrar sus fotos
 function openAlbum(albumId) {
     currentAlbumId = albumId;
     const album = albums.find(a => a.id === albumId);
     if (!album) return;
+
     albumTitle.textContent = album.title;
     photosContainer.innerHTML = '';
-    album.photos.forEach(photo => {
+
+    album.photos.forEach((photo, index) => {
         const photoDiv = document.createElement('div');
         photoDiv.className = 'photo-card';
         photoDiv.tabIndex = 0;
-        photoDiv.setAttribute('role', 'button');
-        photoDiv.setAttribute('aria-pressed', 'false');
         photoDiv.title = photo.title;
         photoDiv.innerHTML = `<img src="${photo.url}" alt="${photo.title}" />`;
-        photoDiv.addEventListener('click', () => togglePhotoInCart(photo));
+        photoDiv.addEventListener('click', () => openPhotoModal(index));
         photoDiv.addEventListener('keypress', e => {
-            if(e.key === 'Enter' || e.key === ' ') togglePhotoInCart(photo);
+            if(e.key === 'Enter' || e.key === ' ') openPhotoModal(index);
         });
         photosContainer.appendChild(photoDiv);
     });
+
     albumsSection.classList.add('hidden');
     photosSection.classList.remove('hidden');
 }
 
-// Volver a albums
+// Volver a sección álbumes
 backToAlbumsBtn.addEventListener('click', () => {
     photosSection.classList.add('hidden');
     albumsSection.classList.remove('hidden');
     currentAlbumId = null;
 });
 
-// Añadir foto al carrito o quitar si ya está
-function togglePhotoInCart(photo) {
-    const index = cart.findIndex(p => p.id === photo.id);
-    if (index > -1) {
-        cart.splice(index, 1);
+// Modal foto ampliada
+function openPhotoModal(index) {
+    const album = albums.find(a => a.id === currentAlbumId);
+    if (!album || !album.photos[index]) return;
+
+    currentPhotoIndex = index;
+    const photo = album.photos[index];
+    photoModalTitle.textContent = photo.title;
+    photoModalImg.src = photo.url;
+    photoModalImg.alt = photo.title;
+
+    updateToggleCartButton(photo.id);
+
+    photoModal.classList.remove('hidden');
+}
+
+photoCloseBtn.addEventListener('click', () => photoModal.classList.add('hidden'));
+
+// Cambiar foto en modal (prev/next)
+function changePhoto(step) {
+    const album = albums.find(a => a.id === currentAlbumId);
+    if (!album) return;
+
+    let newIndex = currentPhotoIndex + step;
+    if (newIndex < 0) newIndex = album.photos.length - 1;
+    if (newIndex >= album.photos.length) newIndex = 0;
+
+    openPhotoModal(newIndex);
+}
+prevPhotoBtn.addEventListener('click', () => changePhoto(-1));
+nextPhotoBtn.addEventListener('click', () => changePhoto(1));
+
+// Manejar agregar o quitar foto del carrito desde modal foto
+toggleCartBtn.addEventListener('click', () => {
+    const album = albums.find(a => a.id === currentAlbumId);
+    if (!album) return;
+
+    const photo = album.photos[currentPhotoIndex];
+    if (!photo) return;
+
+    const idx = cart.findIndex(p => p.id === photo.id);
+    if (idx > -1) {
+        cart.splice(idx, 1);
     } else {
         cart.push(photo);
     }
-    renderCart();
+
+    updateToggleCartButton(photo.id);
+    renderCartCount();
+});
+
+// Actualizar botón toggle carrito en modal foto
+function updateToggleCartButton(photoId) {
+    const inCart = cart.some(p => p.id === photoId);
+    toggleCartBtn.textContent = inCart ? 'Quitar del carrito' : 'Agregar al carrito';
 }
 
-// Mostrar carrito
-function renderCart() {
-    cartItemsContainer.innerHTML = '';
+// Render contador carrito arriba
+function renderCartCount() {
+    cartCountSpan.textContent = cart.length;
+    checkoutBtnModal.disabled = cart.length === 0;
+}
+
+// Carrito ícono arriba - abrir modal carrito
+cartIconBtn.addEventListener('click', () => {
+    renderCartModalItems();
+    cartModal.classList.remove('hidden');
+});
+
+// Cerrar modal carrito
+cartCloseBtn.addEventListener('click', () => {
+    cartModal.classList.add('hidden');
+});
+
+// Render items dentro del modal carrito
+function renderCartModalItems() {
+    cartItemsModal.innerHTML = '';
+
     if(cart.length === 0){
-        cartItemsContainer.innerHTML = '<p>Carrito vacío</p>';
-        checkoutBtn.disabled = true;
-        cartTotalSpan.textContent = '$0';
+        cartItemsModal.innerHTML = '<p>Carrito vacío</p>';
+        cartTotalModal.textContent = '$0';
+        checkoutBtnModal.disabled = true;
         return;
     }
 
@@ -164,27 +227,32 @@ function renderCart() {
         const itemDiv = document.createElement('div');
         itemDiv.className = 'cart-item';
         itemDiv.textContent = photo.title;
+
         const removeBtn = document.createElement('button');
         removeBtn.title = 'Quitar del carrito';
         removeBtn.innerHTML = '&times;';
         removeBtn.addEventListener('click', () => {
             cart = cart.filter(p => p.id !== photo.id);
-            renderCart();
+            renderCartModalItems();
+            renderCartCount();
         });
+
         itemDiv.appendChild(removeBtn);
-        cartItemsContainer.appendChild(itemDiv);
+        cartItemsModal.appendChild(itemDiv);
     });
 
     const total = cart.length * PRICE_PER_PHOTO;
-    cartTotalSpan.textContent = `$${total.toLocaleString('es-AR')}`;
-    checkoutBtn.disabled = false;
+    cartTotalModal.textContent = `$${total.toLocaleString('es-AR')}`;
+    checkoutBtnModal.disabled = false;
 }
 
-// Checkout - mostrar form
-checkoutBtn.addEventListener('click', () => {
-    if (cart.length === 0) return;
+// Al presionar finalizar compra en modal carrito, abrir sección checkout
+checkoutBtnModal.addEventListener('click', () => {
+    cartModal.classList.add('hidden');
     checkoutSection.classList.remove('hidden');
-    document.getElementById('main-content').classList.add('hidden');
+    albumsSection.classList.add('hidden');
+    photosSection.classList.add('hidden');
+
     paymentAmountSpan.textContent = `$${(cart.length * PRICE_PER_PHOTO).toLocaleString('es-AR')}`;
     deliveryContactInput.value = '';
     deliveryContactInput.classList.add('hidden');
@@ -192,69 +260,90 @@ checkoutBtn.addEventListener('click', () => {
     deliveryMethodSelect.value = '';
 });
 
-// Manejar cambio método entrega
+// Mostrar campo contacto según medio de entrega
 deliveryMethodSelect.addEventListener('change', () => {
-    const val = deliveryMethodSelect.value;
-    if(val === 'correo' || val === 'whatsapp'){
+    if(deliveryMethodSelect.value === 'correo'){
+        deliveryContactLabel.textContent = 'Correo electrónico:';
+        deliveryContactInput.placeholder = 'ejemplo@mail.com';
+        deliveryContactInput.type = 'email';
+        deliveryContactInput.required = true;
         deliveryContactInput.classList.remove('hidden');
         deliveryContactLabel.classList.remove('hidden');
-        deliveryContactLabel.textContent = val === 'correo' ? 'Ingrese correo electrónico:' : 'Ingrese número de WhatsApp:';
-        deliveryContactInput.placeholder = val === 'correo' ? 'correo@ejemplo.com' : '+54 9 11 1234 5678';
+    } else if(deliveryMethodSelect.value === 'whatsapp'){
+        deliveryContactLabel.textContent = 'Número de WhatsApp:';
+        deliveryContactInput.placeholder = '+54 9 11 1234 5678';
+        deliveryContactInput.type = 'tel';
+        deliveryContactInput.required = true;
+        deliveryContactInput.classList.remove('hidden');
+        deliveryContactLabel.classList.remove('hidden');
     } else {
         deliveryContactInput.classList.add('hidden');
         deliveryContactLabel.classList.add('hidden');
+        deliveryContactInput.required = false;
     }
 });
 
-// Cancelar checkout
+// Cancelar checkout - volver a álbumes
 cancelCheckoutBtn.addEventListener('click', () => {
     checkoutSection.classList.add('hidden');
+    albumsSection.classList.remove('hidden');
+    photosSection.classList.add('hidden');
+    cart = [];
+    renderCartCount();
 });
 
-// Manejar envío de compra
+// Enviar formulario checkout (simulamos guardado y limpieza)
 checkoutForm.addEventListener('submit', e => {
     e.preventDefault();
 
-    const name = checkoutForm.customerName.value.trim();
-    const method = checkoutForm.deliveryMethod.value;
-    const contact = checkoutForm.deliveryContact.value.trim();
-    const fileInput = checkoutForm.paymentProof;
-
-    if (!name || !method || !contact || fileInput.files.length === 0) {
-        alert('Por favor complete todos los campos y cargue el comprobante.');
+    // Validaciones básicas
+    if (!customerNameInput.value.trim()) {
+        alert('Ingrese su nombre completo');
+        return;
+    }
+    if (!deliveryMethodSelect.value) {
+        alert('Seleccione un medio para recibir las fotos');
+        return;
+    }
+    if (!deliveryContactInput.value.trim()) {
+        alert('Ingrese su contacto para la entrega');
+        return;
+    }
+    if (!checkoutForm['paymentProof'].files.length) {
+        alert('Debe cargar el comprobante de pago');
         return;
     }
 
-    // Leer archivo imagen comprobante (simplificado)
-    const file = fileInput.files[0];
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        const purchase = {
-            id: Date.now(),
-            customerName: name,
-            deliveryMethod: method,
-            deliveryContact: contact,
-            paymentProof: event.target.result, // base64 image
-            date: new Date().toLocaleString('es-AR'),
-            photos: cart.map(p => p.title),
-            total: cart.length * PRICE_PER_PHOTO
-        };
-        purchases.push(purchase);
-        saveState();
-        alert('Compra registrada correctamente. ¡Gracias!');
-        cart = [];
-        renderCart();
-        checkoutSection.classList.add('hidden');
-        albumsSection.classList.remove('hidden');
-        photosSection.classList.add('hidden');
+    // Guardar registro compra (aquí podés enviar a backend o almacenar donde prefieras)
+    const newPurchase = {
+        name: customerNameInput.value.trim(),
+        contactMethod: deliveryMethodSelect.value,
+        contact: deliveryContactInput.value.trim(),
+        paymentProof: URL.createObjectURL(checkoutForm['paymentProof'].files[0]),
+        date: new Date().toLocaleString(),
+        photos: cart.map(p => p.title),
+        total: cart.length * PRICE_PER_PHOTO,
+    };
+
+    purchaseRecords.push(newPurchase);
+    alert('¡Compra registrada con éxito! Muchas gracias.');
+
+    // Limpiar y volver a inicio
+    checkoutForm.reset();
+    checkoutSection.classList.add('hidden');
+    albumsSection.classList.remove('hidden');
+    photosSection.classList.add('hidden');
+    cart = [];
+    renderCartCount();
+
+    // Si admin está logueado, actualizar tabla de compras
+    if(adminControlsSection.classList.contains('hidden') === false){
         renderPurchaseRecords();
     }
-    reader.readAsDataURL(file);
 });
 
-// --- Admin panel ---
+// ----------- Admin panel -----------
 
-// Toggle admin panel
 adminToggleBtn.addEventListener('click', () => {
     adminPanel.classList.toggle('hidden');
 });
@@ -263,51 +352,39 @@ adminToggleBtn.addEventListener('click', () => {
 adminLoginBtn.addEventListener('click', () => {
     const user = adminUsernameInput.value.trim();
     const pass = adminPasswordInput.value.trim();
-
     if(user === 'tesai25' && pass === 'julifotos25'){
-        adminLoggedIn = true;
         adminLoginMsg.textContent = '';
         adminLoginSection.classList.add('hidden');
-        adminControls.classList.remove('hidden');
-        adminLogoutBtn.classList.remove('hidden');
-        adminUsernameInput.value = '';
-        adminPasswordInput.value = '';
+        adminControlsSection.classList.remove('hidden');
         renderAdminAlbums();
         renderPurchaseRecords();
     } else {
-        adminLoginMsg.textContent = 'Usuario o contraseña incorrectos.';
+        adminLoginMsg.textContent = 'Usuario o contraseña incorrectos';
     }
 });
 
 // Logout admin
 adminLogoutBtn.addEventListener('click', () => {
-    adminLoggedIn = false;
+    adminUsernameInput.value = '';
+    adminPasswordInput.value = '';
     adminLoginSection.classList.remove('hidden');
-    adminControls.classList.add('hidden');
-    adminLogoutBtn.classList.add('hidden');
-    adminLoginMsg.textContent = '';
+    adminControlsSection.classList.add('hidden');
 });
 
-// Render admin album list
+// Render lista álbumes admin
 function renderAdminAlbums() {
     adminAlbumList.innerHTML = '';
-    albums.forEach(album => {
+    albums.forEach((album, index) => {
         const li = document.createElement('li');
         li.textContent = album.title;
         const delBtn = document.createElement('button');
-        delBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-        delBtn.title = 'Eliminar álbum';
+        delBtn.title = `Eliminar álbum "${album.title}"`;
+        delBtn.innerHTML = '&times;';
         delBtn.addEventListener('click', () => {
-            if(confirm(`Eliminar álbum "${album.title}"? Esta acción no se puede deshacer.`)){
-                albums = albums.filter(a => a.id !== album.id);
-                saveState();
+            if(confirm(`Eliminar álbum "${album.title}"? Se perderán todas sus fotos.`)){
+                albums.splice(index,1);
                 renderAlbums();
                 renderAdminAlbums();
-                if(currentAlbumId === album.id){
-                    photosSection.classList.add('hidden');
-                    albumsSection.classList.remove('hidden');
-                    currentAlbumId = null;
-                }
             }
         });
         li.appendChild(delBtn);
@@ -315,69 +392,57 @@ function renderAdminAlbums() {
     });
 }
 
-// Agregar álbum nuevo
+// Agregar álbum admin
 addAlbumBtn.addEventListener('click', () => {
-    const title = newAlbumTitleInput.value.trim();
-    if(!title){
-        alert('Ingrese un título para el álbum.');
-        return;
+    const newTitle = newAlbumTitleInput.value.trim();
+    if(!newTitle) return alert('Ingrese un título válido');
+    // Verificar duplicado
+    if(albums.some(a => a.title.toLowerCase() === newTitle.toLowerCase())){
+        return alert('Ya existe un álbum con ese título');
     }
-    // Crear id único simple
-    const newId = 'album_' + Date.now();
-    albums.push({ id: newId, title: title, photos: [] });
+    albums.push({id: `album${Date.now()}`, title: newTitle, photos: []});
     newAlbumTitleInput.value = '';
-    saveState();
     renderAlbums();
     renderAdminAlbums();
 });
 
-// Render registros de compra
+// Render tabla registros compras admin
 function renderPurchaseRecords() {
-    purchaseRecordsBody.innerHTML = '';
-    if(purchases.length === 0){
-        purchaseRecordsBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay compras registradas.</td></tr>';
+    purchaseRecordsTableBody.innerHTML = '';
+    if(purchaseRecords.length === 0){
+        purchaseRecordsTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay registros aún</td></tr>';
         return;
     }
-    purchases.forEach(purchase => {
+    purchaseRecords.forEach(record => {
         const tr = document.createElement('tr');
 
-        // Nombre
         const tdName = document.createElement('td');
-        tdName.textContent = purchase.customerName;
+        tdName.textContent = record.name;
         tr.appendChild(tdName);
 
-        // Comprobante (mostrar imagen en miniatura, clic para abrir grande)
         const tdProof = document.createElement('td');
-        const imgProof = document.createElement('img');
-        imgProof.src = purchase.paymentProof;
-        imgProof.alt = 'Comprobante';
-        imgProof.style.width = '60px';
-        imgProof.style.cursor = 'pointer';
-        imgProof.title = 'Ver comprobante';
-        imgProof.addEventListener('click', () => {
-            window.open(purchase.paymentProof, '_blank');
-        });
-        tdProof.appendChild(imgProof);
+        const img = document.createElement('img');
+        img.src = record.paymentProof;
+        img.alt = `Comprobante de ${record.name}`;
+        img.title = 'Ver comprobante';
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', () => window.open(record.paymentProof, '_blank'));
+        tdProof.appendChild(img);
         tr.appendChild(tdProof);
 
-        // Fecha
         const tdDate = document.createElement('td');
-        tdDate.textContent = purchase.date;
+        tdDate.textContent = record.date;
         tr.appendChild(tdDate);
 
-        // Fotos
         const tdPhotos = document.createElement('td');
-        tdPhotos.textContent = purchase.photos.join(', ');
+        tdPhotos.textContent = record.photos.join(', ');
         tr.appendChild(tdPhotos);
 
-        purchaseRecordsBody.appendChild(tr);
+        purchaseRecordsTableBody.appendChild(tr);
     });
 }
 
-// Inicializar app
-function init() {
-    renderAlbums();
-    renderCart();
-}
+// Inicializar página
+renderAlbums();
+renderCartCount();
 
-init();
