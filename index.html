@@ -1,160 +1,126 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Juli Chavez Fotografía</title>
-
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Fuentes -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins&display=swap" rel="stylesheet" />
-
-  <!-- Estilos personalizados -->
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Juli Chavez Fotografía</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://kit.fontawesome.com/94c5a6c55a.js" crossorigin="anonymous"></script> 
 </head>
-<body class="bg-white font-poppins">
-
-  <!-- Aquí irán tus secciones, por ejemplo: -->
-
-  <header class="p-6 border-b border-gray-200">
-    <h1 class="text-3xl font-bold text-center">Juli Chavez Fotografía</h1>
-  </header>
-
-  <main class="p-6">
-    <!-- Secciones para álbumes, fotos, carrito, modales, admin, etc -->
-
-    <section id="albumsSection" class="hidden">
-      <!-- Aquí mostrarás los álbumes -->
-    </section>
-
-    <section id="photosSection" class="hidden">
-      <!-- Aquí mostrarás las fotos del álbum -->
-    </section>
-
-    <!-- Modales -->
-
-    <!-- Modal foto -->
-    <div id="photoModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
-      <div class="bg-white p-4 rounded-md max-w-xl w-full relative">
-        <button onclick="closePhotoModal()" class="absolute top-2 right-2 text-gray-700 hover:text-black font-bold text-xl">&times;</button>
-        <img id="modalImage" src="" alt="Foto" class="w-full h-auto rounded-md" />
-        <h3 id="modalPhotoTitle" class="mt-2 font-semibold text-lg"></h3>
-        <button id="addToCartBtn" onclick="addCurrentPhotoToCart()" class="mt-4 px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition">Agregar al carrito</button>
-        <div class="flex justify-between mt-4">
-          <button onclick="showPreviousPhoto()" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Anterior</button>
-          <button onclick="showNextPhoto()" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Siguiente</button>
+<body>
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-camera"></i>
+            <div class="titles">
+                <h1>Juli Chavez</h1>
+                <h2>fotografía</h2>
+            </div>
         </div>
-      </div>
-    </div>
+    </header>
 
-    <!-- Modal carrito -->
-    <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
-      <div class="bg-white p-6 rounded-md max-w-2xl w-full max-h-[80vh] overflow-auto relative">
-        <button onclick="closeCartModal()" class="absolute top-2 right-2 text-gray-700 hover:text-black font-bold text-xl">&times;</button>
-        <h2 class="text-2xl font-bold mb-4">Tu Carrito <span id="cartCount" class="ml-2 bg-black text-white rounded-full px-2 text-sm">0</span></h2>
-        <div id="cartItems" class="divide-y divide-gray-300 mb-4"></div>
-        <div class="flex justify-between font-bold text-lg mb-4">
-          <span>Total:</span>
-          <span id="cartTotal">$0</span>
-        </div>
-        <button onclick="showCheckout()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">Proceder al pago</button>
-      </div>
-    </div>
+    <main class="main-content">
+        <section id="albums-section">
+            <h3>Álbumes</h3>
+            <div id="albums-container" class="albums-container">
+                <!-- Álbumes se generan dinámicamente -->
+            </div>
+        </section>
 
-    <!-- Modal checkout -->
-    <div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
-      <div class="bg-white p-6 rounded-md max-w-2xl w-full max-h-[90vh] overflow-auto relative">
-        <button onclick="closeCheckoutModal()" class="absolute top-2 right-2 text-gray-700 hover:text-black font-bold text-xl">&times;</button>
-        <h2 class="text-2xl font-bold mb-4">Checkout</h2>
+        <section id="photos-section" class="hidden">
+            <button id="back-to-albums" class="btn-back">← Volver a Álbumes</button>
+            <h3 id="album-title">Álbum</h3>
+            <div id="photos-container" class="photos-container">
+                <!-- Fotos del álbum -->
+            </div>
+        </section>
 
-        <div id="checkoutPhotos" class="grid grid-cols-3 gap-2 mb-4"></div>
+        <section id="cart-section" class="cart-section">
+            <h3>Carrito de Compras</h3>
+            <div id="cart-items"></div>
+            <div class="cart-total">
+                Total: <span id="cart-total">$0</span>
+            </div>
+            <button id="checkout-btn" class="btn-checkout" disabled>Finalizar Compra</button>
+        </section>
 
-        <div class="flex justify-between font-bold text-lg mb-4">
-          <span>Total:</span>
-          <span id="checkoutTotal">$0</span>
-        </div>
+        <section id="checkout-section" class="hidden checkout-section">
+            <h3>Finalizar Compra</h3>
+            <form id="checkout-form">
+                <label for="customer-name">Nombre completo:</label>
+                <input type="text" id="customer-name" name="customerName" required />
 
-        <form id="checkoutForm" onsubmit="processOrder(event)" class="space-y-4">
-          <input type="text" name="customerName" placeholder="Nombre completo" required class="w-full border border-gray-300 p-2 rounded" />
+                <label for="delivery-method">Método de entrega:</label>
+                <select id="delivery-method" name="deliveryMethod" required>
+                    <option value="" disabled selected>Seleccione...</option>
+                    <option value="correo">Correo electrónico</option>
+                    <option value="whatsapp">WhatsApp</option>
+                </select>
 
-          <select id="deliveryMethod" name="deliveryMethod" onchange="toggleDeliveryFields()" class="w-full border border-gray-300 p-2 rounded">
-            <option value="email" selected>Correo electrónico</option>
-            <option value="whatsapp">WhatsApp</option>
-          </select>
+                <label for="delivery-contact" id="delivery-contact-label" class="hidden">Ingrese correo o WhatsApp:</label>
+                <input type="text" id="delivery-contact" name="deliveryContact" class="hidden" required />
 
-          <div id="emailField" class="">
-            <input type="email" placeholder="Correo electrónico" required class="w-full border border-gray-300 p-2 rounded" />
-          </div>
+                <div class="payment-info">
+                    <p>Abonar a alias: <b>desa2025</b></p>
+                    <p>Importe total: <b id="payment-amount">$0</b></p>
+                </div>
 
-          <div id="whatsappField" class="hidden">
-            <input type="tel" placeholder="Número de WhatsApp" pattern="[0-9+ ]+" class="w-full border border-gray-300 p-2 rounded" />
-          </div>
+                <label for="payment-proof">Cargar comprobante de pago (imagen):</label>
+                <input type="file" id="payment-proof" name="paymentProof" accept="image/*" required />
 
-          <button type="submit" class="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition">Confirmar compra</button>
-        </form>
-      </div>
-    </div>
+                <button type="submit" class="btn-submit">Enviar Compra</button>
+                <button type="button" id="cancel-checkout" class="btn-cancel">Cancelar</button>
+            </form>
+        </section>
 
-    <!-- Modal éxito -->
-    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
-      <div class="bg-white p-6 rounded-md max-w-md w-full relative">
-        <button onclick="closeSuccessModal()" class="absolute top-2 right-2 text-gray-700 hover:text-black font-bold text-xl">&times;</button>
-        <h3 id="successTitle" class="text-xl font-bold mb-2"></h3>
-        <p id="successMessage"></p>
-      </div>
-    </div>
+    </main>
 
-    <!-- Modal admin login -->
-    <div id="adminLoginModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
-      <div class="bg-white p-6 rounded-md max-w-sm w-full relative">
-        <button onclick="closeAdminLoginModal()" class="absolute top-2 right-2 text-gray-700 hover:text-black font-bold text-xl">&times;</button>
-        <h2 class="text-2xl font-bold mb-4">Ingreso de administrador</h2>
-        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-4">
-          <input id="adminUsername" type="text" placeholder="Usuario" required class="w-full border border-gray-300 p-2 rounded" />
-          <input id="adminPassword" type="password" placeholder="Contraseña" required class="w-full border border-gray-300 p-2 rounded" />
-          <div id="loginError" class="text-red-600 hidden">Usuario o contraseña incorrectos</div>
-          <button type="submit" class="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition">Ingresar</button>
-        </form>
-      </div>
-    </div>
+    <!-- Panel admin toggle -->
+    <button id="admin-toggle" class="admin-toggle" title="Panel administrador">
+        <i class="fas fa-cog"></i>
+    </button>
 
-    <!-- Modal admin panel -->
-    <div id="adminPanelModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
-      <div class="bg-white p-6 rounded-md max-w-4xl w-full max-h-[90vh] overflow-auto relative">
-        <button onclick="closeAdminPanelModal()" class="absolute top-2 right-2 text-gray-700 hover:text-black font-bold text-xl">&times;</button>
-        <h2 class="text-2xl font-bold mb-4">Panel de administrador</h2>
-        
-        <div class="flex space-x-4 border-b mb-4">
-          <button data-tab="albums" class="admin-tab-btn border-b-2 border-black px-4 py-2 font-semibold cursor-pointer">Álbumes</button>
-          <button data-tab="orders" class="admin-tab-btn border-b-2 border-transparent px-4 py-2 font-semibold cursor-pointer hover:border-gray-400">Pedidos</button>
+    <!-- Panel admin -->
+    <div id="admin-panel" class="admin-panel hidden">
+        <h3>Panel Administrador</h3>
+        <div id="admin-login-section">
+            <label for="admin-username">Usuario:</label>
+            <input type="text" id="admin-username" autocomplete="off" />
+            <label for="admin-password">Contraseña:</label>
+            <input type="password" id="admin-password" autocomplete="off" />
+            <button id="admin-login-btn" class="btn-submit">Ingresar</button>
+            <button id="admin-logout-btn" class="btn-cancel hidden">Cerrar Sesión</button>
+            <p id="admin-login-msg" class="admin-msg"></p>
         </div>
 
-        <div id="adminAlbumsTab">
-          <button onclick="showAddAlbumForm()" class="mb-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Agregar Álbum</button>
-          <div id="albumsList" class="space-y-4"></div>
+        <div id="admin-controls" class="hidden">
+            <h4>Administrar Álbumes</h4>
+            <div id="album-management">
+                <input type="text" id="new-album-title" placeholder="Nuevo título de álbum" />
+                <button id="add-album-btn" class="btn-submit">Agregar Álbum</button>
+            </div>
+            <ul id="admin-album-list" class="admin-album-list">
+                <!-- Lista de álbumes con opción eliminar -->
+            </ul>
 
-          <form id="addAlbumForm" class="hidden space-y-2" onsubmit="handleAddAlbum(event)">
-            <input type="text" id="newAlbumName" placeholder="Nombre del álbum" required class="w-full border border-gray-300 p-2 rounded" />
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Crear Álbum</button>
-            <button type="button" onclick="hideAddAlbumForm()" class="ml-2 bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 transition">Cancelar</button>
-          </form>
+            <h4>Registro de Compras</h4>
+            <table id="purchase-records" class="purchase-records">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Comprobante</th>
+                        <th>Fecha de Pago</th>
+                        <th>Fotos Compradas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Compras -->
+                </tbody>
+            </table>
         </div>
-
-        <div id="adminOrdersTab" class="hidden">
-          <div id="ordersList" class="space-y-4"></div>
-        </div>
-      </div>
     </div>
 
-  </main>
-
-  <!-- Script -->
-  <script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
-
-
 
 
